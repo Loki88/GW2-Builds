@@ -17,7 +17,7 @@ class Loader():
 
     def __init__(self) -> None:
         self.client = GuildWars2Client()
-        
+
 
     def load_professions(self, professions: list[str] = ALL_PROFESSIONS):
         self.client.dir()

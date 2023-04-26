@@ -20,4 +20,3 @@ class Weapon:
         self.specialization = int(data['specialization'])
         if(data['skills'] is not None):
             self.skills = [WeaponSkill(x) for x in data['skills']]
-    

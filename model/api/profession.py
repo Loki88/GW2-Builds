@@ -21,11 +21,11 @@ class Profession:
             self.code = data['code']
             self.icon = data['icon']
             self.icon_big = data['icon_big']
-            
+
             if(data['specialization'] is not None):
                 self.specialization = [int(x) for x in data['specialization']]
 
             if(data['weapons'] is not None):
                 self.weapons = [Weapon(x) for x in data['weapons']]
-            
+
             self.flags = data['flags']
