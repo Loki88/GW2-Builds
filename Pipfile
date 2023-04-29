@@ -13,6 +13,6 @@ coverage = "*"
 [requires]
 python_version = "3.9"
 
-[script]
+[scripts]
 test = "coverage run -m unittest discover"
 coverage = "coverage report --skip-empty"
