@@ -26,9 +26,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install dependencies
-      uses: VaultVulp/action-pipenv@v2.0.1
-      with:
-        command: install -d # Install all dependencies, including development ones
+        uses: VaultVulp/action-pipenv@v2.0.1
+        with:
+          command: install -d # Install all dependencies, including development ones
     
       - name: Run tests
         uses: VaultVulp/action-pipenv@v2.0.1
