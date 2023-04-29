@@ -28,14 +28,14 @@ jobs:
       - name: Install dependencies
         uses: VaultVulp/action-pipenv@v2.0.1
         with:
-          command: install -d # Install all dependencies, including development ones
+          command: install -d
     
       - name: Run tests
         uses: VaultVulp/action-pipenv@v2.0.1
         with:
-          command: run test # Run custom `test` command defined in the `[scripts]` bl
+          command: run test
 
       - name: Check coverage
         uses: VaultVulp/action-pipenv@v2.0.1
         with:
-          command: run coverage # Compute stats for code coverage
+          command: run coverage
