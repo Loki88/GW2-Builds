@@ -6,8 +6,13 @@ name = "pypi"
 [packages]
 guildwars2-api-client = "*"
 click = "*"
+coverage = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.9"
+
+[script]
+test = "coverage run -m unittest discover"
+coverage = "coverage report --skip-empty"

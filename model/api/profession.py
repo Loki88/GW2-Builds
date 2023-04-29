@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from weapon import Weapon
+from .weapon import Weapon
 
 
 class Profession:

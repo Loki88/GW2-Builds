@@ -25,10 +25,17 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Format files
-        # You may pin to the exact commit or the version.
-        # uses: DataDog/action-py-black-formatter@bebd29d1572a82c8e4a9de3c42c1592529a7d6af
-        uses: DataDog/action-py-black-formatter@v2.5
+      - name: Install dependencies
+      uses: VaultVulp/action-pipenv@v2.0.1
+      with:
+        command: install -d # Install all dependencies, including development ones
+    
+      - name: Run tests
+        uses: VaultVulp/action-pipenv@v2.0.1
         with:
-          main_branch: main
-          check_mode: true
+          command: run test # Run custom `test` command defined in the `[scripts]` bl
+
+      - name: Check coverage
+        uses: VaultVulp/action-pipenv@v2.0.1
+        with:
+          command: run coverage # Compute stats for code coverage

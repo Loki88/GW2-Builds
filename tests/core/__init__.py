@@ -3,11 +3,11 @@
 import sys
 import unittest
 
-import test_loader
+from .test_loader import *
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(test_loader.TestLoader)
+    suite.addTest(TestLoader)
     return suite
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 
-import profession
-import skill
-import weapon
+from .profession import *
+from .skill import *
+from .weapon import *
