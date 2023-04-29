@@ -12,11 +12,18 @@ class WeaponSkill:
 
 class Weapon:
     name: str
-    specialization: int
+    specialization: int # Weapons supported by all specializatiions will have None
     skills: list[WeaponSkill]
 
-    def __init__(self, data: dict[str] = None) -> None:
-        self.name = data['name']
-        self.specialization = int(data['specialization'])
+    def __init__(self, name: str, data: dict[str] = None) -> None:
+        self.name = name
+        self.specialization = data['specialization'] if 'specialization' in data else None
         if(data['skills'] is not None):
             self.skills = [WeaponSkill(x) for x in data['skills']]
+
+    def __str__(self) -> str:
+        return f'Weapon ({self.name}, spec: {self.specialization})'
+    
+    def __repr__(self):
+        return str(self)
+    

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from gw2api import GuildWars2Client
+from model.api import Profession
 
 HEAVY_PROFESSIONS = ['Guardian', 'Dragonhunter', 'Firebrand', 'Willbender', 'Revenant', 'Herald', 'Renegade', 'Vindicator', 'Warrior', 'Berserker' \
                    'Spellbreaker', 'Bladesworn']
@@ -18,6 +19,9 @@ class Loader():
     def __init__(self) -> None:
         self.client = GuildWars2Client()
 
+    def __del__(self):
+        self.client.session.close()
 
     def load_professions(self, professions: list[str] = ALL_PROFESSIONS):
-        self.client.dir()
+        professions_list: list[str] = self.client.professions.get()
+        return [Profession(x) for x in self.client.professions.get(ids=professions_list)]

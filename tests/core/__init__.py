@@ -9,6 +9,3 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(TestLoader)
     return suite
-
-if __name__ == '__main__':
-    unittest.main(sys.modules[__name__])
