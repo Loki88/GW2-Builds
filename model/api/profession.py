@@ -9,7 +9,7 @@ class Profession:
     code: int
     icon: str
     icon_big: str
-    specialization: list[int]
+    specializations: list[int]
     weapons: list[Weapon]
     flags: list[str]
 
@@ -22,11 +22,8 @@ class Profession:
             self.icon = data['icon'] if 'icon' in data else None
             self.icon_big = data['icon_big'] if 'icon_big' in data else None
 
-            self.specialization = [int(x) for x in data['specializations']]
-                
-            weapons: dict[str, object] = data['weapons']
-            
-            self.weapons = [Weapon(x, y) for x, y in weapons.items()]
+            self.specializations = [int(x) for x in data['specializations']]
+            self.weapons = [Weapon(x, y) for x, y in data['weapons'].items()]
 
             self.flags = data['flags']
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-class Skill:
+class Fact:
     id: int
     name: str
     description: str
@@ -11,4 +11,4 @@ class Skill:
     
     
     
-    
+    # fact requires a strategy and a hierarchy of facts to represent the different facts

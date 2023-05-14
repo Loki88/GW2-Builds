@@ -163,3 +163,7 @@ cython_debug/
 # Lock
 .lock
 Pipfile.lock
+
+
+# VSCode
+.vscode
