@@ -177,6 +177,7 @@ class ItemType(Enum):
     Back = 1
     Trinket = 2
     Consumable = 3
+    UpgradeComponent = 4
     
 class InfusionFlag(Enum):
     Enrichment = 0 # Item has an enrichment slot.

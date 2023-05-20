@@ -90,7 +90,7 @@ class TrinketDetail(ItemDetail):
             self.infix_upgrade = self._get_infix_upgrade(get_or_none('infix_upgrade', data))
             self.stat_choices = [ItemStats(x) for x in get_list_or_empty('stat_choices', data)]
 
-class UpdateComponentDetail(ItemDetail):
+class UpgradeComponentDetail(ItemDetail):
     type: UpgradeComponentType
     flags: list[UpgradeComponentFlags]
     infusion_upgrade_flags: list[InfusionFlag]
@@ -126,13 +126,12 @@ class ConsumableDetail(ItemDetail):
             self.name = get_or_none('name', data)
             self.icon = get_or_none('icon', data)
 
-    
-
 DETAILS_DICT = {
     ItemType.Armor: ArmorDetail,
     ItemType.Back: BackDetail,
     ItemType.Trinket: TrinketDetail,
-    ItemType.Consumable: ConsumableDetail
+    ItemType.Consumable: ConsumableDetail,
+    ItemType.UpgradeComponent: UpgradeComponentDetail
 }
 
 def get_item_details(data: dict, item_type: ItemType) -> ItemDetail | None:
