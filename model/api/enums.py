@@ -134,7 +134,7 @@ class SkillFlag(Enum):
     GroundTargeted = 0
     NoUnderwater = 1
 
-class Consumables(Enum):
+class ConsumableType(Enum):
     Food = 0
     Utility = 1
     
@@ -155,3 +155,29 @@ class ArmorWeight(Enum):
 class ItemRarity(Enum):
     Legendary = 0
     Ascended = 1
+    
+class TrinketType(Enum):
+    Accessory = 0
+    Amulet = 1
+    Ring = 2
+    
+class UpgradeComponentType(Enum):
+    Default = 0 # Infusions and Jewels (and historical PvP runes/sigils)
+    Gem = 1 # Universal upgrades (Gemstones, Doubloons, and Marks/Crests/etc.)
+    Rune = 2 # Rune
+    Sigil = 3 # Sigil
+    
+class UpgradeComponentFlags(Enum):
+    Weapons = 0
+    Armor = 1
+    Trinkets = 2
+    
+class ItemType(Enum):
+    Armor = 0
+    Back = 1
+    Trinket = 2
+    Consumable = 3
+    
+class InfusionFlag(Enum):
+    Enrichment = 0 # Item has an enrichment slot.
+    Infusion = 1 # Item has an infusion slot.
