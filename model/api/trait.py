@@ -1,6 +1,9 @@
 #!/usr/bin/env python
-from model.api.specialization import Specialization
 
+from .utils import *
+from .specialization import Specialization
+from .fact import get_fact, Fact
+from .skill import Skill
 
 
 class Trait:
@@ -18,12 +21,12 @@ class Trait:
 
     def __init__(self, data: dict = None) -> None:
         if(data is not None):
-            self.id = data['id']
-            self.name = data['name']
-            self.specialization = data['specialization']
-            self.specialization = data['specialization']
-            self.icon = data['icon']
-            self.tier = data['tier']
-            self.facts = [Fact(x) for x in data['facts']]
-            self.traited_facts = [Fact(x) for x in data['traited_facts']]
-        
+            self.id = get_or_none('id', data)
+            self.name = get_or_none('name', data)
+            self.icon = get_or_none('icon', data)
+            self.description = get_or_none('description', data)
+            self.specialization = get_or_none('specialization', data)
+            self.tier = get_or_none('tier', data)
+            self.facts = [get_fact(x) for x in get_list_or_empty('facts', data)]
+            self.traited_facts = [get_fact(x) for x in get_list_or_empty('traited_facts', data)]
+            self.skills = [Skill(x) for x in get_list_or_empty('skills', data)]

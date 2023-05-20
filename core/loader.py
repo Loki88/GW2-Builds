@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from gw2api import GuildWars2Client
-from model.api import Profession, Specialization
+from model.api import Profession, Specialization, Trait
 
 HEAVY_PROFESSIONS = ['Guardian', 'Revenant', 'Warrior']
 MEDIUM_PROFESSIONS = ['Engineer', 'Ranger', 'Thief']
@@ -61,4 +61,4 @@ class Loader():
             return []
 
     def _flatten(self, list_of_lists: list) -> list:
-        return [item for sublist in list_of_lists for item in sublist]
+        return list(dict.fromkeys([item for sublist in list_of_lists for item in sublist]))

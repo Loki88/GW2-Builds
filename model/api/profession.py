@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from .utils import *
 from .weapon import Weapon
 
 
@@ -16,14 +17,14 @@ class Profession:
 
     def __init__(self, data : dict = None) -> None:
         if (data is not None):
-            self.id = data['id']
-            self.name = data['name']
-            self.code = data['code'] if 'code' in data else None
-            self.icon = data['icon'] if 'icon' in data else None
-            self.icon_big = data['icon_big'] if 'icon_big' in data else None
+            self.id = get_or_none('id', data)
+            self.name = get_or_none('name', data)
+            self.code = get_or_none('code', data)
+            self.icon = get_or_none('icon', data)
+            self.icon_big = get_or_none('icon_big', data)
 
-            self.specializations = [int(x) for x in data['specializations']]
-            self.weapons = [Weapon(x, y) for x, y in data['weapons'].items()]
+            self.specializations = [int(x) for x in get_list_or_empty('specializations', data)]
+            self.weapons = [Weapon(x, y) for x, y in get_dict_or_empty('weapons', data).items()]
 
             self.flags = data['flags']
 
