@@ -13,9 +13,19 @@ class TestLoader(unittest.TestCase):
     num_specializations: int = 8
     
     loader: Loader = Loader()
+    
+    def test_load_build_id(self):
+        # when
+        build_id = self.loader.load_build_id();
+        
+        # then
+        self.assertIsNotNone(build_id)
 
     def test_load_professions(self):
+        # when
         professions = self.loader.load_professions()
+        
+        # then
         self.assertIsNotNone(professions)
         self.assertEqual(len(professions), 9)
 
@@ -24,6 +34,7 @@ class TestLoader(unittest.TestCase):
             professions = self.loader.load_professions(professions_ids)
             self.assertIsNotNone(professions)
             self.assertEqual(len(professions), len(professions_ids))
+            
             
             specializations = self.loader.load_specializations(professions)
             self.assertIsNotNone(specializations)
@@ -43,3 +54,16 @@ class TestLoader(unittest.TestCase):
         self.assertIsNotNone(traits)
         self.assertEqual(len(traits), 2)
         self.assertListEqual([x.id for x in traits], [214, 265])
+        
+    def test_load_skills(self):
+        # given
+        skills_ids = [1110, 1115, 1118, 1123, 1125, 1129, 1131, 1139, 1141, 1148, 1162, 1167, 1175, 1279, 1355, 1359, 1364, 1408]
+        
+        # when
+        skills = self.loader.load_skills(skills_ids)
+        
+        # then
+        self.assertIsNotNone(skills)
+        self.assertEqual(len(skills), len(skills_ids))
+        self.assertListEqual([x.id for x in skills], skills_ids)
+        

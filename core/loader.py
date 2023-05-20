@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from gw2api import GuildWars2Client
-from model.api import Profession, Specialization, Trait
+from model.api import Profession, Specialization, Trait, Skill
 
 HEAVY_PROFESSIONS = ['Guardian', 'Revenant', 'Warrior']
 MEDIUM_PROFESSIONS = ['Engineer', 'Ranger', 'Thief']
@@ -25,6 +25,10 @@ class Loader():
 
     def __del__(self):
         self.client.session.close()
+        
+    def load_build_id(self) -> int:
+        response = self.client.build.get()
+        return response['id']
 
     def load_professions(self, professions: list[str] = ALL_PROFESSIONS) -> list[Profession]:
         response = self.client.professions.get(ids=professions)
@@ -36,7 +40,7 @@ class Loader():
     
     def load_specializations(self, professions: list[Profession]) -> list[Specialization]:
         if(professions is not None):
-            return self._load_specializations(self._flatten([x.specializations for x in professions]))
+            return self._load_specializations(self._no_duplicates(self._flatten([x.specializations for x in professions])))
         else:
             return []
     
@@ -59,6 +63,16 @@ class Loader():
             return api_traits
         else:
             return []
+    
+    def load_skills(self, skills: list[int]) -> list[Skill]:
+        if(skills is not None):
+            api_skills = [Skill(x) for x in self.client.skills.get(ids=self._no_duplicates(skills))]
+            return api_skills
+        else:
+            return []
 
     def _flatten(self, list_of_lists: list) -> list:
-        return list(dict.fromkeys([item for sublist in list_of_lists for item in sublist]))
+        return [item for sublist in list_of_lists for item in sublist]
+
+    def _no_duplicates(self, list_with_duplicates: list) -> list:
+        return list(dict.fromkeys(list_with_duplicates))

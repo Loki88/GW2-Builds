@@ -96,3 +96,43 @@ class FactType(Enum):
 
 class Stats(Enum):
     pass
+
+class SkillType(Enum):
+    Bundle = 0 # Used for Engineer kits or weapons picked up in-world.
+    Elite = 1 # Elite skill.
+    Heal = 2 # Heal skill.
+    Monster = 3 # Used for some NPC skills.
+    Pet = 4 # Used for Ranger pet skills.
+    Profession = 5 # Profession-specific skill, such as Elementalist attunements or Engineer toolbelt skills.
+    Toolbelt = 6 # Used for some Engineer toolbelt skills.
+    Transform = 7 # Placeholder skill used to indicate a locked slot.
+    Utility = 8 # Utility skill.
+    Weapon = 9 # Weapon skill or downed skill.
+
+class Slot(Enum):
+    Downed_1 = 0 # Downed skills 1-4
+    Downed_2 = 1
+    Downed_3 = 2
+    Downed_4 = 3
+    Pet = 4 # Used for Ranger pet skills
+    Profession_1 = 5 # Profession skills 1-5
+    Profession_2 = 6
+    Profession_3 = 7
+    Profession_4 = 8
+    Profession_5 = 9
+    Utility = 10 # Utility skill
+    Weapon_1 = 11 # Weapon skills 1-5
+    Weapon_2 = 12
+    Weapon_3 = 13
+    Weapon_4 = 14
+    Weapon_5 = 15
+
+class SkillCategory(Enum):
+    DualWield = 0 # Indicates the skill is a dual-wield skill for thieves. The necessary off-hand weapon is indicated in dual_wield.
+    StealthAttack = 1 # Indicates the skill can only be used by a thief in stealth.
+    Others = 2 # All other values of this field simply indicate which group of skills it belongs to. (i.e. Signet, Cantrip, etc.)
+    
+class SkillFlag(Enum):
+    GroundTargeted = 0
+    NoUnderwater = 1
+
