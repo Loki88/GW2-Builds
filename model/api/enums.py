@@ -10,9 +10,10 @@ class Attribute(Enum):
     Precision = 3
     Toughness = 4
     Vitality = 5
-    Concentration = 6
+    BoonDuration = 6
     ConditionDamage = 7
-    Expertise = 8
+    ConditionDuration = 8
+    AgonyResistance = 9
     
 class Condition(Enum):
     Vulnerability = 0
@@ -94,9 +95,6 @@ class FactType(Enum):
     Time = 14
     Unblockable = 15
 
-class Stats(Enum):
-    pass
-
 class SkillType(Enum):
     Bundle = 0 # Used for Engineer kits or weapons picked up in-world.
     Elite = 1 # Elite skill.
@@ -136,3 +134,24 @@ class SkillFlag(Enum):
     GroundTargeted = 0
     NoUnderwater = 1
 
+class Consumables(Enum):
+    Food = 0
+    Utility = 1
+    
+class ArmorType(Enum):
+    Boots = 0
+    Coat = 1
+    Gloves = 2
+    Helm = 3
+    HelmAquatic = 4
+    Leggings = 5
+    Shoulders = 6
+    
+class ArmorWeight(Enum):
+    Heavy = 0
+    Medium = 1
+    Light = 2 
+    
+class ItemRarity(Enum):
+    Legendary = 0
+    Ascended = 1

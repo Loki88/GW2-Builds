@@ -99,7 +99,7 @@ class TestFact(unittest.TestCase):
             'icon': 'test icon',
             'type': FactType.BuffConversion.name, 
             'target': Attribute.CritDamage.name,
-            'source': Attribute.Concentration.name,
+            'source': Attribute.BoonDuration.name,
             'percent': 15.7
         }
         
@@ -113,7 +113,7 @@ class TestFact(unittest.TestCase):
         self.assertEqual(fact.icon, 'test icon')
         self.assertEqual(fact.type, FactType.BuffConversion)
         self.assertEqual(fact.target, Attribute.CritDamage)
-        self.assertEqual(fact.source, Attribute.Concentration)
+        self.assertEqual(fact.source, Attribute.BoonDuration)
         self.assertEqual(fact.percent, 15.7)
 
     def test_combo_field(self):
