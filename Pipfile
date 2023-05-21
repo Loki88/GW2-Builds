@@ -7,11 +7,14 @@ name = "pypi"
 guildwars2-api-client = "*"
 click = "*"
 coverage = "*"
+requests = "*"
+tensorflow = "*"
+joblib = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.9"
+python_version = "3"
 
 [scripts]
 test = "coverage run -m unittest discover"
