@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
+from joblib import Parallel, delayed
 from gw2api import GuildWars2Client
-from model.api import Profession, Specialization, Trait, Skill
+from model.api import Profession, Specialization, Trait, Skill, ItemType, ItemRarity, Item, ItemStats, filter_item_data
 
 HEAVY_PROFESSIONS = ['Guardian', 'Revenant', 'Warrior']
 MEDIUM_PROFESSIONS = ['Engineer', 'Ranger', 'Thief']
@@ -17,6 +18,9 @@ LIGHT_SPECIALIZATIONS = ['Elementalist', 'Tempest', 'Weaver', 'Catalyst', 'Mesme
                      'Reaper', 'Scourge', 'Harbinger']
 
 ALL_PROFESSIONS = HEAVY_PROFESSIONS + MEDIUM_PROFESSIONS + LIGHT_PROFESSIONS
+
+PARTITION_SIZE = 200
+PARALLEL_JOBS = 15
 
 class Loader():
 
@@ -70,9 +74,34 @@ class Loader():
             return api_skills
         else:
             return []
+        
+    def load_items(self, ids: list[int] = None, items_filter: dict[ItemType, ItemRarity] = None) -> list[Item]:
+        items_id = ids
+        if(items_id is None):
+            items_id = [int(x) for x in self.client.items.get()]
+        
+        items = Parallel(n_jobs=PARALLEL_JOBS)(delayed(self._load_items_by_ids)(chunk, items_filter) for chunk in list(self._partition(items_id, PARTITION_SIZE)))
+        return self._flatten(items)
+    
+    def _load_items_by_ids(self, items_ids: list[int], items_filter: dict[ItemType, ItemRarity] = None) -> list[Item]:
+        return [Item(x) for x in self._filter_items(self.client.items.get(ids=items_ids), items_filter)]
+    
+    def _filter_items(self, items: list[dict], items_filter: dict[ItemType, ItemRarity] = None) -> list[Item]:
+        if(items_filter is not None):
+            return [x for x in items if filter_item_data(x, items_filter)]
+        return items
+    
+    def load_item_stats(self) -> list[ItemStats]:
+        item_stats_ids = self.client.itemstats.get()
+        return [ItemStats(x) for x in self.client.itemstats.get(ids=item_stats_ids)]
 
     def _flatten(self, list_of_lists: list) -> list:
         return [item for sublist in list_of_lists for item in sublist]
 
     def _no_duplicates(self, list_with_duplicates: list) -> list:
         return list(dict.fromkeys(list_with_duplicates))
+    
+    def _partition(self, lst: list, chunks: int):
+        for i in range(0, len(lst), chunks):
+            yield lst[i:i + chunks]
+        

@@ -4,7 +4,7 @@ import unittest
 
 from core import Loader
 from core.loader import HEAVY_PROFESSIONS, LIGHT_PROFESSIONS, MEDIUM_PROFESSIONS
-from model.api import Specialization
+from model.api import Specialization, ItemType, ItemRarity
 
 class TestLoader(unittest.TestCase):
     
@@ -67,3 +67,46 @@ class TestLoader(unittest.TestCase):
         self.assertEqual(len(skills), len(skills_ids))
         self.assertListEqual([x.id for x in skills], skills_ids)
         
+    def test_load_items(self):
+        # given
+        items_filter = {
+            ItemType.Armor: ItemRarity.Legendary,
+            ItemType.Trinket: ItemRarity.Legendary,
+            ItemType.Back: ItemRarity.Legendary,
+        }
+        
+        items_ids = [
+            80252, # envoy piece
+            74155, # ad infinitum
+            81908, # aurora
+            91234, # coalescence
+            37076, # Royal Signet of Doric
+        ]
+        
+        # when
+        items = self.loader.load_items(ids=items_ids, items_filter=items_filter)
+        
+        # then
+        self.assertIsNotNone(items)
+        
+        items_type = list(dict.fromkeys([x.type for x in items]))
+        
+        self.assertTrue(ItemType.Armor in items_type)
+        self.assertTrue(ItemType.Trinket in items_type)
+        self.assertTrue(ItemType.Back in items_type)
+        self.assertFalse(ItemType.UpgradeComponent in items_type)
+        
+        items_rarity = list(dict.fromkeys([x.rarity for x in items]))
+        
+        self.assertTrue(ItemRarity.Legendary in items_rarity)
+        self.assertFalse(ItemRarity.Ascended in items_rarity)
+        
+        self.assertTrue(37076 not in [x.id for x in items])
+        
+    def test_load_item_stats(self):
+        
+        # when
+        item_stats = self.loader.load_item_stats()
+        
+        # then
+        self.assertIsNotNone(item_stats)

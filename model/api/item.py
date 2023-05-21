@@ -2,7 +2,6 @@
 
 from .utils import get_or_none, get_list_or_empty
 from .enums import ItemType, ItemRarity, ArmorType, ArmorWeight, InfusionFlag, Attribute, TrinketType, UpgradeComponentType, UpgradeComponentFlags, ConsumableType
-from .item_stats import ItemStats
 
 class InfusionSlot:
     flags: list[InfusionFlag]
@@ -50,7 +49,7 @@ class ArmorDetail(ItemDetail):
     infusion_slots: list[InfusionSlot]
     attribute_adjustment: float
     infix_upgrade: InfixUpgrade | None
-    stat_choices: list[ItemStats]
+    stat_choices: list[int]
     
     def __init__(self, data: dict = None) -> None:
         if(data is not None):
@@ -60,27 +59,27 @@ class ArmorDetail(ItemDetail):
             self.infusion_slots = [InfusionSlot(x) for x in get_list_or_empty('infusion_slots', data)]
             self.attribute_adjustment = get_or_none('attribute_adjustment', data)
             self.infix_upgrade = self._get_infix_upgrade(get_or_none('infix_upgrade', data))
-            self.stat_choices = [ItemStats(x) for x in get_list_or_empty('stat_choices', data)]
+            self.stat_choices = [int(x) for x in get_list_or_empty('stat_choices', data)]
 
 class BackDetail(ItemDetail):
     infusion_slots: list[InfusionSlot]
     attribute_adjustment: float
     infix_upgrade: InfixUpgrade | None
-    stat_choices: list[ItemStats]
+    stat_choices: list[int]
     
     def __init__(self, data: dict = None) -> None:
         if(data is not None):
             self.infusion_slots = [InfusionSlot(x) for x in get_list_or_empty('infusion_slots', data)]
             self.attribute_adjustment = get_or_none('attribute_adjustment', data)
             self.infix_upgrade = self._get_infix_upgrade(get_or_none('infix_upgrade', data))
-            self.stat_choices = [ItemStats(x) for x in get_list_or_empty('stat_choices', data)]
+            self.stat_choices = [int(x) for x in get_list_or_empty('stat_choices', data)]
 
 class TrinketDetail(ItemDetail):
     type: TrinketType
     infusion_slots: list[InfusionSlot]
     attribute_adjustment: float
     infix_upgrade: InfixUpgrade | None
-    stat_choices: list[ItemStats]
+    stat_choices: list[int]
     
     def __init__(self, data: dict = None) -> None:
         if(data is not None):
@@ -88,7 +87,7 @@ class TrinketDetail(ItemDetail):
             self.infusion_slots = [InfusionSlot(x) for x in get_list_or_empty('infusion_slots', data)]
             self.attribute_adjustment = get_or_none('attribute_adjustment', data)
             self.infix_upgrade = self._get_infix_upgrade(get_or_none('infix_upgrade', data))
-            self.stat_choices = [ItemStats(x) for x in get_list_or_empty('stat_choices', data)]
+            self.stat_choices = [int(x) for x in get_list_or_empty('stat_choices', data)]
 
 class UpgradeComponentDetail(ItemDetail):
     type: UpgradeComponentType
@@ -161,3 +160,18 @@ class Item:
             self.rarity = ItemRarity[get_or_none('rarity', data)]
             self.details = get_item_details(get_or_none('details', data), self.type)
             
+            
+def filter_item_data(data: dict, filter: dict[ItemType, ItemRarity] = None) -> bool:
+    if(filter is None):
+        return True
+    else:
+        type = get_or_none('type', data)
+        if(type in ItemType._member_names_):
+            item_type = ItemType[type]
+            if(item_type in filter):
+                rarity_filter = filter[item_type]
+                rarity = get_or_none('rarity', data)
+                if(rarity in ItemRarity._member_names_):
+                    return ItemRarity[rarity] is rarity_filter
+        return False
+        
