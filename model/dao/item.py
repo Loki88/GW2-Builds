@@ -2,7 +2,6 @@
 
 import persistent
 import persistent.list
-from BTrees.OOBTree import TreeSet
 from model import InfusionFlag, ItemType, ItemRarity, Attribute, ArmorType, ArmorWeight, TrinketType, ConsumableType, UpgradeComponentType, UpgradeComponentFlags
 
 class InfusionSlot(persistent.Persistent):

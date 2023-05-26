@@ -2,7 +2,7 @@
 
 import persistent
 import persistent.list
-from BTrees.OOBTree import TreeSet
+import BTrees
 from .fact import Fact
 
 class Trait(persistent.Persistent):

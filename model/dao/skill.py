@@ -2,7 +2,7 @@
 
 import persistent
 import persistent.list
-from BTrees.OOBTree import TreeSet
+import BTrees
 from model import SkillType, Slot, SkillCategory, SkillFlag
 from .fact import Fact
 

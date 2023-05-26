@@ -2,7 +2,7 @@
 
 import persistent
 import persistent.list
-from BTrees.OOBTree import TreeSet
+import BTrees
 
     
 class WeaponSkill(persistent.Persistent):
@@ -26,7 +26,7 @@ class Weapon(persistent.Persistent):
     def __init__(self, name: str, specialization: int) -> None:
         self.name = name
         self.specialization = specialization
-        self.skills = TreeSet()
+        self.skills = BTrees.OOBTree.TreeSet()
 
     def add_skill(self, skill: WeaponSkill):
         self.skills.append(skill)
