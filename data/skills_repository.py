@@ -2,7 +2,7 @@
 
 import BTrees
 
-from model.dao import Specialization
+from model.dao import Skill
 from utils import Singleton
 from .db import Db
 
@@ -17,12 +17,12 @@ class SkillsRepository(metaclass=Singleton):
                 connection.root.skills = BTrees.OOBTree.BTree()                
     
     
-    def save_specialization(self, specialization: Specialization):
+    def save_skill(self, skill: Skill):
         with Db().open_transaction() as connection:
-            connection.root.skills[specialization.id] = specialization
-            return connection.root.skills[specialization.id]
+            connection.root.skills[skill.id] = skill
+            return connection.root.skills[skill.id]
         
-    def get_specializations(self) -> list[Specialization]:
+    def get_skills(self) -> list[Skill]:
         conn = None
         try:
             conn = Db().open_connection()
@@ -31,7 +31,7 @@ class SkillsRepository(metaclass=Singleton):
             if conn is not None:
                 conn.close()
                 
-    def get_specialization_by_id(self, id: int) -> Specialization:
+    def get_skill_by_id(self, id: int) -> Skill:
         conn = None
         try:
             conn = Db().open_connection()
@@ -42,7 +42,7 @@ class SkillsRepository(metaclass=Singleton):
             if conn is not None:
                 conn.close()
     
-    def get_specialization_by_name(self, name: str = None) -> list[Specialization]:
+    def get_skill_by_name(self, name: str = None) -> list[Skill]:
         conn = None
         try:
             conn = Db().open_connection()
@@ -51,10 +51,10 @@ class SkillsRepository(metaclass=Singleton):
             if conn is not None:
                 conn.close()
                 
-    def delete_specializations(self):
+    def delete_skills(self):
         with Db().open_transaction() as connection:
             connection.root.skills.clear()
     
-    def delete_specialization_by_id(self, id: int):
+    def delete_skill_by_id(self, id: int):
         with Db().open_transaction() as connection:
             connection.root.skills.pop(id)
