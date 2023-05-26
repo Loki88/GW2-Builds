@@ -6,15 +6,15 @@ from model.dao import ItemStats
 from utils import Singleton
 from .db import Db
 
-class ArmorRepository(metaclass=Singleton):
+class FoodsRepository(metaclass=Singleton):
         
     def __init__(self) -> None:
         with Db().open_transaction() as connection:
             try:
-                if connection.root.armor is not None:
+                if connection.root.foods is not None:
                     pass
             except:
-                connection.root.armor = BTrees.OOBTree.BTree()                
+                connection.root.foods = BTrees.OOBTree.BTree()                
     
     
    
