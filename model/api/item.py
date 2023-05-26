@@ -34,6 +34,11 @@ class InfixUpgrade:
     id: int
     attributes: list[InfixAttributeBonus]
     buff: InfixBuff
+    
+    def __init__(self, data: dict) -> None:
+        self.id = get_or_none('id')
+        self.buff = InfixBuff[get_or_none('buff')]
+        self.attributes = [InfixAttributeBonus[x] for x in get_list_or_empty('attributes')]
 
 class ItemDetail:
     
