@@ -19,6 +19,18 @@ concurrency:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  
+  pre-commit:
+    name: Pre-Commit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+ 
+      - uses: pre-commit/action@v3.0.0
+        with:
+          extra_args: --all-files
+
   test-and-build:
     name: Test and Build
     runs-on: ubuntu-latest
