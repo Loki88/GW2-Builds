@@ -4,13 +4,13 @@ import persistent
 import persistent.list
 import BTrees
 
-    
+
 class WeaponSkill(persistent.Persistent):
-    
+
     def __init__(self, id: int, slot: str) -> None:
         self.id = id
         self.slot = slot
-        
+
     def __eq__(self, other) -> bool:
         if other.__class__ is WeaponSkill:
             return self.id == other.id and self.slot == other.slot
@@ -36,6 +36,6 @@ class Weapon(persistent.Persistent):
             return self.name is other.name and self.specialization == other.specialization and self.skills == other.skills
         else:
             return False
-        
+
     def __lt__(self, other) -> bool:
         return self.name.__lt__(other.name)

@@ -6,22 +6,22 @@ from model.dao import Skill
 from utils import Singleton
 from .db import Db
 
+
 class SkillsRepository(metaclass=Singleton):
-        
+
     def __init__(self) -> None:
         with Db().open_transaction() as connection:
             try:
                 if connection.root.skills is not None:
                     pass
             except:
-                connection.root.skills = BTrees.OOBTree.BTree()                
-    
-    
+                connection.root.skills = BTrees.OOBTree.BTree()
+
     def save_skill(self, skill: Skill):
         with Db().open_transaction() as connection:
             connection.root.skills[skill.id] = skill
             return connection.root.skills[skill.id]
-        
+
     def get_skills(self) -> list[Skill]:
         conn = None
         try:
@@ -30,7 +30,7 @@ class SkillsRepository(metaclass=Singleton):
         finally:
             if conn is not None:
                 conn.close()
-                
+
     def get_skill_by_id(self, id: int) -> Skill:
         conn = None
         try:
@@ -41,7 +41,7 @@ class SkillsRepository(metaclass=Singleton):
         finally:
             if conn is not None:
                 conn.close()
-    
+
     def get_skill_by_name(self, name: str = None) -> list[Skill]:
         conn = None
         try:
@@ -50,11 +50,11 @@ class SkillsRepository(metaclass=Singleton):
         finally:
             if conn is not None:
                 conn.close()
-                
+
     def delete_skills(self):
         with Db().open_transaction() as connection:
             connection.root.skills.clear()
-    
+
     def delete_skill_by_id(self, id: int):
         with Db().open_transaction() as connection:
             connection.root.skills.pop(id)

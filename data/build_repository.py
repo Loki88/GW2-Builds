@@ -6,8 +6,9 @@ from model.dao import Build
 from utils import Singleton
 from .db import Db
 
+
 class BuildRepository(metaclass=Singleton):
-        
+
     def save_build(self, build: Build) -> Build:
         with Db().open_transaction() as connection:
             connection.root.build = build
@@ -21,7 +22,7 @@ class BuildRepository(metaclass=Singleton):
         finally:
             if conn is not None:
                 conn.close()
-                
+
     def delete_build(self) -> None:
         with Db().open_transaction() as connection:
             connection.root.build = None
