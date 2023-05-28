@@ -1,0 +1,24 @@
+version: 2
+updates:
+  - package-ecosystem: pipenv
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "12:00"
+      timezone: "Europe/Rome"
+    commit-message:
+      prefix: "pipenv"
+      prefix-development: "pipenv dev"
+      include: "scope"
+
+  - package-ecosystem: "github-actions"
+    directory: "/.github/workflows"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "12:00"
+      timezone: "Europe/Rome"
+    commit-message:
+      prefix: "GHA"
+      include: "scope"
