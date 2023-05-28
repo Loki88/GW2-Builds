@@ -32,13 +32,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v1
         with:
-          python-version: 3.10
+          python-version: 3.10.11
 
-      - name: Install pipenv
-        run: pip install pipenv
-
-      - name: Install dependencies
-        run: pipenv install -d
+      - name: Install Dependencies
+        run: |
+          pip install pipenv
+          pipenv install -d
 
       - name: Download Coverage
         uses: actions/download-artifact@v3
