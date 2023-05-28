@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from .utils import get_or_none, get_list_or_empty
-from .enums import ItemType, ItemRarity, ArmorType, ArmorWeight, InfusionFlag, Attribute, TrinketType, UpgradeComponentType, UpgradeComponentFlags, ConsumableType
+from .enums import *
 
 
 class InfusionSlot:
@@ -158,12 +158,41 @@ class ConsumableDetail(ItemDetail):
             self.icon = get_or_none('icon', data)
 
 
+class WeaponDetail(ItemDetail):
+    type: WeaponType
+    damage_type: DamageType
+    min_power: float
+    max_power: float
+    defense: int
+    infusion_slots: list[InfusionSlot]
+    attribute_adjustment: float
+    infix_upgrade: InfixUpgrade | None
+    stat_choices: list[int]
+
+    def __init__(self, data: dict = None) -> None:
+        if (data is not None):
+            self.type = WeaponType[get_or_none('type', data)]
+            self.damage_type = DamageType[get_or_none('damage_type', data)]
+            self.min_power = get_or_none('min_power', data)
+            self.max_power = get_or_none('min_power', data)
+            self.defense = get_or_none('defense', data)
+            self.infusion_slots = [InfusionSlot(
+                x) for x in get_list_or_empty('infusion_slots', data)]
+            self.attribute_adjustment = get_or_none(
+                'attribute_adjustment', data)
+            self.infix_upgrade = self._get_infix_upgrade(
+                get_or_none('infix_upgrade', data))
+            self.stat_choices = [
+                int(x) for x in get_list_or_empty('stat_choices', data)]
+
+
 DETAILS_DICT = {
     ItemType.Armor: ArmorDetail,
     ItemType.Back: BackDetail,
     ItemType.Trinket: TrinketDetail,
     ItemType.Consumable: ConsumableDetail,
-    ItemType.UpgradeComponent: UpgradeComponentDetail
+    ItemType.UpgradeComponent: UpgradeComponentDetail,
+    ItemType.Weapon: WeaponDetail
 }
 
 

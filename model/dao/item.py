@@ -2,7 +2,9 @@
 
 import persistent
 import persistent.list
-from model import InfusionFlag, ItemType, ItemRarity, Attribute, ArmorType, ArmorWeight, TrinketType, ConsumableType, UpgradeComponentType, UpgradeComponentFlags
+from model import InfusionFlag, ItemType, ItemRarity, Attribute, ArmorType, ArmorWeight, \
+    TrinketType, ConsumableType, UpgradeComponentType, UpgradeComponentFlags, \
+    WeaponType, DamageType
 
 
 class InfusionSlot(persistent.Persistent):
@@ -142,12 +144,34 @@ class ConsumableDetail(ItemDetail):
             self.extra_recipe_ids.append(id)
 
 
+class WeaponDetail(ItemDetail):
+
+    def __init__(self, type: WeaponType, damage_type: DamageType, min_power: float,
+                 max_power: float, defense: int, attribute_adjustment: float, infix_upgrade: InfixUpgrade = None) -> None:
+        self.type = type
+        self.damage_type = damage_type
+        self.min_power = min_power
+        self.max_power = max_power
+        self.defense = defense
+        self.attribute_adjustment = attribute_adjustment
+        self.infix_upgrade = infix_upgrade
+        self.stat_choices = persistent.list.PersistentList()
+        self.infusion_slots = persistent.list.PersistentList()
+
+    def add_infusion_slot(self, infusion_slot: InfusionSlot):
+        self.infusion_slots.append(infusion_slot)
+
+    def add_stat_choiche(self, stat_choice: int):
+        self.stat_choices.append(stat_choice)
+
+
 DETAILS_DICT = {
     ItemType.Armor: ArmorDetail,
     ItemType.Back: BackDetail,
     ItemType.Trinket: TrinketDetail,
     ItemType.Consumable: ConsumableDetail,
-    ItemType.UpgradeComponent: UpgradeComponentDetail
+    ItemType.UpgradeComponent: UpgradeComponentDetail,
+    ItemType.Weapon: WeaponDetail
 }
 
 

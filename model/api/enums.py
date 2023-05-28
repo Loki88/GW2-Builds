@@ -200,6 +200,41 @@ class ItemType(Enum):
     Trinket = 2
     Consumable = 3
     UpgradeComponent = 4
+    Weapon = 5
+
+
+class WeaponType(Enum):
+    Axe = 0
+    Dagger = 1
+    Mace = 2
+    Pistol = 3
+    Scepter = 4
+    Sword = 5
+    Focus = 6
+    Shield = 7
+    Torch = 8
+    Warhorn = 9
+    Greatsword = 10
+    Hammer = 11
+    LongBow = 12
+    Rifle = 13
+    ShortBow = 14
+    Staff = 15
+    Harpoon = 16
+    Speargun = 17
+    Trident = 18
+    LargeBundle = 19
+    SmallBundle = 20
+    Toy = 21
+    ToyTwoHanded = 22
+
+
+class DamageType(Enum):
+    Fire = 0
+    Ice = 1
+    Lightning = 2
+    Physical = 3
+    Choking = 4
 
 
 class InfusionFlag(Enum):
