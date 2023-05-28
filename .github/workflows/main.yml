@@ -19,41 +19,50 @@ concurrency:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  test-and-build:
+    name: Test and Build
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: 3.10.11
 
       - name: Install Dependencies
         run: |
-          pip install pipenv
-          pipenv install -d
+          pip install poetry
+          poetry config virtualenvs.in-project true
+          poetry install
 
-      - name: Download Coverage
-        uses: actions/download-artifact@v3
-        continue-on-error: true
+      - name: Cache Virtualenv
+        uses: actions/cache@v2
         with:
-          name: code-coverage
-          path: .coverage
+          path: ./.venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
 
       - name: Run Tests & Check Coverage
         run: |
-          pipenv run test
-          pipenv run coverage
+          poetry run python -m coverage run -m unittest discover
+          poetry run python -m coverage report -m --skip-covered --omit 'tests/*'
 
-      - name: Upload Coverage
+      - name: Cache Coverage
         if: github.event_name != 'pull_request'
-        uses: actions/upload-artifact@v3
+        uses: actions/cache@v2
+        continue-on-error: true
         with:
-          name: code-coverage
-          path: .coverage
+          path: ./.coverage
+          key: test-coverage
+
+      - name: Build Project
+        run: poetry build
+
+      - name: Cache Build
+        if: github.event_name != 'pull_request'
+        uses: actions/cache@v2
+        continue-on-error: true
+        with:
+          path: ./dist
+          key: ${{ runner.os }}-dist
