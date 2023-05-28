@@ -48,11 +48,8 @@ class ArmorRepository(metaclass=Singleton):
             elif (weight is None):
                 return [x[type.value] for x in conn.root.armor.values() if type.value in x]
             else:
-                if (weight.value in conn.root.armor):
-                    if (type.value in conn.root.armor[weight.value]):
-                        return conn.root.armor[weight.value][type.value]
-                return None
-
+                weight_map = conn.root.armor.get(weight.value, None)
+                return weight_map.get(type.value, None) if weight_map is not None else None
         finally:
             if conn is not None:
                 conn.close()
