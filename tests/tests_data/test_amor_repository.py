@@ -16,7 +16,7 @@ test_db_dir = os.path.join(curr_dir, 'tmp')
 test_db_file = os.path.join(test_db_dir, 'data.fs')
 
 
-class TestBuildRepository(unittest.TestCase):
+class TestArmorRepository(unittest.TestCase):
 
     data: Db = None
     repository: ArmorRepository = None
@@ -32,7 +32,7 @@ class TestBuildRepository(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         self.data = Db()
-        self.repository = BuildRepository()
+        self.repository = ArmorRepository()
 
     def tearDown(self) -> None:
         super().tearDown()
@@ -41,31 +41,145 @@ class TestBuildRepository(unittest.TestCase):
         shutil.rmtree(test_db_dir)
 
     def _build_item(self) -> Item:
-        kwargs = {}
-        return Item(id=1, chat_link='[abcde1]', name='Tet', icon='test', description='test', type=ItemType.Armor, rarity=ItemRarity.Legendary)
+        detail = ArmorDetail(type=ArmorType.Boots, weight_class=ArmorWeight.Medium,
+                             defense=160, attribute_adjustment=12.4, infix_upgrade=None)
+        return Item(id=1, chat_link='[abcde1]', name='Tet', icon='test', description='test', type=ItemType.Armor, rarity=ItemRarity.Legendary, details=detail)
+
+    def _assert_armor(self, db_armor: Item, armor: Item):
+        self.assertIsNotNone(db_armor)
+        self.assertEqual(armor.type, db_armor.type)
+        self.assertEqual(armor.chat_link, db_armor.chat_link)
+        self.assertEqual(armor.name, db_armor.name)
+        self.assertEqual(armor.icon, db_armor.icon)
+        self.assertEqual(armor.description, db_armor.description)
+        self.assertEqual(armor.rarity, db_armor.rarity)
+        self.assertEqual(armor.details.type, db_armor.details.type)
+        self.assertEqual(armor.details.weight_class,
+                         db_armor.details.weight_class)
+        self.assertEqual(armor.details.defense, db_armor.details.defense)
+        self.assertEqual(armor.details.attribute_adjustment,
+                         db_armor.details.attribute_adjustment)
+        self.assertEqual(armor.details.infix_upgrade,
+                         db_armor.details.infix_upgrade)
 
     def test_save_armor(self):
         # given
-        build = Item(1)
+        armor = self._build_item()
 
         # when
-        db_build = self.repository.save_build(build)
+        db_armor = self.repository.save_armor(armor)
 
         # then
-        self.assertIsNotNone(db_build)
-        self.assertEqual(build.build_number, db_build.build_number)
-        self.assertIsNotNone(db_build.date)
+        self._assert_armor(db_armor, armor)
 
-    def test_delete_build(self):
+    def test_get_armor(self):
         # given
-        build = Build(1)
-        self.repository.save_build(build)
-        db_build = self.repository.get_build()
-        self.assertIsNotNone(db_build)
+        armor = self._build_item()
+        self.repository.save_armor(armor)
 
         # when
-        self.repository.delete_build()
-        db_build = self.repository.get_build()
+        armors = self.repository.get_armor()
 
         # then
-        self.assertIsNone(db_build)
+        self.assertIsNotNone(armors)
+        self.assertEqual(len(armors), 1)
+
+        db_armor = armors[0]
+        self._assert_armor(db_armor, armor)
+
+    def test_get_armor_by_weight(self):
+        # given
+        armor = self._build_item()
+        self.repository.save_armor(armor)
+
+        # when
+        self.assertListEqual(self.repository.get_armor(
+            weight=ArmorWeight.Heavy), [])
+        armors = self.repository.get_armor(weight=ArmorWeight.Medium)
+
+        # then
+        self.assertIsNotNone(armors)
+        self.assertEqual(len(armors), 1)
+
+        db_armor = armors[0]
+        self._assert_armor(db_armor, armor)
+
+    def test_get_armor_by_type(self):
+        # given
+        armor = self._build_item()
+        self.repository.save_armor(armor)
+
+        # when
+        self.assertListEqual(
+            self.repository.get_armor(type=ArmorType.Gloves), [])
+        armors = self.repository.get_armor(type=ArmorType.Boots)
+
+        # then
+        self.assertIsNotNone(armors)
+        self.assertEqual(len(armors), 1)
+
+        db_armor = armors[0]
+        self._assert_armor(db_armor, armor)
+
+    def test_get_armor_by_weight_and_type(self):
+        # given
+        armor = self._build_item()
+        self.repository.save_armor(armor)
+
+        # when
+        self.assertEqual(self.repository.get_armor(
+            weight=ArmorWeight.Medium, type=ArmorType.Gloves), None)
+        db_armor = self.repository.get_armor(
+            weight=ArmorWeight.Medium, type=ArmorType.Boots)
+
+        # then
+        self._assert_armor(db_armor, armor)
+
+    def test_delete_armors(self):
+        # given
+        armor = self._build_item()
+        self.repository.save_armor(armor)
+
+        # when
+        self.repository.delete_armor()
+        db_armor = self.repository.get_armor()
+
+        # then
+        self.assertListEqual(db_armor, [])
+
+    def test_delete_armor_by_weight(self):
+        # given
+        armor = self._build_item()
+        self.repository.save_armor(armor)
+
+        # when
+        self.repository.delete_armor(weight=ArmorWeight.Medium)
+        db_armor = self.repository.get_armor()
+
+        # then
+        self.assertListEqual(db_armor, [])
+
+    def test_delete_armor_by_type(self):
+        # given
+        armor = self._build_item()
+        self.repository.save_armor(armor)
+
+        # when
+        self.repository.delete_armor(type=ArmorType.Boots)
+        db_armor = self.repository.get_armor()
+
+        # then
+        self.assertListEqual(db_armor, [])
+
+    def test_delete_armor_by_weight_and_type(self):
+        # given
+        armor = self._build_item()
+        self.repository.save_armor(armor)
+
+        # when
+        self.repository.delete_armor(
+            weight=ArmorWeight.Medium, type=ArmorType.Boots)
+        db_armor = self.repository.get_armor()
+
+        # then
+        self.assertListEqual(db_armor, [])

@@ -44,6 +44,19 @@ class ItemDetail(persistent.Persistent):
         return InfixUpgrade(id, attributes, buff)
 
 
+class Item(persistent.Persistent):
+
+    def __init__(self, id: int, chat_link: str, name: str, icon: str, description: str, type: ItemType, rarity: ItemRarity, details: ItemDetail | None) -> None:
+        self.id = id
+        self.name = name
+        self.description = description
+        self.icon = icon
+        self.chat_link = chat_link
+        self.type = type
+        self.rarity = rarity
+        self.details = details
+
+
 class StatsSelectableItem(ItemDetail):
 
     def __init__(self, attribute_adjustment: float, infix_upgrade: InfixUpgrade | None) -> None:
@@ -141,16 +154,3 @@ DETAILS_DICT = {
 def get_item_details(item_type: ItemType, **kwargs) -> ItemDetail | None:
     constructor = DETAILS_DICT[item_type]
     return constructor(kwargs)
-
-
-class Item(persistent.Persistent):
-
-    def __init__(self, id: int, chat_link: str, name: str, icon: str, description: str, type: ItemType, rarity: ItemRarity, **kwargs) -> None:
-        self.id = id
-        self.name = name
-        self.description = description
-        self.icon = icon
-        self.chat_link = chat_link
-        self.type = type
-        self.rarity = rarity
-        self.details = get_item_details(type, kwargs)

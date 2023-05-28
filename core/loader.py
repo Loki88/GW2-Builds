@@ -3,6 +3,7 @@
 from joblib import Parallel, delayed
 from gw2api import GuildWars2Client
 from model.api import Profession, Specialization, Trait, Skill, ItemType, ItemRarity, Item, ItemStats, filter_item_data
+from utils import flatten, no_duplicates, partition
 
 HEAVY_PROFESSIONS = ['Guardian', 'Revenant', 'Warrior']
 MEDIUM_PROFESSIONS = ['Engineer', 'Ranger', 'Thief']
@@ -45,7 +46,7 @@ class Loader():
 
     def load_specializations(self, professions: list[Profession]) -> list[Specialization]:
         if (professions is not None):
-            return self._load_specializations(self._no_duplicates(self._flatten([x.specializations for x in professions])))
+            return self._load_specializations(no_duplicates(flatten([x.specializations for x in professions])))
         else:
             return []
 
@@ -59,7 +60,7 @@ class Loader():
 
     def load_traits(self, specializations: list[Specialization]):
         if (specializations is not None):
-            return self._load_traits(self._flatten([[*x.minor_traits, *x.major_traits] for x in specializations]))
+            return self._load_traits(flatten([[*x.minor_traits, *x.major_traits] for x in specializations]))
         else:
             return []
 
@@ -73,7 +74,7 @@ class Loader():
     def load_skills(self, skills: list[int]) -> list[Skill]:
         if (skills is not None):
             api_skills = [Skill(x) for x in self.client.skills.get(
-                ids=self._no_duplicates(skills))]
+                ids=no_duplicates(skills))]
             return api_skills
         else:
             return []
@@ -84,8 +85,8 @@ class Loader():
             items_id = [int(x) for x in self.client.items.get()]
 
         items = Parallel(n_jobs=PARALLEL_JOBS)(delayed(self._load_items_by_ids)(
-            chunk, items_filter) for chunk in list(self._partition(items_id, PARTITION_SIZE)))
-        return self._flatten(items)
+            chunk, items_filter) for chunk in list(partition(items_id, PARTITION_SIZE)))
+        return flatten(items)
 
     def _load_items_by_ids(self, items_ids: list[int], items_filter: dict[ItemType, ItemRarity] = None) -> list[Item]:
         return [Item(x) for x in self._filter_items(self.client.items.get(ids=items_ids), items_filter)]
@@ -98,13 +99,3 @@ class Loader():
     def load_item_stats(self) -> list[ItemStats]:
         item_stats_ids = self.client.itemstats.get()
         return [ItemStats(x) for x in self.client.itemstats.get(ids=item_stats_ids)]
-
-    def _flatten(self, list_of_lists: list) -> list:
-        return [item for sublist in list_of_lists for item in sublist]
-
-    def _no_duplicates(self, list_with_duplicates: list) -> list:
-        return list(dict.fromkeys(list_with_duplicates))
-
-    def _partition(self, lst: list, chunks: int):
-        for i in range(0, len(lst), chunks):
-            yield lst[i:i + chunks]
