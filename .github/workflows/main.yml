@@ -43,7 +43,8 @@ jobs:
       - name: Download Coverage
         uses: actions/download-artifact@v3
         with:
-          name: .coverage
+          name: code-coverage
+          path: .coverage
 
       - name: Run tests & check coverage
         run: |
@@ -54,4 +55,5 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v3
         with:
-          name: .coverage
+          name: code-coverage
+          path: .coverage
