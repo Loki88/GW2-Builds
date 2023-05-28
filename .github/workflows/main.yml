@@ -29,10 +29,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set up Python 3.9
+      - name: Set up Python
         uses: actions/setup-python@v1
         with:
-          python-version: 3.9
+          python-version: 3.10
 
       - name: Install pipenv
         run: pip install pipenv
@@ -47,7 +47,7 @@ jobs:
           name: code-coverage
           path: .coverage
 
-      - name: Run tests & check coverage
+      - name: Run Tests & Check Coverage
         run: |
           pipenv run test
           pipenv run coverage
