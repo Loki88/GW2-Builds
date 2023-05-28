@@ -18,5 +18,5 @@ python_version = "3"
 
 [scripts]
 test = "coverage run -m unittest discover"
-coverage = "coverage report --skip-covered --omit 'tests/*'"
+coverage = "coverage report -m --skip-covered --omit 'tests/*'"
 coverage-json = "coverage json --omit 'tests/*' --pretty-print -o coverage.json"
