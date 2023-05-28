@@ -161,9 +161,7 @@ cython_debug/
 
 
 # Lock
-.lock
-Pipfile.lock
-
+*.lock
 
 # VSCode
 .vscode

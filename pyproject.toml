@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "gw2-builds"
+version = "0.1.0"
+description = ""
+authors = ["Lorenzo Di Giuseppe <laplacetransformed@gmail.com>"]
+maintainers = ["Lorenzo Di Giuseppe <laplacetransformed@gmail.com>"]
+repository = "https://github.com/Loki88/GW2-Builds"
+license = "GPL-2.0-only"
+readme = "README.md"
+packages = [
+    { include  = "api" },
+    { include  = "core" },
+    { include  = "data" },
+    { include  = "model" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+guildwars2-api-client = "0.5.9"
+click = "8.1.3"
+requests = "2.31.0"
+joblib = "1.2.0"
+
+
+[tool.poetry.group.dev.dependencies]
+coverage = "7.2.6"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]

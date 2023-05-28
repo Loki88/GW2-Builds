@@ -1,15 +1,15 @@
 version: 2
 updates:
-  - package-ecosystem: pipenv
+  - package-ecosystem: pip
     directory: "/"
     schedule:
       interval: "weekly"
       day: "sunday"
-      time: "12:00"
+      time: "14:00"
       timezone: "Europe/Rome"
     commit-message:
-      prefix: "pipenv"
-      prefix-development: "pipenv dev"
+      prefix: "pip"
+      prefix-development: "pip dev"
       include: "scope"
 
   - package-ecosystem: "github-actions"
@@ -17,7 +17,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "sunday"
-      time: "12:00"
+      time: "14:00"
       timezone: "Europe/Rome"
     commit-message:
       prefix: "GHA"
