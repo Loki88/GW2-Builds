@@ -40,7 +40,18 @@ jobs:
       - name: Install dependencies
         run: pipenv install -d
 
+      - name: Download Coverage
+        uses: actions/download-artifact@v3
+        with:
+          name: .coverage
+
       - name: Run tests & check coverage
         run: |
           pipenv run test
           pipenv run coverage
+
+      - name: Upload Coverage
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v3
+        with:
+          name: .coverage
