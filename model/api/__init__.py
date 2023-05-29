@@ -9,3 +9,4 @@ from .enums import *
 from .trait import *
 from .item import *
 from .item_stats import *
+from .pet import *

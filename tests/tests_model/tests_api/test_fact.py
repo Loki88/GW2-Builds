@@ -5,21 +5,22 @@ import unittest
 from model.api.fact import *
 from model.api.enums import FactType, Attribute, Condition, Boon, ControlEffect
 
+
 class TestFact(unittest.TestCase):
-    
+
     def test_attribute_adjust(self):
         # given
         data = {
             'text': 'test text',
-            'icon': 'test icon', 
-            'type': FactType.AttributeAdjust.name, 
-            'target': Attribute.CritDamage.name, 
+            'icon': 'test icon',
+            'type': FactType.AttributeAdjust.name,
+            'target': Attribute.CritDamage.name,
             'value': 140
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, AttributeAdjust))
@@ -28,20 +29,20 @@ class TestFact(unittest.TestCase):
         self.assertEqual(fact.type, FactType.AttributeAdjust)
         self.assertEqual(fact.target, Attribute.CritDamage)
         self.assertEqual(fact.value, 140)
-    
+
     def test_buff_condition(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
-            'type': FactType.Buff.name, 
-            'duration': 5, 
+            'text': 'test text',
+            'icon': 'test icon',
+            'type': FactType.Buff.name,
+            'duration': 5,
             'status': Condition.Bleeding.name
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, Buff))
@@ -53,16 +54,16 @@ class TestFact(unittest.TestCase):
     def test_buff_boon(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
-            'type': FactType.Buff.name, 
-            'duration': 5, 
+            'text': 'test text',
+            'icon': 'test icon',
+            'type': FactType.Buff.name,
+            'duration': 5,
             'status': Boon.Alacrity.name
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, Buff))
@@ -70,20 +71,20 @@ class TestFact(unittest.TestCase):
         self.assertEqual(fact.icon, 'test icon')
         self.assertEqual(fact.type, FactType.Buff)
         self.assertEqual(fact.status, Boon.Alacrity)
-        
+
     def test_buff_control_effect(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
-            'type': FactType.Buff.name, 
-            'duration': 5, 
+            'text': 'test text',
+            'icon': 'test icon',
+            'type': FactType.Buff.name,
+            'duration': 5,
             'status': ControlEffect.Stun.name
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, Buff))
@@ -95,17 +96,17 @@ class TestFact(unittest.TestCase):
     def test_buff_conversion(self):
         # given
         data = {
-            'text': 'test text', 
+            'text': 'test text',
             'icon': 'test icon',
-            'type': FactType.BuffConversion.name, 
+            'type': FactType.BuffConversion.name,
             'target': Attribute.CritDamage.name,
             'source': Attribute.BoonDuration.name,
             'percent': 15.7
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, BuffConversion))
@@ -119,15 +120,15 @@ class TestFact(unittest.TestCase):
     def test_combo_field(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
-            'type': FactType.ComboField.name, 
+            'text': 'test text',
+            'icon': 'test icon',
+            'type': FactType.ComboField.name,
             'field_type': FieldType.Dark.name
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, ComboField))
@@ -140,15 +141,15 @@ class TestFact(unittest.TestCase):
         # given
         data = {
             'text': 'test text',
-            'icon': 'test icon', 
-            'type': FactType.ComboFinisher.name, 
-            'finisher_type': FinisherType.Blast.name, 
+            'icon': 'test icon',
+            'type': FactType.ComboFinisher.name,
+            'finisher_type': FinisherType.Blast.name,
             'percent': 63.2
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, ComboFinisher))
@@ -161,15 +162,15 @@ class TestFact(unittest.TestCase):
     def test_damage(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
-            'type': FactType.Damage.name, 
+            'text': 'test text',
+            'icon': 'test icon',
+            'type': FactType.Damage.name,
             'hit_count': 5
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, Damage))
@@ -181,15 +182,15 @@ class TestFact(unittest.TestCase):
     def test_distance(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
+            'text': 'test text',
+            'icon': 'test icon',
             'type': FactType.Distance.name,
             'distance': 300
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, Distance))
@@ -201,14 +202,14 @@ class TestFact(unittest.TestCase):
     def test_no_data(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
+            'text': 'test text',
+            'icon': 'test icon',
             'type': FactType.NoData.name
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, NoData))
@@ -219,15 +220,15 @@ class TestFact(unittest.TestCase):
     def test_number(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
-            'type': FactType.Number.name, 
+            'text': 'test text',
+            'icon': 'test icon',
+            'type': FactType.Number.name,
             'value': 23
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, Number))
@@ -239,15 +240,15 @@ class TestFact(unittest.TestCase):
     def test_percent(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
-            'type': FactType.Percent.name, 
+            'text': 'test text',
+            'icon': 'test icon',
+            'type': FactType.Percent.name,
             'percent': 23.5
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, Percent))
@@ -259,11 +260,11 @@ class TestFact(unittest.TestCase):
     def test_prefixed_buff(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
-            'type': FactType.PrefixedBuff.name, 
-            'duration': 5, 
-            'status': Condition.Bleeding.name, 
+            'text': 'test text',
+            'icon': 'test icon',
+            'type': FactType.PrefixedBuff.name,
+            'duration': 5,
+            'status': Condition.Bleeding.name,
             'prefix': {
                 'text': 'prefix text',
                 'icon': 'prefix icon',
@@ -271,10 +272,10 @@ class TestFact(unittest.TestCase):
                 'description': 'prefix description'
             }
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, PrefixedBuff))
@@ -292,15 +293,15 @@ class TestFact(unittest.TestCase):
     def test_radius(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
+            'text': 'test text',
+            'icon': 'test icon',
             'type': FactType.Radius.name,
             'distance': 300
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, Radius))
@@ -312,15 +313,15 @@ class TestFact(unittest.TestCase):
     def test_range(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
-            'type': FactType.Range.name, 
+            'text': 'test text',
+            'icon': 'test icon',
+            'type': FactType.Range.name,
             'value': 23
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, Range))
@@ -332,15 +333,15 @@ class TestFact(unittest.TestCase):
     def test_recharge(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
-            'type': FactType.Recharge.name, 
+            'text': 'test text',
+            'icon': 'test icon',
+            'type': FactType.Recharge.name,
             'value': 23
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, Recharge))
@@ -352,15 +353,15 @@ class TestFact(unittest.TestCase):
     def test_time(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
-            'type': FactType.Time.name, 
+            'text': 'test text',
+            'icon': 'test icon',
+            'type': FactType.Time.name,
             'duration': 3.4
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, Time))
@@ -372,15 +373,15 @@ class TestFact(unittest.TestCase):
     def test_unblockable(self):
         # given
         data = {
-            'text': 'test text', 
-            'icon': 'test icon', 
-            'type': FactType.Unblockable.name, 
+            'text': 'test text',
+            'icon': 'test icon',
+            'type': FactType.Unblockable.name,
             'value': True
         }
-        
+
         # when
         fact = get_fact(data)
-        
+
         # then
         self.assertIsNotNone(fact)
         self.assertTrue(isinstance(fact, Unblockable))
