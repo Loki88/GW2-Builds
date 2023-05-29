@@ -8,7 +8,7 @@ from unittest.mock import Mock
 from config import ConfigProvider
 from data import *
 from model.dao import *
-from model import ItemType, DamageType, WeaponType
+from model import ItemType, DamageType, WeaponType, ItemRarity
 
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))

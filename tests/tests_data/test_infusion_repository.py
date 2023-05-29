@@ -8,7 +8,8 @@ from unittest.mock import Mock
 from config import ConfigProvider
 from data import *
 from model.dao import *
-from model import ItemType, InfusionFlag, UpgradeComponentFlags, UpgradeComponentType, UpgradeComponentDetail, InfixBuff
+from model import ItemType, ItemRarity, InfusionFlag, UpgradeComponentFlags,\
+    UpgradeComponentType, UpgradeComponentDetail, InfixBuff
 
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
