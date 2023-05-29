@@ -13,3 +13,5 @@ from .stats_repository import *
 from .trinkets_repository import *
 from .utilities_repository import *
 from .weapons_repository import *
+from .infusion_repository import *
+from .trait_repository import *

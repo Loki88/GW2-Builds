@@ -8,3 +8,4 @@ from .skill import *
 from .item import *
 from .fact import *
 from .item_stats import *
+from .trait import *

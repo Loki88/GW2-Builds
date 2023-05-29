@@ -23,8 +23,8 @@ class InfusionRepository(metaclass=Singleton):
             details: UpgradeComponentDetail = infusion.details
             if (details.type == UpgradeComponentType.Default and InfusionFlag.Infusion in details.infusion_upgrade_flags):
                 with Db().open_transaction() as connection:
-                    connection.root.weapons[infusion.id] = infusion
-                    return connection.root.weapons[infusion.id]
+                    connection.root.infusions[infusion.id] = infusion
+                    return connection.root.infusions[infusion.id]
         raise ValueError(infusion)
 
     def get_infusion(self, id: int = None) -> list[Item] | Item:
@@ -32,9 +32,9 @@ class InfusionRepository(metaclass=Singleton):
         try:
             conn = Db().open_connection()
             if (id is None):
-                return list(conn.root.weapons.values())
+                return list(conn.root.infusions.values())
             else:
-                return conn.root.weapons.get(id, None)
+                return conn.root.infusions.get(id, None)
         finally:
             if conn is not None:
                 conn.close()
@@ -42,6 +42,6 @@ class InfusionRepository(metaclass=Singleton):
     def delete_infusion(self, id: int = None) -> None:
         with Db().open_transaction() as connection:
             if (id is None):
-                connection.root.weapons.clear()
+                connection.root.infusions.clear()
             else:
-                connection.root.weapons.pop(id, None)
+                connection.root.infusions.pop(id, None)

@@ -30,9 +30,6 @@ class InfixBuff(persistent.Persistent):
 
 
 class InfixUpgrade:
-    id: int
-    attributes: list[InfixAttributeBonus]
-    buff: InfixBuff
 
     def __init__(self, id: int, attributes: list[InfixAttributeBonus], buff: InfixBuff) -> None:
         self.id = id
