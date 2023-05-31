@@ -19,10 +19,16 @@ class ProfessionsRepository(metaclass=Singleton):
             except:
                 connection.root.professions = BTrees.OOBTree.BTree()
 
-    def save_profession(self, profession: Profession) -> Profession:
+    def _save_single_profession(self, profession: Profession, connection) -> Profession:
+        connection.root.professions[profession.id] = profession
+        return connection.root.professions[profession.id]
+
+    def save_profession(self, profession: Profession | list[Profession]) -> Profession | list[Profession]:
         with Db().open_transaction() as connection:
-            connection.root.professions[profession.id] = profession
-            return connection.root.professions[profession.id]
+            if (isinstance(profession, list)):
+                return [self._save_single_profession(profession=p, connection=connection) for p in profession]
+            else:
+                return self._save_single_profession(profession=profession, connection=connection)
 
     def get_professions(self) -> list[Profession]:
         conn = None

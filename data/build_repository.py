@@ -9,6 +9,14 @@ from .db import Db
 
 class BuildRepository(metaclass=Singleton):
 
+    def __init__(self) -> None:
+        with Db().open_transaction() as connection:
+            try:
+                if connection.root.build is not None:
+                    pass
+            except:
+                connection.root.build = None
+
     def save_build(self, build: Build) -> Build:
         with Db().open_transaction() as connection:
             connection.root.build = build

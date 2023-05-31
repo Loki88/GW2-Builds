@@ -18,17 +18,24 @@ class ArmorRepository(metaclass=Singleton):
             except:
                 connection.root.armor = persistent.mapping.PersistentMapping()
 
-    def save_armor(self, armor: Item) -> Item:
+    def _save_single(self, connection, armor: Item):
         if (armor.type == ItemType.Armor):
             details: ArmorDetail = armor.details
-            with Db().open_transaction() as connection:
-                if (details.weight_class.value not in connection.root.armor):
-                    connection.root.armor[details.weight_class.value] = persistent.mapping.PersistentMapping(
-                    )
-                connection.root.armor[details.weight_class.value][details.type.value] = armor
-                return connection.root.armor[details.weight_class.value][details.type.value]
+            if (details.weight_class.value not in connection.root.armor):
+                connection.root.armor[details.weight_class.value] = persistent.mapping.PersistentMapping(
+                )
+            connection.root.armor[details.weight_class.value][details.type.value] = armor
+            return connection.root.armor[details.weight_class.value][details.type.value]
         else:
+            connection.rollback()
             raise ValueError(armor)
+
+    def save_armor(self, armor: Item | list[Item]) -> list[Item]:
+        with Db().open_transaction() as connection:
+            if (isinstance(armor, list)):
+                return [self._save_single(connection, x) for x in armor]
+            else:
+                return self._save_single(connection, armor)
 
     def _get_armors(self, conn) -> list[Item]:
         return flatten([x.values() for x in conn.root.armor.values()])

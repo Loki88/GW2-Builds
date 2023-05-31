@@ -17,10 +17,16 @@ class SpecializationsRepository(metaclass=Singleton):
             except:
                 connection.root.specializations = BTrees.OOBTree.BTree()
 
-    def save_specialization(self, specialization: Specialization):
+    def _save_single_specialization(self, specialization: Specialization, connection) -> Specialization:
+        connection.root.specializations[specialization.id] = specialization
+        return connection.root.specializations[specialization.id]
+
+    def save_specialization(self, specialization: Specialization | list[Specialization]):
         with Db().open_transaction() as connection:
-            connection.root.specializations[specialization.id] = specialization
-            return connection.root.specializations[specialization.id]
+            if (isinstance(specialization, list)):
+                return [self._save_single_specialization(specialization=s, connection=connection) for s in specialization]
+            else:
+                return self._save_single_specialization(specialization=specialization, connection=connection)
 
     def get_specializations(self) -> list[Specialization]:
         conn = None

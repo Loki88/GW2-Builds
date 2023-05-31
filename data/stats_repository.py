@@ -17,10 +17,16 @@ class StatsRepository(metaclass=Singleton):
             except:
                 connection.root.stats = BTrees.OOBTree.BTree()
 
-    def save_stat(self, stat: ItemStats):
+    def _save_single(self, connection, stat: ItemStats) -> ItemStats:
+        connection.root.stats[stat.id] = stat
+        return connection.root.stats[stat.id]
+
+    def save_stat(self, stat: ItemStats | list[ItemStats]) -> list[ItemStats]:
         with Db().open_transaction() as connection:
-            connection.root.stats[stat.id] = stat
-            return connection.root.stats[stat.id]
+            if (isinstance(stat, list)):
+                return [self._save_single(connection, x) for x in stat]
+            else:
+                return self._save_single(connection, stat)
 
     def get_stats(self) -> list[ItemStats]:
         conn = None

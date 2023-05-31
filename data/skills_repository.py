@@ -17,10 +17,16 @@ class SkillsRepository(metaclass=Singleton):
             except:
                 connection.root.skills = BTrees.OOBTree.BTree()
 
-    def save_skill(self, skill: Skill):
+    def _save_single(self, connection, skill: Skill):
+        connection.root.skills[skill.id] = skill
+        return connection.root.skills[skill.id]
+
+    def save_skill(self, skill: Skill | list[Skill]) -> Skill | list[Skill]:
         with Db().open_transaction() as connection:
-            connection.root.skills[skill.id] = skill
-            return connection.root.skills[skill.id]
+            if (isinstance(skill, list)):
+                return [self._save_single(x) for x in skill]
+            else:
+                return self._save_single(skill)
 
     def get_skills(self) -> list[Skill]:
         conn = None
