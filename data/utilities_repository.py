@@ -2,7 +2,7 @@
 
 import BTrees
 
-from model.dao import Item, ConsumableDetail
+from model import Item, ConsumableDetail
 from model import ItemType, ConsumableType
 from utils import Singleton
 from .db import Db

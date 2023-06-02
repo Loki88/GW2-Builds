@@ -1,77 +1,37 @@
 #!/usr/bin/env python
 
-from .utils import *
-from .fact import get_fact, Fact
-from .enums import SkillType, Slot, SkillCategory, SkillFlag
+from typing import Callable
+from .api_decorator import ApiDecorator
+from .fact import get_fact
+from model.enums import SkillType, Slot, SkillCategory, SkillFlag
 
 
-class Skill:
-    id: int
-    name: str
-    description: str
-    icon: str
-    chat_link: str
-    type: SkillType | None
-    weapon_type: str | None
-    facts: list[Fact]
-    traited_facts: list[Fact]
-    professions: list[str]
-    slot: Slot | None
-    categories: list[SkillCategory]
-    attunement: str | None
-    cost: float | None
-    dual_wield: str | None
-    flip_skill: int | None
-    initiative: float | None
-    next_chain: int | None
-    prev_chain: int | None
-    transform_skills: list[int]
-    bundle_skills: list[int]
-    toolbelt_skill: list[int]
-    flags: list[SkillFlag]
+class Skill(ApiDecorator):
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.id = get_or_none('id', data)
-            self.name = get_or_none('name', data)
-            self.description = get_or_none('description', data)
-            self.icon = get_or_none('icon', data)
-            self.chat_link = get_or_none('chat_link', data)
-            self.type = self._get_skill_type(get_or_none('type', data))
-            self.weapon_type = get_or_none('weapon_type', data)
-            self.facts = [get_fact(x)
-                          for x in get_list_or_empty('facts', data)]
-            self.traited_facts = [
-                get_fact(x) for x in get_list_or_empty('traited_facts', data)]
-            self.professions = get_list_or_empty('professions', data)
-            self.slot = self._get_slot(get_or_none('slot', data))
-            self.categories = [self._get_category(
-                x) for x in get_list_or_empty('categories')]
-            self.attunement = get_or_none('attunement', data)
-            self.cost = get_or_none('cost', data)
-            self.dual_wield = get_or_none('dual_wield', data)
-            self.flip_skill = get_or_none('flip_skill', data)
-            self.initiative = get_or_none('initiative', data)
-            self.next_chain = get_or_none('next_chain', data)
-            self.prev_chain = get_or_none('prev_chain', data)
-            self.transform_skills = [
-                int(x) for x in get_list_or_empty('transform_skills', data)]
-            self.bundle_skills = [
-                int(x) for x in get_list_or_empty('bundle_skills', data)]
-            self.toolbelt_skill = [
-                int(x) for x in get_list_or_empty('toolbelt_skill', data)]
-            self.flags = [SkillFlag[x]
-                          for x in get_list_or_empty('flags', data)]
-
-    def _get_skill_type(self, value: str | None):
-        if (value is not None):
-            return SkillType[value]
-        return None
-
-    def _get_slot(self, value: str | None):
-        if (value is not None):
-            return Slot[value]
-        return None
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['id', 'name', 'description', 'icon', 'chat_link', 'type',
+                                       'weapon_type', 'slot', 'attunement', 'cost', 'dual_wield',
+                                       'flip_skill', 'initiative', 'next_chain', 'prev_chain'],
+                         list_attributes + ['facts', 'traited_facts', 'professions', 'categories',
+                                            'transform_skills', 'bundle_skills', 'toolbelt_skill', 'flags'],
+                         dict_attributes,
+                         {
+                             'type': lambda x: SkillType[x] if x is not None else None,
+                             'slot': lambda x: Slot[x] if x is not None else None,
+                             'facts': lambda x: [get_fact(f) for f in x],
+                             'traited_facts': lambda x: [get_fact(f) for f in x],
+                             'categories': lambda x: [self._get_category(c) for c in x],
+                             'transform_skills': lambda x: [int(s) for s in x],
+                             'bundle_skills': lambda x: [int(s) for s in x],
+                             'toolbelt_skill': lambda x: [int(s) for s in x],
+                             'flags': lambda x: [SkillFlag[f] for f in x],
+                         }
+                         | converters)
 
     def _get_category(self, value: str) -> SkillCategory:
         if value in SkillCategory._member_names_:

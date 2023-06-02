@@ -2,7 +2,8 @@
 
 from joblib import Parallel, delayed
 from gw2api import GuildWars2Client
-from model.api import Profession, Specialization, Trait, Skill, ItemType, ItemRarity, Item, ItemStats, filter_item_data
+from model import Profession, Specialization, Trait, Skill, ItemType, ItemRarity, Item, ItemStats
+from model.api.item import filter_item_data
 from utils import flatten, no_duplicates, partition
 
 HEAVY_PROFESSIONS = ['Guardian', 'Revenant', 'Warrior']

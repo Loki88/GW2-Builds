@@ -2,7 +2,7 @@
 
 import BTrees
 
-from model.dao import Skill
+from model import Skill
 from utils import Singleton
 from .db import Db
 

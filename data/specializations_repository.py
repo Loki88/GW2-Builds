@@ -2,7 +2,7 @@
 
 import BTrees
 
-from model.dao import Specialization
+from model import Specialization
 from utils import Singleton
 from .db import Db
 

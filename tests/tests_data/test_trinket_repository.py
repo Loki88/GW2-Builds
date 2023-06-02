@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 from config import ConfigProvider
 from data import *
-from model.dao import *
+from model import *
 from model import ItemType, ItemRarity, TrinketType
 
 
@@ -41,9 +41,22 @@ class TestTrinketRepository(unittest.TestCase):
         shutil.rmtree(test_db_dir)
 
     def _build_item(self) -> Item:
-        detail = TrinketDetail(type=TrinketType.Accessory,
-                               attribute_adjustment=12.4, infix_upgrade=None)
-        return Item(id=1, chat_link='[abcde1]', name='Tet', icon='test', description='test', type=ItemType.Trinket, rarity=ItemRarity.Legendary, details=detail)
+        data = {
+            'id': 1,
+            'chat_link': '[abcde1]',
+            'name': 'Tet',
+            'icon': 'test',
+            'description': 'test',
+            'type': ItemType.Trinket.name,
+            'rarity': ItemRarity.Legendary.name,
+            'details': {
+                'type': TrinketType.Accessory.name,
+                'attribute_adjustment': 12.4,
+                'infix_upgrade': None
+            }
+        }
+
+        return Item(data)
 
     def _assert_trinket(self, db_trinket: Item, trinket: Item):
         self.assertIsNotNone(db_trinket)

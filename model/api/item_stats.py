@@ -1,30 +1,40 @@
 #!/usr/bin/env python
 
+from typing import Callable
+from .api_decorator import ApiDecorator
 from .utils import get_or_none, get_list_or_empty
-from .enums import Attribute
+from model.enums import Attribute
 
 
-class AttributeBonus:
-    attribute: Attribute
-    multiplier: float
-    value: int
+class AttributeBonus(ApiDecorator):
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.attribute = Attribute[get_or_none('attribute', data)]
-            self.multiplier = get_or_none('multiplier', data)
-            self.value = get_or_none('value', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['attribute', 'multiplier', 'value'],
+                         list_attributes,
+                         dict_attributes,
+                         {
+                             'attribute': lambda x: Attribute[x] if x is not None else None
+                         }
+                         | converters)
 
 
-class ItemStats:
-    id: int
-    name: str
-    attributes: list[AttributeBonus]
+class ItemStats(ApiDecorator):
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.id = get_or_none('id', data)
-            self.name = get_or_none('name', data)
-
-            self.attributes = [AttributeBonus(
-                x) for x in get_list_or_empty('attributes', data)]
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['id', 'name'],
+                         list_attributes + ['attributes'],
+                         dict_attributes,
+                         {
+                             'attributes': lambda x: [AttributeBonus(a) for a in x]
+                         }
+                         | converters)

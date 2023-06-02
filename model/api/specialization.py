@@ -1,28 +1,23 @@
 #!/usr/bin/env python
 
-from .utils import *
+from typing import Callable
+from .api_decorator import ApiDecorator
 
 
-class Specialization():
+class Specialization(ApiDecorator):
 
-    id: int
-    name: str
-    profession: str
-    elite: bool
-    icon: str
-    background: str
-    minor_traits: list[int] = []
-    major_traits: list[int] = []
-
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.id = get_or_none('id', data)
-            self.name = get_or_none('name', data)
-            self.profession = get_or_none('profession', data)
-            self.elite = get_or_none('elite', data)
-            self.icon = get_or_none('icon', data)
-            self.background = get_or_none('background', data)
-            self.minor_traits = [
-                int(x) for x in get_list_or_empty('minor_traits', data)]
-            self.major_traits = [
-                int(x) for x in get_list_or_empty('major_traits', data)]
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['id', 'name', 'profession',
+                                       'elite', 'icon', 'background'],
+                         list_attributes + ['minor_traits', 'major_traits'],
+                         dict_attributes,
+                         {
+                             'minor_traits': lambda x: [int(t) for t in x],
+                             'major_traits': lambda x: [int(t) for t in x],
+                         }
+                         | converters)

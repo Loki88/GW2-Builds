@@ -1,27 +1,38 @@
 #!/usr/bin/env python
 
-from .utils import *
+from typing import Callable
+from .api_decorator import ApiDecorator
 
 
-class WeaponSkill:
-    id: int
-    slot: str
+class WeaponSkill(ApiDecorator):
 
-    def __init__(self, data: dict[str] = None) -> None:
-        self.id = int(get_or_none('id', data))
-        self.slot = get_or_none('slot', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['id', 'slot'],
+                         list_attributes,
+                         dict_attributes,
+                         converters)
 
 
-class Weapon:
-    name: str
-    specialization: int  # Weapons supported by all specializatiions will have None
-    skills: list[WeaponSkill]
+class Weapon(ApiDecorator):
 
-    def __init__(self, name: str, data: dict[str] = None) -> None:
-        self.name = name
-        self.specialization = get_or_none('specialization', data)
-        self.skills = [WeaponSkill(x)
-                       for x in get_list_or_empty('skills', data)]
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['name', 'specialization'],
+                         list_attributes + ['skills'],
+                         dict_attributes,
+                         {
+                             'skills': lambda x: [WeaponSkill(s) for s in x]
+                         }
+                         | converters)
 
     def __str__(self) -> str:
         return f'Weapon ({self.name}, spec: {self.specialization})'

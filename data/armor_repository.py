@@ -3,8 +3,7 @@
 import BTrees
 import persistent
 
-from model.dao import Item, ArmorDetail
-from model import ItemType, ArmorWeight, ArmorType
+from model import Item, ArmorDetail, ItemType, ArmorWeight, ArmorType
 from utils import Singleton, flatten
 from .db import Db
 

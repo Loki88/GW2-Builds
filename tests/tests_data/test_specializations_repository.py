@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 from config import ConfigProvider
 from data import *
-from model.dao import *
+from model import *
 
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -39,34 +39,41 @@ class TestSpecializationsRepository(unittest.TestCase):
         del self.data
         shutil.rmtree(test_db_dir)
 
+    def _build(self) -> Item:
+        data = {
+            'id': 1,
+            'name': 'Test',
+            'elite': True,
+            'profession': '1',
+            'icon': 'test',
+            'background': 'test',
+            'minor_traits': [3, 4],
+            'major_traits': [1, 2]
+        }
+
+        return Specialization(data)
+
+    def _assert(self, db_specialization: Specialization, specialization: Specialization):
+        self.assertIsNotNone(db_specialization)
+        self.assertEqual(specialization.id, db_specialization.id)
+        self.assertEqual(specialization.name, db_specialization.name)
+        self.assertEqual(specialization.elite, db_specialization.elite)
+        self.assertListEqual(specialization.major_traits, [1, 2])
+        self.assertListEqual(specialization.minor_traits, [3, 4])
+
     def test_save_specialization(self):
         # given
-        specialization = Specialization(
-            id=1, name='Test', elite=True, profession=1, icon='test', background='test')
-        specialization.add_major_trait(1)
-        specialization.add_major_trait(2)
-        specialization.add_minor_trait(3)
-        specialization.add_minor_trait(4)
+        specialization = self._build()
 
         # when
         db_specialization = self.repository.save_specialization(specialization)
 
         # then
-        self.assertIsNotNone(db_specialization)
-        self.assertEqual(specialization.id, db_specialization.id)
-        self.assertEqual(specialization.name, db_specialization.name)
-        self.assertEqual(specialization.elite, db_specialization.elite)
-        self.assertListEqual(specialization.major_traits.data, [1, 2])
-        self.assertListEqual(specialization.minor_traits.data, [3, 4])
+        self._assert(db_specialization, specialization)
 
     def test_get_specializations(self):
         # given
-        specialization = Specialization(
-            id=1, name='Test', elite=True, profession=1, icon='test', background='test')
-        specialization.add_major_trait(1)
-        specialization.add_major_trait(2)
-        specialization.add_minor_trait(3)
-        specialization.add_minor_trait(4)
+        specialization = self._build()
 
         self.repository.save_specialization(specialization)
 
@@ -78,21 +85,11 @@ class TestSpecializationsRepository(unittest.TestCase):
         self.assertEqual(len(db_specializations), 1)
 
         db_specialization = db_specializations[0]
-        self.assertIsNotNone(db_specialization)
-        self.assertEqual(specialization.id, db_specialization.id)
-        self.assertEqual(specialization.name, db_specialization.name)
-        self.assertEqual(specialization.elite, db_specialization.elite)
-        self.assertListEqual(specialization.major_traits.data, [1, 2])
-        self.assertListEqual(specialization.minor_traits.data, [3, 4])
+        self._assert(db_specialization, specialization)
 
     def test_get_specialization_by_id(self):
         # given
-        specialization = Specialization(
-            id=1, name='Test', elite=True, profession=1, icon='test', background='test')
-        specialization.add_major_trait(1)
-        specialization.add_major_trait(2)
-        specialization.add_minor_trait(3)
-        specialization.add_minor_trait(4)
+        specialization = self._build()
 
         self.repository.save_specialization(specialization)
 
@@ -101,49 +98,30 @@ class TestSpecializationsRepository(unittest.TestCase):
         db_specialization = self.repository.get_specialization_by_id(1)
 
         # then
-        self.assertIsNotNone(db_specialization)
-        self.assertEqual(specialization.id, db_specialization.id)
-        self.assertEqual(specialization.name, db_specialization.name)
-        self.assertEqual(specialization.elite, db_specialization.elite)
-        self.assertListEqual(specialization.major_traits.data, [1, 2])
-        self.assertListEqual(specialization.minor_traits.data, [3, 4])
+        self._assert(db_specialization, specialization)
 
     def test_get_specialization_by_name(self):
         # given
-        specialization = Specialization(
-            id=1, name='Test', elite=True, profession=1, icon='test', background='test')
-        specialization.add_major_trait(1)
-        specialization.add_major_trait(2)
-        specialization.add_minor_trait(3)
-        specialization.add_minor_trait(4)
+        specialization = self._build()
 
         self.repository.save_specialization(specialization)
 
         # when
         self.assertListEqual(
-            self.repository.get_specialization_by_name('abc'), [])
-        db_specializations = self.repository.get_specialization_by_name('Test')
+            self.repository.get_specialization_by_name(specialization.name + 'abc'), [])
+        db_specializations = self.repository.get_specialization_by_name(
+            specialization.name)
 
         # then
         self.assertIsNotNone(db_specializations)
         self.assertEqual(len(db_specializations), 1)
 
         db_specialization = db_specializations[0]
-        self.assertIsNotNone(db_specialization)
-        self.assertEqual(specialization.id, db_specialization.id)
-        self.assertEqual(specialization.name, db_specialization.name)
-        self.assertEqual(specialization.elite, db_specialization.elite)
-        self.assertListEqual(specialization.major_traits.data, [1, 2])
-        self.assertListEqual(specialization.minor_traits.data, [3, 4])
+        self._assert(db_specialization, specialization)
 
     def test_delete_specializations(self):
         # given
-        specialization = Specialization(
-            id=1, name='Test', elite=True, profession=1, icon='test', background='test')
-        specialization.add_major_trait(1)
-        specialization.add_major_trait(2)
-        specialization.add_minor_trait(3)
-        specialization.add_minor_trait(4)
+        specialization = self._build()
 
         self.repository.save_specialization(specialization)
 
@@ -156,12 +134,7 @@ class TestSpecializationsRepository(unittest.TestCase):
 
     def test_delete_specialization_by_id(self):
         # given
-        specialization = Specialization(
-            id=1, name='Test', elite=True, profession=1, icon='test', background='test')
-        specialization.add_major_trait(1)
-        specialization.add_major_trait(2)
-        specialization.add_minor_trait(3)
-        specialization.add_minor_trait(4)
+        specialization = self._build()
 
         self.repository.save_specialization(specialization)
 

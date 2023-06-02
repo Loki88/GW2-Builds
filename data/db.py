@@ -9,7 +9,7 @@ from config.provider import ConfigProvider
 from utils import Singleton
 import BTrees
 
-from model.dao import *
+from model import *
 
 config_provider = ConfigProvider()
 

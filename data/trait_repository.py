@@ -2,7 +2,7 @@
 
 import BTrees
 
-from model.dao import Trait
+from model import Trait
 from utils import Singleton
 from .db import Db
 

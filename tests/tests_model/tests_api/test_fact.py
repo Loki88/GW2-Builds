@@ -3,7 +3,7 @@
 import unittest
 
 from model.api.fact import *
-from model.api.enums import FactType, Attribute, Condition, Boon, ControlEffect
+from model.enums import FactType, Attribute, Condition, Boon, ControlEffect
 
 
 class TestFact(unittest.TestCase):

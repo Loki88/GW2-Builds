@@ -2,7 +2,7 @@
 
 import BTrees
 
-from model.dao import Profession
+from model import Profession
 from utils import Singleton
 from .db import Db
 

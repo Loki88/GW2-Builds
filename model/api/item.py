@@ -1,53 +1,79 @@
 #!/usr/bin/env python
 
-from .utils import get_or_none, get_list_or_empty
-from .enums import *
+from abc import ABC
+from typing import Callable
+from .api_decorator import ApiDecorator
+from .utils import get_or_none
+from model.enums import *
 
 
-class InfusionSlot:
-    flags: list[InfusionFlag]
-    item_id: int
+class InfusionSlot(ApiDecorator):
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.flags = [InfusionFlag[x]
-                          for x in get_list_or_empty('id', data)]
-            self.item_id = get_or_none('item_id', data)
-
-
-class InfixAttributeBonus:
-    attribute: Attribute
-    modifier: float
-
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.attribute = Attribute[get_or_none('attribute', data)]
-            self.modifier = get_or_none('modifier', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['item_id'],
+                         list_attributes + ['flags'],
+                         dict_attributes,
+                         {
+                             'flags': lambda x: [InfusionFlag[f] for f in x]
+                         }
+                         | converters)
 
 
-class InfixBuff:
-    skill_id: int
-    description: str
+class InfixAttributeBonus(ApiDecorator):
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.skill_id = get_or_none('skill_id', data)
-            self.description = get_or_none('description', data)
-
-
-class InfixUpgrade:
-    id: int
-    attributes: list[InfixAttributeBonus]
-    buff: InfixBuff
-
-    def __init__(self, data: dict) -> None:
-        self.id = get_or_none('id')
-        self.buff = InfixBuff[get_or_none('buff')]
-        self.attributes = [InfixAttributeBonus[x]
-                           for x in get_list_or_empty('attributes')]
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['attribute', 'modifier'],
+                         list_attributes,
+                         dict_attributes,
+                         {
+                             'attribute': lambda x: Attribute[x] if x is not None else None
+                         }
+                         | converters)
 
 
-class ItemDetail:
+class InfixBuff(ApiDecorator):
+
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['skill_id', 'description'],
+                         list_attributes,
+                         dict_attributes,
+                         converters)
+
+
+class InfixUpgrade(ApiDecorator):
+
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['id', 'buff'],
+                         list_attributes + ['attributes'],
+                         dict_attributes,
+                         {
+                             'attributes': lambda x: [InfixAttributeBonus(a) for a in x],
+                             'buff': lambda x: InfixBuff(x) if x is not None else None
+                         }
+                         | converters)
+
+
+class ItemDetail(ApiDecorator, ABC):
 
     def _get_infix_upgrade(self, data: dict) -> InfixUpgrade | None:
         if (data is not None):
@@ -56,134 +82,128 @@ class ItemDetail:
 
 
 class ArmorDetail(ItemDetail):
-    type: ArmorType
-    weight_class: ArmorWeight
-    defense: int
-    infusion_slots: list[InfusionSlot]
-    attribute_adjustment: float
-    infix_upgrade: InfixUpgrade | None
-    stat_choices: list[int]
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.type = ArmorType[get_or_none('type', data)]
-            self.weight_class = ArmorWeight[get_or_none('weight_class', data)]
-            self.defense = get_or_none('defense', data)
-            self.infusion_slots = [InfusionSlot(
-                x) for x in get_list_or_empty('infusion_slots', data)]
-            self.attribute_adjustment = get_or_none(
-                'attribute_adjustment', data)
-            self.infix_upgrade = self._get_infix_upgrade(
-                get_or_none('infix_upgrade', data))
-            self.stat_choices = [
-                int(x) for x in get_list_or_empty('stat_choices', data)]
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['type', 'weight_class', 'defense',
+                                       'attribute_adjustment', 'infix_upgrade'],
+                         list_attributes + ['infusion_slots', 'stat_choices'],
+                         dict_attributes,
+                         {
+                             'type': lambda x: ArmorType[x] if x is not None else None,
+                             'weight_class': lambda x: ArmorWeight[x] if x is not None else None,
+                             'infusion_slots': lambda x: [InfusionSlot(s) for s in x],
+                             'infix_upgrade': lambda x: self._get_infix_upgrade(x) if x is not None else None,
+                             'stat_choices': lambda x: [int(s) for s in x],
+                         }
+                         | converters)
 
 
 class BackDetail(ItemDetail):
-    infusion_slots: list[InfusionSlot]
-    attribute_adjustment: float
-    infix_upgrade: InfixUpgrade | None
-    stat_choices: list[int]
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.infusion_slots = [InfusionSlot(
-                x) for x in get_list_or_empty('infusion_slots', data)]
-            self.attribute_adjustment = get_or_none(
-                'attribute_adjustment', data)
-            self.infix_upgrade = self._get_infix_upgrade(
-                get_or_none('infix_upgrade', data))
-            self.stat_choices = [
-                int(x) for x in get_list_or_empty('stat_choices', data)]
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes +
+                         ['attribute_adjustment', 'infix_upgrade'],
+                         list_attributes + ['infusion_slots', 'stat_choices'],
+                         dict_attributes,
+                         {
+                             'infusion_slots': lambda x: [InfusionSlot(s) for s in x],
+                             'infix_upgrade': lambda x: self._get_infix_upgrade(x) if x is not None else None,
+                             'stat_choices': lambda x: [int(s) for s in x],
+                         }
+                         | converters)
 
 
 class TrinketDetail(ItemDetail):
-    type: TrinketType
-    infusion_slots: list[InfusionSlot]
-    attribute_adjustment: float
-    infix_upgrade: InfixUpgrade | None
-    stat_choices: list[int]
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.type = TrinketType[get_or_none('type', data)]
-            self.infusion_slots = [InfusionSlot(
-                x) for x in get_list_or_empty('infusion_slots', data)]
-            self.attribute_adjustment = get_or_none(
-                'attribute_adjustment', data)
-            self.infix_upgrade = self._get_infix_upgrade(
-                get_or_none('infix_upgrade', data))
-            self.stat_choices = [
-                int(x) for x in get_list_or_empty('stat_choices', data)]
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes +
+                         ['type', 'attribute_adjustment', 'infix_upgrade'],
+                         list_attributes + ['infusion_slots', 'stat_choices'],
+                         dict_attributes,
+                         {
+                             'type': lambda x: TrinketType[x] if x is not None else None,
+                             'infusion_slots': lambda x: [InfusionSlot(s) for s in x],
+                             'infix_upgrade': lambda x: self._get_infix_upgrade(x) if x is not None else None,
+                             'stat_choices': lambda x: [int(s) for s in x],
+                         }
+                         | converters)
 
 
 class UpgradeComponentDetail(ItemDetail):
-    type: UpgradeComponentType
-    flags: list[UpgradeComponentFlags]
-    infusion_upgrade_flags: list[InfusionFlag]
-    infix_upgrade: InfixUpgrade | None
-    bonuses: list[str]
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.type = UpgradeComponentType[get_or_none('type', data)]
-            self.flags = [UpgradeComponentFlags[x]
-                          for x in get_list_or_empty('flags', data)]
-            self.infusion_upgrade_flags = [
-                InfusionFlag[x] for x in get_list_or_empty('infusion_upgrade_flags', data)]
-            self.infix_upgrade = self._get_infix_upgrade(
-                get_or_none('infix_upgrade', data))
-            self.bonuses = get_list_or_empty('bonuses', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['type', 'infix_upgrade'],
+                         list_attributes +
+                         ['flags', 'infusion_upgrade_flags', 'bonuses'],
+                         dict_attributes,
+                         {
+                             'type': lambda x: UpgradeComponentType[x] if x is not None else None,
+                             'flags': lambda x: [UpgradeComponentFlags[f] for f in x],
+                             'infusion_upgrade_flags': lambda x: [InfusionFlag[f] for f in x],
+                             'infix_upgrade': lambda x: self._get_infix_upgrade(x) if x is not None else None,
+                             'stat_choices': lambda x: [int(s) for s in x],
+                         }
+                         | converters)
 
 
 class ConsumableDetail(ItemDetail):
-    type: ConsumableType
-    description: str
-    duration_ms: int
-    recipe_id: int
-    extra_recipe_ids: list[int]
-    apply_count: int
-    name: str
-    icon: str
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.type = ConsumableType[get_or_none('type', data)]
-            self.description = get_or_none('description', data)
-            self.duration_ms = get_or_none('duration_ms', data)
-            self.recipe_id = get_or_none('recipe_id', data)
-            self.extra_recipe_ids = get_list_or_empty('extra_recipe_ids', data)
-            self.apply_count = get_or_none('apply_count', data)
-            self.name = get_or_none('name', data)
-            self.icon = get_or_none('icon', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['type', 'description', 'duration_ms', 'recipe_id',
+                                       'apply_count', 'name', 'icon'],
+                         list_attributes + ['extra_recipe_ids'],
+                         dict_attributes,
+                         {
+                             'type': lambda x: ConsumableType[x] if x is not None else None
+                         }
+                         | converters)
 
 
 class WeaponDetail(ItemDetail):
-    type: WeaponType
-    damage_type: DamageType
-    min_power: float
-    max_power: float
-    defense: int
-    infusion_slots: list[InfusionSlot]
-    attribute_adjustment: float
-    infix_upgrade: InfixUpgrade | None
-    stat_choices: list[int]
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.type = WeaponType[get_or_none('type', data)]
-            self.damage_type = DamageType[get_or_none('damage_type', data)]
-            self.min_power = get_or_none('min_power', data)
-            self.max_power = get_or_none('min_power', data)
-            self.defense = get_or_none('defense', data)
-            self.infusion_slots = [InfusionSlot(
-                x) for x in get_list_or_empty('infusion_slots', data)]
-            self.attribute_adjustment = get_or_none(
-                'attribute_adjustment', data)
-            self.infix_upgrade = self._get_infix_upgrade(
-                get_or_none('infix_upgrade', data))
-            self.stat_choices = [
-                int(x) for x in get_list_or_empty('stat_choices', data)]
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['type', 'damage_type', 'min_power', 'max_power', 'defense',
+                                       'attribute_adjustment', 'infix_upgrade'],
+                         list_attributes + ['infusion_slots', 'stat_choices'],
+                         dict_attributes,
+                         {
+                             'type': lambda x: WeaponType[x] if x is not None else None,
+                             'damage_type': lambda x: DamageType[x] if x is not None else None,
+                             'infusion_slots': lambda x: [InfusionSlot(s) for s in x],
+                             'infix_upgrade': lambda x: self._get_infix_upgrade(x) if x is not None else None,
+                             'stat_choices': lambda x: [int(s) for s in x],
+                         }
+                         | converters)
 
 
 DETAILS_DICT = {
@@ -203,27 +223,24 @@ def get_item_details(data: dict, item_type: ItemType) -> ItemDetail | None:
     return None
 
 
-class Item:
-    id: int
-    chat_link: str
-    name: str
-    icon: str
-    description: str
-    type: ItemType
-    rarity: ItemRarity
-    details: ItemDetail
+class Item(ApiDecorator):
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.id = get_or_none('id', data)
-            self.name = get_or_none('name', data)
-            self.description = get_or_none('description', data)
-            self.icon = get_or_none('icon', data)
-            self.chat_link = get_or_none('chat_link', data)
-            self.type = ItemType[get_or_none('type', data)]
-            self.rarity = ItemRarity[get_or_none('rarity', data)]
-            self.details = get_item_details(
-                get_or_none('details', data), self.type)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['id', 'chat_link', 'name', 'icon', 'description',
+                                       'type', 'rarity', 'details'],
+                         list_attributes,
+                         dict_attributes,
+                         {
+                             'type': lambda x: ItemType[x] if x is not None else None,
+                             'rarity': lambda x: ItemRarity[x] if x is not None else None,
+                             'details': lambda x: get_item_details(x, self.type) if x is not None else None,
+                         }
+                         | converters)
 
 
 def filter_item_data(data: dict, filter: dict[ItemType, ItemRarity] = None) -> bool:
