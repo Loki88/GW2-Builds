@@ -61,9 +61,6 @@ jobs:
           poetry run python -m coverage run -m unittest discover
           poetry run python -m coverage report -m --skip-covered --omit 'tests/*'
 
-      - name: Build Project
-        run: poetry build
-
       - name: Cache Build
         if: github.event_name != 'pull_request'
         uses: actions/cache@v3
@@ -71,3 +68,6 @@ jobs:
         with:
           path: ./dist
           key: ${{ runner.os }}-dist
+
+      - name: Build Project
+        run: poetry build
