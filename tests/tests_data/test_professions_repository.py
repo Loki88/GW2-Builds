@@ -107,8 +107,8 @@ class TestProfessionsRepository(unittest.TestCase):
         self.repository.save_profession(profession)
 
         # when
-        self.assertIsNone(self.repository.get_profession_by_id(2))
-        db_profession = self.repository.get_profession_by_id(1)
+        self.assertIsNone(self.repository.get_professions(id=2))
+        db_profession = self.repository.get_professions(id=1)
 
         # then
         self._assert_profession(profession, db_profession)
@@ -120,8 +120,8 @@ class TestProfessionsRepository(unittest.TestCase):
         self.repository.save_profession(profession)
 
         # when
-        self.assertListEqual(self.repository.get_profession_by_name('abc'), [])
-        db_professions = self.repository.get_profession_by_name('Test')
+        self.assertListEqual(self.repository.get_professions(name='abc'), [])
+        db_professions = self.repository.get_professions(name='Test')
 
         # then
         self.assertIsNotNone(db_professions)
@@ -150,7 +150,7 @@ class TestProfessionsRepository(unittest.TestCase):
         self.repository.save_profession(profession)
 
         # when
-        self.repository.delete_profession_by_id(1)
+        self.repository.delete_professions(id=1)
         db_professions = self.repository.get_professions()
 
         # then

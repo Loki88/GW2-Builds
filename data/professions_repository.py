@@ -19,50 +19,37 @@ class ProfessionsRepository(metaclass=Singleton):
             except:
                 connection.root.professions = BTrees.OOBTree.BTree()
 
-    def _save_single_profession(self, profession: Profession, connection) -> Profession:
+    def _save_single(self, profession: Profession, connection) -> Profession:
         connection.root.professions[profession.id] = profession
         return connection.root.professions[profession.id]
 
     def save_profession(self, profession: Profession | list[Profession]) -> Profession | list[Profession]:
         with Db().open_transaction() as connection:
             if (isinstance(profession, list)):
-                return [self._save_single_profession(profession=p, connection=connection) for p in profession]
+                return [self._save_single(profession=p, connection=connection) for p in profession]
             else:
-                return self._save_single_profession(profession=profession, connection=connection)
+                return self._save_single(profession=profession, connection=connection)
 
-    def get_professions(self) -> list[Profession]:
+    def get_professions(self, id: int = None, name: str = None) -> Profession | list[Profession]:
         conn = None
         try:
             conn = Db().open_connection()
-            return list(conn.root.professions.itervalues())
+            if (id is None and name is None):
+                return list(conn.root.professions.itervalues())
+            elif (id is None):
+                return [x for x in conn.root.professions.itervalues() if x.name is name]
+            elif (name is None):
+                return conn.root.professions.get(id, None)
+            else:
+                prof = conn.root.professions.get(id, None)
+                return prof if prof is not None and prof.name is name else None
         finally:
             if conn is not None:
                 conn.close()
 
-    def get_profession_by_id(self, id: int) -> Profession:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            return conn.root.professions[id]
-        except KeyError:
-            return None
-        finally:
-            if conn is not None:
-                conn.close()
-
-    def get_profession_by_name(self, name: str = None) -> list[Profession]:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            return [x for x in conn.root.professions.itervalues() if x.name is name]
-        finally:
-            if conn is not None:
-                conn.close()
-
-    def delete_professions(self):
+    def delete_professions(self, id: int = None):
         with Db().open_transaction() as connection:
-            connection.root.professions.clear()
-
-    def delete_profession_by_id(self, id: int):
-        with Db().open_transaction() as connection:
-            connection.root.professions.pop(id)
+            if (id is None):
+                connection.root.professions.clear()
+            else:
+                connection.root.professions.pop(id)

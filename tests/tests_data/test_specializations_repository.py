@@ -94,8 +94,8 @@ class TestSpecializationsRepository(unittest.TestCase):
         self.repository.save_specialization(specialization)
 
         # when
-        self.assertIsNone(self.repository.get_specialization_by_id(2))
-        db_specialization = self.repository.get_specialization_by_id(1)
+        self.assertIsNone(self.repository.get_specializations(id=2))
+        db_specialization = self.repository.get_specializations(id=1)
 
         # then
         self._assert(db_specialization, specialization)
@@ -108,9 +108,9 @@ class TestSpecializationsRepository(unittest.TestCase):
 
         # when
         self.assertListEqual(
-            self.repository.get_specialization_by_name(specialization.name + 'abc'), [])
-        db_specializations = self.repository.get_specialization_by_name(
-            specialization.name)
+            self.repository.get_specializations(name=specialization.name + 'abc'), [])
+        db_specializations = self.repository.get_specializations(
+            name=specialization.name)
 
         # then
         self.assertIsNotNone(db_specializations)
@@ -139,7 +139,7 @@ class TestSpecializationsRepository(unittest.TestCase):
         self.repository.save_specialization(specialization)
 
         # when
-        self.repository.delete_specialization_by_id(1)
+        self.repository.delete_specializations(id=1)
         db_specializations = self.repository.get_specializations()
 
         # then

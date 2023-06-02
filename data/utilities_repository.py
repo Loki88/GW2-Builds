@@ -18,14 +18,22 @@ class UtilitiesRepository(metaclass=Singleton):
             except:
                 connection.root.utilities = BTrees.OOBTree.BTree()
 
-    def save_utility(self, utility: Item) -> Item:
+    def _save_single(self, connection, utility: Item) -> Item:
         if (utility.type == ItemType.Consumable):
             details: ConsumableDetail = utility.details
             if (details.type == ConsumableType.Utility):
-                with Db().open_transaction() as connection:
-                    connection.root.utilities[utility.id] = utility
-                    return connection.root.utilities[utility.id]
+                connection.root.utilities[utility.id] = utility
+                return connection.root.utilities[utility.id]
+
+        connection.rollback()
         raise ValueError(utility)
+
+    def save_utility(self, utility: Item | list[Item]) -> Item | list[Item]:
+        with Db().open_transaction() as connection:
+            if (isinstance(utility, list)):
+                return [self._save_single(connection, x) for x in utility]
+            else:
+                return self._save_single(connection, utility)
 
     def get_utility(self, id: int = None) -> list[Item] | Item:
         conn = None

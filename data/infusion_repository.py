@@ -18,14 +18,22 @@ class InfusionRepository(metaclass=Singleton):
             except:
                 connection.root.infusions = BTrees.OOBTree.BTree()
 
-    def save_infusion(self, infusion: Item):
+    def _save_single(self, connection, infusion: Item) -> Item:
         if (infusion.type == ItemType.UpgradeComponent):
             details: UpgradeComponentDetail = infusion.details
             if (details.type == UpgradeComponentType.Default and InfusionFlag.Infusion in details.infusion_upgrade_flags):
-                with Db().open_transaction() as connection:
-                    connection.root.infusions[infusion.id] = infusion
-                    return connection.root.infusions[infusion.id]
+                connection.root.infusions[infusion.id] = infusion
+                return connection.root.infusions[infusion.id]
+
+        connection.rollback()
         raise ValueError(infusion)
+
+    def save_infusion(self, infusion: Item | list[Item]) -> Item | list[Item]:
+        with Db().open_transaction() as connection:
+            if (isinstance(infusion, list)):
+                return [self._save_single(connection, x) for x in infusion]
+            else:
+                return self._save_single(connection, infusion)
 
     def get_infusion(self, id: int = None) -> list[Item] | Item:
         conn = None

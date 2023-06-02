@@ -18,14 +18,22 @@ class RunesRepository(metaclass=Singleton):
             except:
                 connection.root.runes = BTrees.OOBTree.BTree()
 
-    def save_rune(self, rune: Item):
+    def _save_single(self, connection, rune: Item) -> Item:
         if (rune.type == ItemType.UpgradeComponent):
             details: UpgradeComponentDetail = rune.details
             if (details.type == UpgradeComponentType.Rune):
-                with Db().open_transaction() as connection:
-                    connection.root.runes[rune.id] = rune
-                    return connection.root.runes[rune.id]
+                connection.root.runes[rune.id] = rune
+                return connection.root.runes[rune.id]
+
+        connection.rollback()
         raise ValueError(rune)
+
+    def save_rune(self, rune: Item | list[Item]) -> Item | list[Item]:
+        with Db().open_transaction() as connection:
+            if (isinstance(rune, list)):
+                return [self._save_single(connection, x) for x in rune]
+            else:
+                return self._save_single(connection, rune)
 
     def get_rune(self, id: int = None) -> list[Item] | Item:
         conn = None

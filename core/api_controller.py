@@ -2,9 +2,8 @@
 
 from .loader import Loader
 from data import *
-from model import ItemType, ItemRarity
-from model.dao import *
-from model.converter.api_to_dao import convert_profession, convert_specialization, convert_trait, convert_skill, convert_stats
+from model import ItemType, ItemRarity, Build, Profession, Specialization, Trait, Skill,\
+    ItemStats, Item
 from utils import flatten
 
 
@@ -32,13 +31,13 @@ class ApiController():
         else:
             professions = loader.load_professions()
 
-        return repository.save_profession([convert_profession(x) for x in professions])
+        return repository.save_profession(professions)
 
     def _load_specializations(self, loader: Loader, professions: list[Profession]) -> list[Specialization]:
         repository = SpecializationsRepository()
         repository.delete_specializations()
         specializations = loader.load_specializations(professions=professions)
-        return repository.save_specialization([convert_specialization(x) for x in specializations])
+        return repository.save_specialization(specializations)
 
     def _load_traits(self, loader: Loader, specializations: list[Specialization]) -> list[Trait]:
         repository = TraitsRepository()
@@ -46,7 +45,7 @@ class ApiController():
         spec_traits = flatten(
             [flatten([x.minor_traits, x.major_traits]) for x in specializations])
         traits = loader.load_traits(spec_traits)
-        return repository.save_trait([convert_trait(x) for x in traits])
+        return repository.save_trait(traits)
 
     def _load_skills(self, loader: Loader, traits: list[Trait]) -> list[Skill]:
         repository = SkillsRepository()
@@ -54,13 +53,13 @@ class ApiController():
 
         traits_skills = flatten([x.skills for x in traits])
         skills = loader.load_skills(traits_skills)
-        return repository.save_skill([convert_skill(x) for x in skills])
+        return repository.save_skill(skills)
 
     def _load_stats(self, loader: Loader) -> list[ItemStats]:
         repository = StatsRepository()
         repository.delete_stats()
         stats = loader.load_item_stats()
-        return repository.save_stat([convert_stats(x) for x in stats])
+        return repository.save_stat(stats)
 
     def _load_items(self, loader: Loader) -> list[Item]:
         items_filter = {
@@ -80,18 +79,31 @@ class ApiController():
         if (ItemType.Armor in items_dict):
             self._load_armor(items_dict[ItemType.Armor])
 
-        # if(ItemType.Back in items_dict):
-        #     self._load_back(items_dict[ItemType.Back])
+        if (ItemType.Back in items_dict):
+            self._load_back(items_dict[ItemType.Back])
 
-        # if(ItemType.Trinket in items_dict):
-        #     self._load_trinkets(items_dict[ItemType.Trinket])
+        if (ItemType.Trinket in items_dict):
+            self._load_trinkets(items_dict[ItemType.Trinket])
 
-        # if(ItemType.UpgradeComponent in items_dict):
-        #     self._load_upgrade_components(items_dict[ItemType.UpgradeComponent])
+        if (ItemType.UpgradeComponent in items_dict):
+            self._load_upgrade_components(
+                items_dict[ItemType.UpgradeComponent])
 
-        # if(ItemType.Consumable in items_dict):
-        #     self._load_consumables(items_dict[ItemType.Consumable])
+        if (ItemType.Consumable in items_dict):
+            self._load_consumables(items_dict[ItemType.Consumable])
 
     def _load_armor(self, items: list[Item]) -> list[Item]:
         repository = ArmorRepository()
         repository.save_armor(items)
+
+    def _load_back(self, items: list[Item]) -> list[Item]:
+        repository = BackRepository()
+        repository.save_armor(items)
+
+    def _load_trinkets(self, items: list[Item]) -> list[Item]:
+        repository = TrinketsRepository()
+        repository.save_trinket(items)
+
+    def _load_upgrade_components(self, items: list[Item]) -> list[Item]:
+        # upgrade components contain infusions, sigils and runes
+        pass

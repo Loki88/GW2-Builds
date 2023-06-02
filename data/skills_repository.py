@@ -17,7 +17,7 @@ class SkillsRepository(metaclass=Singleton):
             except:
                 connection.root.skills = BTrees.OOBTree.BTree()
 
-    def _save_single(self, connection, skill: Skill):
+    def _save_single(self, connection, skill: Skill) -> Skill:
         connection.root.skills[skill.id] = skill
         return connection.root.skills[skill.id]
 

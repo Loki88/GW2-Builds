@@ -18,14 +18,21 @@ class WeaponsRepository(metaclass=Singleton):
             except:
                 connection.root.weapons = BTrees.OOBTree.BTree()
 
-    def save_weapon(self, weapon: Item):
+    def _save_single(self, connection, weapon: Item) -> Item:
         if (weapon.type == ItemType.Weapon):
             details: WeaponDetail = weapon.details
-            with Db().open_transaction() as connection:
-                connection.root.weapons[details.type.value] = weapon
-                return connection.root.weapons[details.type.value]
+            connection.root.weapons[details.type.value] = weapon
+            return connection.root.weapons[details.type.value]
         else:
+            connection.rollback()
             raise ValueError(weapon)
+
+    def save_weapon(self, weapon: Item | list[Item]) -> list[Item]:
+        with Db().open_transaction() as connection:
+            if (isinstance(weapon, list)):
+                return [self._save_single(connection, x) for x in weapon]
+            else:
+                return self._save_single(connection, weapon)
 
     def get_weapon(self, type: WeaponType = None) -> list[Item] | Item:
         conn = None

@@ -18,7 +18,7 @@ class ArmorRepository(metaclass=Singleton):
             except:
                 connection.root.armor = persistent.mapping.PersistentMapping()
 
-    def _save_single(self, connection, armor: Item):
+    def _save_single(self, connection, armor: Item) -> Item:
         if (armor.type == ItemType.Armor):
             details: ArmorDetail = armor.details
             if (details.weight_class.value not in connection.root.armor):

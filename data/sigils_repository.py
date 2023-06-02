@@ -18,14 +18,22 @@ class SigilsRepository(metaclass=Singleton):
             except:
                 connection.root.sigils = BTrees.OOBTree.BTree()
 
-    def save_sigil(self, sigil: Item):
+    def _save_single(self, connection, sigil: Item) -> Item:
         if (sigil.type == ItemType.UpgradeComponent):
             details: UpgradeComponentDetail = sigil.details
             if (details.type == UpgradeComponentType.Sigil):
-                with Db().open_transaction() as connection:
-                    connection.root.sigils[sigil.id] = sigil
-                    return connection.root.sigils[sigil.id]
+                connection.root.sigils[sigil.id] = sigil
+                return connection.root.sigils[sigil.id]
+
+        connection.rollback()
         raise ValueError(sigil)
+
+    def save_sigil(self, sigil: Item | list[Item]) -> Item | list[Item]:
+        with Db().open_transaction() as connection:
+            if (isinstance(sigil, list)):
+                return [self._save_single(connection, x) for x in sigil]
+            else:
+                return self._save_single(connection, sigil)
 
     def get_sigil(self, id: int = None) -> list[Item] | Item:
         conn = None

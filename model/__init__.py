@@ -6,4 +6,3 @@ from .enums import Attribute, Condition, Boon, ControlEffect, FieldType,\
     ConsumableType, ArmorType, ArmorWeight, ItemRarity, TrinketType,\
     UpgradeComponentType, UpgradeComponentFlags, ItemType, WeaponType,\
     DamageType, InfusionFlag, TraitSlot
-

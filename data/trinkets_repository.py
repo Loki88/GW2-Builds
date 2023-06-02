@@ -18,14 +18,21 @@ class TrinketsRepository(metaclass=Singleton):
             except:
                 connection.root.trinkets = persistent.mapping.PersistentMapping()
 
-    def save_trinket(self, trinket: Item) -> Item:
+    def _save_single(self, connection, trinket: Item) -> Item:
         if (trinket.type == ItemType.Trinket):
             details: TrinketDetail = trinket.details
-            with Db().open_transaction() as connection:
-                connection.root.trinkets[details.type.value] = trinket
-                return connection.root.trinkets[details.type.value]
-        else:
-            raise ValueError(trinket)
+            connection.root.trinkets[details.type.value] = trinket
+            return connection.root.trinkets[details.type.value]
+
+        connection.rollback()
+        raise ValueError(trinket)
+
+    def save_trinket(self, trinket: Item | list[Item]) -> Item | list[Item]:
+        with Db().open_transaction() as connection:
+            if (isinstance(trinket, list)):
+                return [self._save_single(connection, x) for x in trinket]
+            else:
+                return self._save_single(connection, trinket)
 
     def get_trinket(self, type: TrinketType = None) -> list[Item] | Item:
         conn = None

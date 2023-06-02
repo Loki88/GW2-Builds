@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 from config import ConfigProvider
 from data import *
-from model import ItemType, ItemRarity, UpgradeComponentFlags, UpgradeComponentType, UpgradeComponentDetail, InfixBuff, Attribute
+from model import ItemType, ItemRarity, UpgradeComponentFlags, UpgradeComponentType, InfusionFlag, Attribute, Item
 
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))

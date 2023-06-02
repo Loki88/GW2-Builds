@@ -18,14 +18,22 @@ class FoodsRepository(metaclass=Singleton):
             except:
                 connection.root.foods = BTrees.OOBTree.BTree()
 
-    def save_food(self, food: Item) -> Item:
+    def _save_single(self, connection, food: Item) -> Item:
         if (food.type == ItemType.Consumable):
             details: ConsumableDetail = food.details
             if (details.type == ConsumableType.Food):
-                with Db().open_transaction() as connection:
-                    connection.root.foods[food.id] = food
-                    return connection.root.foods[food.id]
+                connection.root.foods[food.id] = food
+                return connection.root.foods[food.id]
+
+        connection.rollback()
         raise ValueError(food)
+
+    def save_food(self, food: Item | list[Item]) -> Item | list[Item]:
+        with Db().open_transaction() as connection:
+            if (isinstance(food, list)):
+                return [self._save_single(connection, x) for x in food]
+            else:
+                return self._save_single(connection, food)
 
     def get_food(self, id: int = None) -> list[Item] | Item:
         conn = None
