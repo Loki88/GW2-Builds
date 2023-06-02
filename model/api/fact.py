@@ -1,54 +1,75 @@
 #!/usr/bin/env python
 
-from .utils import get_or_none
-from .enums import Attribute, Condition, Boon, ControlEffect, FieldType, FinisherType, FactType
+from typing import Callable
+from abc import ABC, abstractmethod
+from .api_decorator import ApiDecorator
+from model.enums import Attribute, Condition, Boon, ControlEffect, FieldType, FinisherType, FactType
 
 
-class Fact:
-    text: str
-    icon: str
-    type: FactType
+class Fact(ApiDecorator, ABC):
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.text = get_or_none('text', data)
-            self.icon = get_or_none('icon', data)
-            self.type = FactType[get_or_none('type', data)]
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['text', 'icon', 'type'],
+                         list_attributes,
+                         dict_attributes,
+                         {
+                             'type': lambda x: FactType[x] if x is not None else None
+                         }
+                         | converters)
 
-    # fact requires a strategy and a hierarchy of facts to represent the different facts
 
+class TargetedFact(Fact, ABC):
 
-class TargetedFact(Fact):
-    target: Attribute
-
-    def __init__(self, data: dict = None) -> None:
-        super().__init__(data)
-        if (data is not None):
-            self.target = Attribute[get_or_none('target', data)]
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['target'],
+                         list_attributes,
+                         dict_attributes,
+                         {
+                             'target': lambda x: Attribute[x] if x is not None else None
+                         }
+                         | converters)
 
 
 class AttributeAdjust(TargetedFact):
-    value: int
 
-    def __init__(self, data: dict = None) -> None:
-        super().__init__(data)
-        if (data is not None):
-            self.value = get_or_none('value', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['value'],
+                         list_attributes,
+                         dict_attributes,
+                         converters)
 
 
 class Buff(Fact):
-    duration: float
-    status: Condition | Boon | ControlEffect
-    description: str
-    apply_count: int
 
-    def __init__(self, data: dict = None) -> None:
-        super().__init__(data)
-        if (data is not None):
-            self.duration = get_or_none('duration', data)
-            self.status = self._compute_status(get_or_none('status', data))
-            self.description = get_or_none('description', data)
-            self.apply_count = get_or_none('apply_count', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['duration', 'status',
+                                       'description', 'apply_count'],
+                         list_attributes,
+                         dict_attributes,
+                         {
+                             'status': lambda x: self._compute_status(x) if x is not None else None
+                         }
+                         | converters)
 
     def _compute_status(self, value: str) -> Condition | Boon | ControlEffect:
         if (value is not None):
@@ -65,53 +86,82 @@ class Buff(Fact):
 
 
 class BuffConversion(TargetedFact):
-    source: Attribute
-    percent: float
 
-    def __init__(self, data: dict = None) -> None:
-        super().__init__(data)
-        if (data is not None):
-            self.source = Attribute[get_or_none('source', data)]
-            self.percent = get_or_none('percent', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['source', 'percent'],
+                         list_attributes,
+                         dict_attributes,
+                         {
+                             'source': lambda x: Attribute[x] if x is not None else None
+                         }
+                         | converters)
 
 
 class ComboField(Fact):
-    field_type: FieldType
 
-    def __init__(self, data: dict = None) -> None:
-        super().__init__(data)
-        if (data is not None):
-            self.field_type = FieldType[get_or_none('field_type', data)]
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['field_type'],
+                         list_attributes,
+                         dict_attributes,
+                         {
+                             'field_type': lambda x: FieldType[x] if x is not None else None
+                         }
+                         | converters)
 
 
 class ComboFinisher(Fact):
-    finisher_type: FinisherType
-    percent: float
 
-    def __init__(self, data: dict = None) -> None:
-        super().__init__(data)
-        if (data is not None):
-            self.finisher_type = FinisherType[get_or_none(
-                'finisher_type', data)]
-            self.percent = get_or_none('percent', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['finisher_type', 'percent'],
+                         list_attributes,
+                         dict_attributes,
+                         {
+                             'finisher_type': lambda x: FinisherType[x] if x is not None else None
+                         }
+                         | converters)
 
 
 class Damage(Fact):
-    hit_count: int
 
-    def __init__(self, data: dict = None) -> None:
-        super().__init__(data)
-        if (data is not None):
-            self.hit_count = get_or_none('hit_count', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['hit_count'],
+                         list_attributes,
+                         dict_attributes,
+                         converters)
 
 
 class Distance(Fact):
-    distance: int
 
-    def __init__(self, data: dict = None) -> None:
-        super().__init__(data)
-        if (data is not None):
-            self.distance = get_or_none('distance', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['distance'],
+                         list_attributes,
+                         dict_attributes,
+                         converters)
 
 
 class NoData(Fact):
@@ -119,44 +169,63 @@ class NoData(Fact):
 
 
 class Number(Fact):
-    value: int
 
-    def __init__(self, data: dict = None) -> None:
-        super().__init__(data)
-        if (data is not None):
-            self.value = get_or_none('value', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['value'],
+                         list_attributes,
+                         dict_attributes,
+                         converters)
 
 
 class Percent(Fact):
-    percent: float
 
-    def __init__(self, data: dict = None) -> None:
-        super().__init__(data)
-        if (data is not None):
-            self.percent = get_or_none('percent', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['percent'],
+                         list_attributes,
+                         dict_attributes,
+                         converters)
 
 
-class BuffPrefix:
-    text: str
-    icon: str
-    status: str
-    description: str
+class BuffPrefix(ApiDecorator):
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.text = get_or_none('text', data)
-            self.icon = get_or_none('icon', data)
-            self.status = get_or_none('status', data)
-            self.description = get_or_none('description', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['text', 'icon',
+                                       'status', 'description'],
+                         list_attributes,
+                         dict_attributes,
+                         converters)
 
 
 class PrefixedBuff(Buff):
-    prefix: BuffPrefix
 
-    def __init__(self, data: dict = None) -> None:
-        super().__init__(data)
-        if (data is not None):
-            self.prefix = BuffPrefix(get_or_none('prefix', data))
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['prefix'],
+                         list_attributes,
+                         dict_attributes,
+                         {
+                             'prefix': lambda x: BuffPrefix(x) if x is not None else None
+                         }
+                         | converters)
 
 
 class Radius(Distance):
@@ -172,21 +241,31 @@ class Recharge(Number):
 
 
 class Time(Fact):
-    duration: float
 
-    def __init__(self, data: dict = None) -> None:
-        super().__init__(data)
-        if (data is not None):
-            self.duration = get_or_none('duration', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['duration'],
+                         list_attributes,
+                         dict_attributes,
+                         converters)
 
 
 class Unblockable(Fact):
-    value: bool
 
-    def __init__(self, data: dict = None) -> None:
-        super().__init__(data)
-        if (data is not None):
-            self.value = get_or_none('value', data)
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['value'],
+                         list_attributes,
+                         dict_attributes,
+                         converters)
 
 # Factory for facts
 

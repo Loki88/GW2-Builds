@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-from .utils import *
-from .specialization import Specialization
+from typing import Callable
+from .api_decorator import ApiDecorator
 from .fact import get_fact, Fact
 from .skill import Skill
 
 
-class Trait:
+class Trait(ApiDecorator):
 
     id: int
     name: str
@@ -19,16 +19,19 @@ class Trait:
     traited_facts: list[Fact]
     skills: list[Skill]
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.id = get_or_none('id', data)
-            self.name = get_or_none('name', data)
-            self.icon = get_or_none('icon', data)
-            self.description = get_or_none('description', data)
-            self.specialization = get_or_none('specialization', data)
-            self.tier = get_or_none('tier', data)
-            self.facts = [get_fact(x)
-                          for x in get_list_or_empty('facts', data)]
-            self.traited_facts = [
-                get_fact(x) for x in get_list_or_empty('traited_facts', data)]
-            self.skills = [Skill(x) for x in get_list_or_empty('skills', data)]
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super.__init__(data,
+                       attributes + ['id', 'name', 'icon',
+                                     'description', 'specialization', 'tier'],
+                       list_attributes + ['facts', 'traited_facts', 'skills'],
+                       dict_attributes,
+                       {
+                           'facts': lambda x: [get_fact(f) for f in x],
+                           'traited_facts': lambda x: [get_fact(f) for f in x],
+                           'skills': lambda x: [Skill(s) for s in x],
+                       }
+                       | converters)

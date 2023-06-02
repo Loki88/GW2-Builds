@@ -2,7 +2,7 @@
 
 from .utils import *
 from .fact import get_fact, Fact
-from .enums import SkillType, Slot, SkillCategory, SkillFlag
+from model.enums import SkillType, Slot, SkillCategory, SkillFlag
 
 
 class Skill:
