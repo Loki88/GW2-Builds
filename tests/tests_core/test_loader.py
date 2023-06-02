@@ -5,6 +5,7 @@ import unittest
 from core import Loader
 from core.loader import HEAVY_PROFESSIONS, LIGHT_PROFESSIONS, MEDIUM_PROFESSIONS
 from model import Specialization, ItemType, ItemRarity
+from utils import flatten, no_duplicates
 
 
 class TestLoader(unittest.TestCase):
@@ -36,8 +37,10 @@ class TestLoader(unittest.TestCase):
             professions = self.loader.load_professions(professions_ids)
             self.assertIsNotNone(professions)
             self.assertEqual(len(professions), len(professions_ids))
+            ids = no_duplicates(
+                flatten([x.specializations for x in professions]))
 
-            specializations = self.loader.load_specializations(professions)
+            specializations = self.loader.load_specializations(ids)
             self.assertIsNotNone(specializations)
             self.assertEqual(len(specializations), len(
                 professions_ids)*self.num_specializations)

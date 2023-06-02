@@ -17,19 +17,13 @@ class BuildRepository(metaclass=Singleton):
             except:
                 connection.root.build = None
 
-    def save_build(self, build: Build) -> Build:
+    def save_build(self, build: Build):
         with Db().open_transaction() as connection:
             connection.root.build = build
-            return connection.root.build
 
     def get_build(self) -> Build:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            return conn.root.build
-        finally:
-            if conn is not None:
-                conn.close()
+        conn = Db().get_connection()
+        return conn.root.build
 
     def delete_build(self) -> None:
         with Db().open_transaction() as connection:

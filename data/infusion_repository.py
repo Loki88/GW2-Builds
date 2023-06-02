@@ -18,34 +18,28 @@ class InfusionRepository(metaclass=Singleton):
             except:
                 connection.root.infusions = BTrees.OOBTree.BTree()
 
-    def _save_single(self, connection, infusion: Item) -> Item:
+    def _save_single(self, connection, infusion: Item):
         if (infusion.type == ItemType.UpgradeComponent):
             details: UpgradeComponentDetail = infusion.details
             if (details.type == UpgradeComponentType.Default and InfusionFlag.Infusion in details.infusion_upgrade_flags):
                 connection.root.infusions[infusion.id] = infusion
-                return connection.root.infusions[infusion.id]
-
-        connection.rollback()
+                return
         raise ValueError(infusion)
 
-    def save_infusion(self, infusion: Item | list[Item]) -> Item | list[Item]:
+    def save_infusion(self, infusion: Item | list[Item]):
         with Db().open_transaction() as connection:
             if (isinstance(infusion, list)):
-                return [self._save_single(connection, x) for x in infusion]
+                for x in infusion:
+                    self._save_single(connection, x)
             else:
-                return self._save_single(connection, infusion)
+                self._save_single(connection, infusion)
 
     def get_infusion(self, id: int = None) -> list[Item] | Item:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            if (id is None):
-                return list(conn.root.infusions.values())
-            else:
-                return conn.root.infusions.get(id, None)
-        finally:
-            if conn is not None:
-                conn.close()
+        conn = Db().get_connection()
+        if (id is None):
+            return list(conn.root.infusions.values())
+        else:
+            return conn.root.infusions.get(id, None)
 
     def delete_infusion(self, id: int = None) -> None:
         with Db().open_transaction() as connection:

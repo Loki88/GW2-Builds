@@ -18,33 +18,27 @@ class TrinketsRepository(metaclass=Singleton):
             except:
                 connection.root.trinkets = persistent.mapping.PersistentMapping()
 
-    def _save_single(self, connection, trinket: Item) -> Item:
+    def _save_single(self, connection, trinket: Item):
         if (trinket.type == ItemType.Trinket):
             details: TrinketDetail = trinket.details
             connection.root.trinkets[details.type.value] = trinket
-            return connection.root.trinkets[details.type.value]
+        else:
+            raise ValueError(trinket)
 
-        connection.rollback()
-        raise ValueError(trinket)
-
-    def save_trinket(self, trinket: Item | list[Item]) -> Item | list[Item]:
+    def save_trinket(self, trinket: Item | list[Item]):
         with Db().open_transaction() as connection:
             if (isinstance(trinket, list)):
-                return [self._save_single(connection, x) for x in trinket]
+                for x in trinket:
+                    self._save_single(connection, x)
             else:
-                return self._save_single(connection, trinket)
+                self._save_single(connection, trinket)
 
     def get_trinket(self, type: TrinketType = None) -> list[Item] | Item:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            if (type is None):
-                return list(conn.root.trinkets.values())
-            else:
-                return conn.root.trinkets.get(type.value, None)
-        finally:
-            if conn is not None:
-                conn.close()
+        conn = Db().get_connection()
+        if (type is None):
+            return list(conn.root.trinkets.values())
+        else:
+            return conn.root.trinkets.get(type.value, None)
 
     def delete_trinket(self, type: TrinketType = None) -> None:
         with Db().open_transaction() as connection:

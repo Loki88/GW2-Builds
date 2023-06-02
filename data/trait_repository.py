@@ -17,28 +17,23 @@ class TraitsRepository(metaclass=Singleton):
             except:
                 connection.root.traits = BTrees.OOBTree.BTree()
 
-    def _save_single(self, connection, trait: Trait) -> Trait:
+    def _save_single(self, connection, trait: Trait):
         connection.root.traits[trait.id] = trait
-        return connection.root.traits[trait.id]
 
-    def save_trait(self, trait: Trait | list[Trait]) -> Trait | list[Trait]:
+    def save_trait(self, trait: Trait | list[Trait]):
         with Db().open_transaction() as connection:
             if (isinstance(trait, list)):
-                return [self._save_single(connection, x) for x in trait]
+                for x in trait:
+                    self._save_single(connection, x)
             else:
-                return self._save_single(connection, trait)
+                self._save_single(connection, trait)
 
     def get_trait(self, id: int = None) -> list[Trait] | Trait:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            if (id is None):
-                return list(conn.root.traits.values())
-            else:
-                return conn.root.traits.get(id, None)
-        finally:
-            if conn is not None:
-                conn.close()
+        conn = Db().get_connection()
+        if (id is None):
+            return list(conn.root.traits.values())
+        else:
+            return conn.root.traits.get(id, None)
 
     def delete_trait(self, id: int = None) -> None:
         with Db().open_transaction() as connection:

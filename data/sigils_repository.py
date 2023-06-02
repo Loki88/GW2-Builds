@@ -18,34 +18,28 @@ class SigilsRepository(metaclass=Singleton):
             except:
                 connection.root.sigils = BTrees.OOBTree.BTree()
 
-    def _save_single(self, connection, sigil: Item) -> Item:
+    def _save_single(self, connection, sigil: Item):
         if (sigil.type == ItemType.UpgradeComponent):
             details: UpgradeComponentDetail = sigil.details
             if (details.type == UpgradeComponentType.Sigil):
                 connection.root.sigils[sigil.id] = sigil
-                return connection.root.sigils[sigil.id]
-
-        connection.rollback()
+                return
         raise ValueError(sigil)
 
-    def save_sigil(self, sigil: Item | list[Item]) -> Item | list[Item]:
+    def save_sigil(self, sigil: Item | list[Item]):
         with Db().open_transaction() as connection:
             if (isinstance(sigil, list)):
-                return [self._save_single(connection, x) for x in sigil]
+                for x in sigil:
+                    self._save_single(connection, x)
             else:
-                return self._save_single(connection, sigil)
+                self._save_single(connection, sigil)
 
     def get_sigil(self, id: int = None) -> list[Item] | Item:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            if (id is None):
-                return list(conn.root.sigils.values())
-            else:
-                return conn.root.sigils.get(id, None)
-        finally:
-            if conn is not None:
-                conn.close()
+        conn = Db().get_connection()
+        if (id is None):
+            return list(conn.root.sigils.values())
+        else:
+            return conn.root.sigils.get(id, None)
 
     def delete_sigil(self, id: int = None) -> None:
         with Db().open_transaction() as connection:

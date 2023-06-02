@@ -17,32 +17,27 @@ class BackRepository(metaclass=Singleton):
             except:
                 connection.root.backs = BTrees.OOBTree.BTree()
 
-    def _save_single(self, connection, back: Item) -> Item:
+    def _save_single(self, connection, back: Item):
         if (back.type == ItemType.back):
             connection.root.backs[back.id] = back
             return connection.root.backs[back.id]
         else:
-            connection.rollback()
             raise ValueError(back)
 
-    def save_back(self, back: Item | list[Item]) -> list[Item]:
+    def save_back(self, back: Item | list[Item]):
         with Db().open_transaction() as connection:
             if (isinstance(back, list)):
-                return [self._save_single(connection, x) for x in back]
+                for x in back:
+                    self._save_single(connection, x)
             else:
-                return self._save_single(connection, back)
+                self._save_single(connection, back)
 
     def get_back(self, id: int = None) -> list[Item] | Item:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            if (id is None):
-                return list(conn.root.backs.values())
-            else:
-                return conn.root.backs.get(id, None)
-        finally:
-            if conn is not None:
-                conn.close()
+        conn = Db().get_connection()
+        if (id is None):
+            return list(conn.root.backs.values())
+        else:
+            return conn.root.backs.get(id, None)
 
     def delete_back(self, id: int = None) -> None:
         with Db().open_transaction() as connection:

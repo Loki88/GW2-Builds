@@ -17,50 +17,32 @@ class SkillsRepository(metaclass=Singleton):
             except:
                 connection.root.skills = BTrees.OOBTree.BTree()
 
-    def _save_single(self, connection, skill: Skill) -> Skill:
+    def _save_single(self, connection, skill: Skill):
         connection.root.skills[skill.id] = skill
-        return connection.root.skills[skill.id]
 
-    def save_skill(self, skill: Skill | list[Skill]) -> Skill | list[Skill]:
+    def save_skill(self, skill: Skill | list[Skill]):
         with Db().open_transaction() as connection:
             if (isinstance(skill, list)):
-                return [self._save_single(x) for x in skill]
+                for x in skill:
+                    self._save_single(connection, x)
             else:
-                return self._save_single(skill)
+                self._save_single(connection, skill)
 
-    def get_skills(self) -> list[Skill]:
-        conn = None
-        try:
-            conn = Db().open_connection()
+    def get_skills(self, id: int = None, name: str = None) -> list[Skill]:
+        conn = Db().get_connection()
+        if (id is None and name is None):
             return list(conn.root.skills.itervalues())
-        finally:
-            if conn is not None:
-                conn.close()
+        elif (id is None):
+            return [x for x in conn.root.skills.itervalues() if x.name == name]
+        elif (name is None):
+            return conn.root.skills.get(id, None)
+        else:
+            skill = conn.root.skills.get(id, None)
+            return skill if skill is not None and skill.name == name else None
 
-    def get_skill_by_id(self, id: int) -> Skill:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            return conn.root.skills[id]
-        except KeyError:
-            return None
-        finally:
-            if conn is not None:
-                conn.close()
-
-    def get_skill_by_name(self, name: str = None) -> list[Skill]:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            return [x for x in conn.root.skills.itervalues() if x.name is name]
-        finally:
-            if conn is not None:
-                conn.close()
-
-    def delete_skills(self):
+    def delete_skills(self, id: int = None):
         with Db().open_transaction() as connection:
-            connection.root.skills.clear()
-
-    def delete_skill_by_id(self, id: int):
-        with Db().open_transaction() as connection:
-            connection.root.skills.pop(id)
+            if (id is None):
+                connection.root.skills.clear()
+            else:
+                connection.root.skills.pop(id)

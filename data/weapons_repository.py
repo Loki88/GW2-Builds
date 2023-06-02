@@ -22,29 +22,23 @@ class WeaponsRepository(metaclass=Singleton):
         if (weapon.type == ItemType.Weapon):
             details: WeaponDetail = weapon.details
             connection.root.weapons[details.type.value] = weapon
-            return connection.root.weapons[details.type.value]
         else:
-            connection.rollback()
             raise ValueError(weapon)
 
     def save_weapon(self, weapon: Item | list[Item]) -> list[Item]:
         with Db().open_transaction() as connection:
             if (isinstance(weapon, list)):
-                return [self._save_single(connection, x) for x in weapon]
+                for x in weapon:
+                    self._save_single(connection, x)
             else:
-                return self._save_single(connection, weapon)
+                self._save_single(connection, weapon)
 
     def get_weapon(self, type: WeaponType = None) -> list[Item] | Item:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            if (type is None):
-                return list(conn.root.weapons.values())
-            else:
-                return conn.root.weapons.get(type.value, None)
-        finally:
-            if conn is not None:
-                conn.close()
+        conn = Db().get_connection()
+        if (type is None):
+            return list(conn.root.weapons.values())
+        else:
+            return conn.root.weapons.get(type.value, None)
 
     def delete_weapon(self, type: WeaponType = None) -> None:
         with Db().open_transaction() as connection:

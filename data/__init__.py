@@ -2,6 +2,7 @@
 
 from .db import Db
 from .armor_repository import ArmorRepository
+from .back_repository import BackRepository
 from .build_repository import BuildRepository
 from .foods_repository import FoodsRepository
 from .professions_repository import ProfessionsRepository

@@ -17,6 +17,7 @@ config_provider = ConfigProvider()
 class Db(metaclass=Singleton):
 
     db: ZODB.DB = None
+    connection = None
 
     def __init__(self) -> None:
         if (not os.path.exists(config_provider.get_data_dir())):
@@ -32,7 +33,7 @@ class Db(metaclass=Singleton):
     def open_transaction(self):
         return self.db.transaction()
 
-    def open_connection(self):
+    def get_connection(self):
         return self.db.open()
 
     def __del__(self):

@@ -133,6 +133,7 @@ class Slot(Enum):
     Weapon_3 = 13
     Weapon_4 = 14
     Weapon_5 = 15
+    Elite = 16
 
 
 class SkillCategory(Enum):

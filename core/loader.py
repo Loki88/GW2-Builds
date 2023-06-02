@@ -45,13 +45,7 @@ class Loader():
     def _load_profession(self, data: dict) -> Profession:
         return Profession(data)
 
-    def load_specializations(self, professions: list[Profession]) -> list[Specialization]:
-        if (professions is not None):
-            return self._load_specializations(no_duplicates(flatten([x.specializations for x in professions])))
-        else:
-            return []
-
-    def _load_specializations(self, specializations: list[int]) -> list[Specialization]:
+    def load_specializations(self, specializations: list[int]) -> list[Specialization]:
         if (specializations is not None):
             api_specializations = [Specialization(
                 x) for x in self.client.specializations.get(ids=specializations)]

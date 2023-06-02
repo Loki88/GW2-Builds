@@ -44,7 +44,18 @@ class TestBuildRepository(unittest.TestCase):
         build = Build(1)
 
         # when
-        db_build = self.repository.save_build(build)
+        self.repository.save_build(build)
+
+        # then
+        self.assertIsNone(None, "Check that save does not throw")
+
+    def test_get_build(self):
+        # given
+        build = Build(1)
+        self.repository.save_build(build)
+
+        # when
+        db_build = self.repository.get_build()
 
         # then
         self.assertIsNotNone(db_build)
