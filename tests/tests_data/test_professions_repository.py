@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 from config import ConfigProvider
 from data import *
-from model.dao import *
+from model import *
 
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -39,43 +39,54 @@ class TestProfessionsRepository(unittest.TestCase):
         del self.data
         shutil.rmtree(test_db_dir)
 
-    def test_save_profession(self):
-        # given
-        profession = Profession(id=1, name='Test', code=1,
-                                icon='test', icon_big='big test')
-        profession.add_flag('test flag')
-        profession.add_specialization(1)
-        profession.add_specialization(3)
-        profession.add_specialization(1)
+    def _build_profession(self) -> Profession:
+        data = {
+            'id': 1,
+            'name': 'Test',
+            'code': 1,
+            'icon': 'test',
+            'icon_big': 'big test',
+            'flags': ['test flag'],
+            'specializations': [1, 3, 1],
+            'weapons': {
+                'test': {
+                    'name': 'abc',
+                    'specialization': 3,
+                    'skills': [
+                        {
+                            'id': 2,
+                            'slot': 1
+                        }
+                    ]
+                }
+            }
+        }
+        return Profession(data)
 
-        weapon = Weapon('test', 1)
-        profession.add_weapon(weapon)
-
-        # when
-        db_profession = self.repository.save_profession(profession)
-
-        # then
+    def _assert_profession(self, profession: Profession, db_profession: Profession):
         self.assertIsNotNone(db_profession)
         self.assertEqual(profession.id, db_profession.id)
         self.assertEqual(profession.name, db_profession.name)
         self.assertEqual(profession.code, db_profession.code)
         self.assertEqual(profession.icon, db_profession.icon)
         self.assertEqual(profession.icon_big, db_profession.icon_big)
-        self.assertListEqual(profession.flags.data, ['test flag'])
-        self.assertListEqual(profession.specializations.data, [1, 3])
-        self.assertTrue(weapon in profession.weapons)
+        self.assertListEqual(profession.flags, ['test flag'])
+        self.assertListEqual(profession.specializations, [1, 3])
+        self.assertListEqual(profession.weapons, db_profession.weapons)
+
+    def test_save_profession(self):
+        # given
+        profession = self._build_profession()
+
+        # when
+        db_profession = self.repository.save_profession(profession)
+
+        # then
+        self._assert_profession(profession, db_profession)
 
     def test_get_professions(self):
         # given
-        profession = Profession(id=1, name='Test', code=1,
-                                icon='test', icon_big='big test')
-        profession.add_flag('test flag')
-        profession.add_specialization(1)
-        profession.add_specialization(3)
-        profession.add_specialization(1)
-
-        weapon = Weapon('test', 1)
-        profession.add_weapon(weapon)
+        profession = self._build_profession()
 
         self.repository.save_profession(profession)
 
@@ -87,26 +98,11 @@ class TestProfessionsRepository(unittest.TestCase):
         self.assertEqual(len(db_professions), 1)
 
         db_profession = db_professions[0]
-        self.assertEqual(profession.id, db_profession.id)
-        self.assertEqual(profession.name, db_profession.name)
-        self.assertEqual(profession.code, db_profession.code)
-        self.assertEqual(profession.icon, db_profession.icon)
-        self.assertEqual(profession.icon_big, db_profession.icon_big)
-        self.assertListEqual(profession.flags.data, ['test flag'])
-        self.assertListEqual(profession.specializations.data, [1, 3])
-        self.assertTrue(weapon in profession.weapons)
+        self._assert_profession(profession, db_profession)
 
     def test_get_profession_by_id(self):
         # given
-        profession = Profession(id=1, name='Test', code=1,
-                                icon='test', icon_big='big test')
-        profession.add_flag('test flag')
-        profession.add_specialization(1)
-        profession.add_specialization(3)
-        profession.add_specialization(1)
-
-        weapon = Weapon('test', 1)
-        profession.add_weapon(weapon)
+        profession = self._build_profession()
 
         self.repository.save_profession(profession)
 
@@ -115,26 +111,11 @@ class TestProfessionsRepository(unittest.TestCase):
         db_profession = self.repository.get_profession_by_id(1)
 
         # then
-        self.assertEqual(profession.id, db_profession.id)
-        self.assertEqual(profession.name, db_profession.name)
-        self.assertEqual(profession.code, db_profession.code)
-        self.assertEqual(profession.icon, db_profession.icon)
-        self.assertEqual(profession.icon_big, db_profession.icon_big)
-        self.assertListEqual(profession.flags.data, ['test flag'])
-        self.assertListEqual(profession.specializations.data, [1, 3])
-        self.assertTrue(weapon in profession.weapons)
+        self._assert_profession(profession, db_profession)
 
     def test_get_profession_by_name(self):
         # given
-        profession = Profession(id=1, name='Test', code=1,
-                                icon='test', icon_big='big test')
-        profession.add_flag('test flag')
-        profession.add_specialization(1)
-        profession.add_specialization(3)
-        profession.add_specialization(1)
-
-        weapon = Weapon('test', 1)
-        profession.add_weapon(weapon)
+        profession = self._build_profession()
 
         self.repository.save_profession(profession)
 
@@ -147,26 +128,11 @@ class TestProfessionsRepository(unittest.TestCase):
         self.assertEqual(len(db_professions), 1)
 
         db_profession = db_professions[0]
-        self.assertEqual(profession.id, db_profession.id)
-        self.assertEqual(profession.name, db_profession.name)
-        self.assertEqual(profession.code, db_profession.code)
-        self.assertEqual(profession.icon, db_profession.icon)
-        self.assertEqual(profession.icon_big, db_profession.icon_big)
-        self.assertListEqual(profession.flags.data, ['test flag'])
-        self.assertListEqual(profession.specializations.data, [1, 3])
-        self.assertTrue(weapon in profession.weapons)
+        self._assert_profession(profession, db_profession)
 
     def test_delete_professions(self):
         # given
-        profession = Profession(id=1, name='Test', code=1,
-                                icon='test', icon_big='big test')
-        profession.add_flag('test flag')
-        profession.add_specialization(1)
-        profession.add_specialization(3)
-        profession.add_specialization(1)
-
-        weapon = Weapon('test', 1)
-        profession.add_weapon(weapon)
+        profession = self._build_profession()
 
         self.repository.save_profession(profession)
 
@@ -179,15 +145,7 @@ class TestProfessionsRepository(unittest.TestCase):
 
     def test_delete_profession_by_id(self):
         # given
-        profession = Profession(id=1, name='Test', code=1,
-                                icon='test', icon_big='big test')
-        profession.add_flag('test flag')
-        profession.add_specialization(1)
-        profession.add_specialization(3)
-        profession.add_specialization(1)
-
-        weapon = Weapon('test', 1)
-        profession.add_weapon(weapon)
+        profession = self._build_profession()
 
         self.repository.save_profession(profession)
 

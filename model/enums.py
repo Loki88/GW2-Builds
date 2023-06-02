@@ -240,3 +240,8 @@ class DamageType(Enum):
 class InfusionFlag(Enum):
     Enrichment = 0  # Item has an enrichment slot.
     Infusion = 1  # Item has an infusion slot.
+
+
+class TraitSlot(Enum):
+    Major = 0
+    Minor = 1

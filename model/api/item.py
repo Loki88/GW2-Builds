@@ -68,7 +68,7 @@ class InfixUpgrade(ApiDecorator):
                          dict_attributes,
                          {
                              'attributes': lambda x: [InfixAttributeBonus(a) for a in x],
-                             'buff': lambda x: InfixBuff[x] if x is not None else None
+                             'buff': lambda x: InfixBuff(x) if x is not None else None
                          }
                          | converters)
 
@@ -158,8 +158,8 @@ class UpgradeComponentDetail(ItemDetail):
                          dict_attributes,
                          {
                              'type': lambda x: UpgradeComponentType[x] if x is not None else None,
-                             'flags': lambda x: [UpgradeComponentFlags(f) for f in x],
-                             'infusion_upgrade_flags': lambda x: [InfusionFlag(f) for f in x],
+                             'flags': lambda x: [UpgradeComponentFlags[f] for f in x],
+                             'infusion_upgrade_flags': lambda x: [InfusionFlag[f] for f in x],
                              'infix_upgrade': lambda x: self._get_infix_upgrade(x) if x is not None else None,
                              'stat_choices': lambda x: [int(s) for s in x],
                          }

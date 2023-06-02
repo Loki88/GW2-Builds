@@ -4,7 +4,7 @@ import unittest
 
 from core import Loader
 from core.loader import HEAVY_PROFESSIONS, LIGHT_PROFESSIONS, MEDIUM_PROFESSIONS
-from model.api import Specialization, ItemType, ItemRarity
+from model import Specialization, ItemType, ItemRarity
 
 
 class TestLoader(unittest.TestCase):

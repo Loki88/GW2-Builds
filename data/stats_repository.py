@@ -2,7 +2,7 @@
 
 import BTrees
 
-from model.dao import ItemStats
+from model import ItemStats
 from utils import Singleton
 from .db import Db
 

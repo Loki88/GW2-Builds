@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 from config import ConfigProvider
 from data import *
-from model.dao import *
+from model import *
 from model import ItemType, DamageType, WeaponType, ItemRarity
 
 
@@ -41,9 +41,26 @@ class TestWeaponRepository(unittest.TestCase):
         shutil.rmtree(test_db_dir)
 
     def _build_item(self) -> Item:
-        detail = WeaponDetail(type=WeaponType.Dagger, damage_type=DamageType.Physical, min_power=150,
-                              max_power=500, defense=140, attribute_adjustment=356)
-        return Item(id=1, chat_link='[abcde1]', name='Tet', icon='test', description='test', type=ItemType.Weapon, rarity=ItemRarity.Legendary, details=detail)
+        data = {
+            'id': 1,
+            'chat_link': '[abcde1]',
+            'name': 'Tet',
+            'icon': 'test',
+            'description': 'test',
+            'type': ItemType.Weapon.name,
+            'rarity': ItemRarity.Legendary.name,
+            'details': {
+                'type': WeaponType.Dagger.name,
+                'damage_type': DamageType.Physical.name,
+                'min_power': 150,
+                'max_power': 500,
+                'defense': 140,
+                'attribute_adjustment': 356,
+                'infix_upgrade': None
+            }
+        }
+
+        return Item(data)
 
     def _assert_weapon(self, db_weapon: Item, weapon: Item):
         self.assertIsNotNone(db_weapon)

@@ -3,6 +3,7 @@
 from typing import Callable
 from .api_decorator import ApiDecorator
 from .weapon import Weapon
+from utils import no_duplicates
 
 
 class Profession(ApiDecorator):
@@ -18,8 +19,8 @@ class Profession(ApiDecorator):
                          list_attributes + ['specializations', 'flags'],
                          dict_attributes + ['weapons'],
                          {
-                             'specializations': lambda x: [int(s) for s in x],
-                             'weapons': lambda x: [Weapon(a, b) for a, b in x.items()] if x is not None else []
+                             'specializations': lambda x: no_duplicates([int(s) for s in x]),
+                             'weapons': lambda x: [Weapon({'name': a} | b) for a, b in x.items()] if x is not None else []
                          }
                          | converters)
 

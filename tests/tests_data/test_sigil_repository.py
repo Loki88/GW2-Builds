@@ -7,8 +7,7 @@ from unittest.mock import Mock
 
 from config import ConfigProvider
 from data import *
-from model.dao import *
-from model import ItemType, ItemRarity, UpgradeComponentFlags, UpgradeComponentType, UpgradeComponentDetail, InfixBuff
+from model import ItemType, ItemRarity, UpgradeComponentFlags, UpgradeComponentType, UpgradeComponentDetail, InfixBuff, Attribute
 
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -41,16 +40,41 @@ class TestInfusionsRepository(unittest.TestCase):
         shutil.rmtree(test_db_dir)
 
     def _build_item(self) -> Item:
-        infix_buff = InfixBuff(skill_id=14, description='Test')
-        infix_bonus = [InfixAttributeBonus(
-            Attribute.ConditionDamage, modifier=5)]
-        infix_upgrade = InfixUpgrade(
-            id=1, attributes=infix_bonus, buff=infix_buff)
-        detail = UpgradeComponentDetail(
-            type=UpgradeComponentType.Sigil, infix_upgrade=infix_upgrade)
-        detail.add_bonus('expertise')
-        detail.add_flag(UpgradeComponentFlags.Weapons)
-        return Item(id=1, chat_link='[abcde1]', name='Tet', icon='test', description='test', type=ItemType.UpgradeComponent, rarity=ItemRarity.Legendary, details=detail)
+        data = {
+            'id': 1,
+            'chat_link': '[abcde1]',
+            'name': 'Tet',
+            'icon': 'test',
+            'description': 'test',
+            'type': ItemType.UpgradeComponent.name,
+            'rarity': ItemRarity.Legendary.name,
+            'details': {
+                'type': UpgradeComponentType.Sigil.name,
+                'infix_upgrade': {
+                    'id': 1,
+                    'attributes': [
+                        {
+                            'attribute': Attribute.ConditionDamage.name,
+                            'modifier': 5
+                        }
+                    ],
+                    'buff': {
+                        'skill_id': 5,
+                        'description': 'Test'
+                    }
+                },
+                'duration_ms': 30000,
+                'recipe_id': 1,
+                'apply_count': 1,
+                'name': 'Test',
+                'icon': 'test',
+                'bonuses': ['expertise'],
+                'flags': [UpgradeComponentFlags.Weapons.name],
+                'infusion_upgrade_flags': [InfusionFlag.Infusion.name]
+            }
+        }
+
+        return Item(data)
 
     def _assert_sigil(self, db_sigil: Item, sigil: Item):
         self.assertIsNotNone(db_sigil)
@@ -63,10 +87,10 @@ class TestInfusionsRepository(unittest.TestCase):
         self.assertEqual(sigil.details.type, db_sigil.details.type)
         self.assertEqual(sigil.details.infix_upgrade.id,
                          db_sigil.details.infix_upgrade.id)
-        self.assertListEqual(sigil.details.flags.data,
-                             db_sigil.details.flags.data)
-        self.assertListEqual(sigil.details.infusion_upgrade_flags.data,
-                             db_sigil.details.infusion_upgrade_flags.data)
+        self.assertListEqual(sigil.details.flags,
+                             db_sigil.details.flags)
+        self.assertListEqual(sigil.details.infusion_upgrade_flags,
+                             db_sigil.details.infusion_upgrade_flags)
 
     def test_save_sigil(self):
         # given

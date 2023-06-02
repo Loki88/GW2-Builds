@@ -2,7 +2,7 @@
 
 import BTrees
 
-from model.dao import Item, WeaponDetail
+from model import Item, WeaponDetail
 from model import ItemType, WeaponType
 from utils import Singleton
 from .db import Db

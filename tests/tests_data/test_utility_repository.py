@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 from config import ConfigProvider
 from data import *
-from model.dao import *
+from model import *
 from model import ItemType, ItemRarity, ConsumableType
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -40,9 +40,26 @@ class TestInfusionsRepository(unittest.TestCase):
         shutil.rmtree(test_db_dir)
 
     def _build_item(self) -> Item:
-        detail = ConsumableDetail(type=ConsumableType.Utility, description="abc",
-                                  duration_ms=30000, recipe_id=1, apply_count=1, name='Test', icon='test')
-        return Item(id=1, chat_link='[abcde1]', name='Tet', icon='test', description='test', type=ItemType.Consumable, rarity=ItemRarity.Ascended, details=detail)
+        data = {
+            'id': 1,
+            'chat_link': '[abcde1]',
+            'name': 'Tet',
+            'icon': 'test',
+            'description': 'test',
+            'type': ItemType.Consumable.name,
+            'rarity': ItemRarity.Ascended.name,
+            'details': {
+                'type': ConsumableType.Utility.name,
+                'description': 'abc',
+                'duration_ms': 30000,
+                'recipe_id': 1,
+                'apply_count': 1,
+                'name': 'Test',
+                'icon': 'test'
+            }
+        }
+
+        return Item(data)
 
     def _assert_utility(self, db_utility: Item, utility: Item):
         self.assertIsNotNone(db_utility)

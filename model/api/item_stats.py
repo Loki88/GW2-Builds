@@ -23,7 +23,7 @@ class AttributeBonus(ApiDecorator):
                          | converters)
 
 
-class ItemStats:
+class ItemStats(ApiDecorator):
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],

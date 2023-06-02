@@ -2,7 +2,7 @@
 
 import BTrees
 
-from model.dao import Item, UpgradeComponentDetail
+from model import Item, UpgradeComponentDetail
 from model import ItemType, UpgradeComponentType
 from utils import Singleton
 from .db import Db

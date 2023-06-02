@@ -19,9 +19,6 @@ class WeaponSkill(ApiDecorator):
 
 
 class Weapon(ApiDecorator):
-    name: str
-    specialization: int  # Weapons supported by all specializatiions will have None
-    skills: list[WeaponSkill]
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],

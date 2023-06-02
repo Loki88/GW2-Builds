@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 from config import ConfigProvider
 from data import *
-from model.dao import *
+from model import *
 
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -40,7 +40,16 @@ class TestTraitRepository(unittest.TestCase):
         shutil.rmtree(test_db_dir)
 
     def _build_trait(self) -> Trait:
-        return Trait(id=1, name='Test', icon='test', description='test desc', specialization=1, tier=2, slot='abc')
+        data = {
+            'id': 1,
+            'name': 'Test',
+            'icon': 'test',
+            'description': 'test desc',
+            'specialization': 1,
+            'tier': 2,
+            'slot': TraitSlot.Major.name
+        }
+        return Trait(data)
 
     def _assert_trait(self, trait: Trait, db_trait: Trait):
         self.assertIsNotNone(db_trait)

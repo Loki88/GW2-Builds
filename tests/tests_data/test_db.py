@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 from config import ConfigProvider
 from data import Db
-from model.dao import *
+from model import *
 
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))

@@ -2,7 +2,7 @@
 
 import persistent
 
-from model.dao import Item, TrinketDetail
+from model import Item, TrinketDetail
 from utils import Singleton
 from .db import Db
 from model import ItemType, TrinketType

@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 from config import ConfigProvider
 from data import *
-from model.dao import *
+from model import *
 from model import ItemType, ItemRarity
 
 
@@ -41,9 +41,24 @@ class TestArmorRepository(unittest.TestCase):
         shutil.rmtree(test_db_dir)
 
     def _build_item(self) -> Item:
-        detail = ArmorDetail(type=ArmorType.Boots, weight_class=ArmorWeight.Medium,
-                             defense=160, attribute_adjustment=12.4, infix_upgrade=None)
-        return Item(id=1, chat_link='[abcde1]', name='Tet', icon='test', description='test', type=ItemType.Armor, rarity=ItemRarity.Legendary, details=detail)
+        data = {
+            'id': 1,
+            'chat_link': '[abcde1]',
+            'name': 'Tet',
+            'icon': 'test',
+            'description': 'test',
+            'type': ItemType.Armor.name,
+            'rarity': ItemRarity.Legendary.name,
+            'details': {
+                'type': ArmorType.Boots.name,
+                'weight_class': ArmorWeight.Medium.name,
+                'defense': 160,
+                'attribute_adjustment': 12.4,
+                'infix_upgrade': None
+            }
+        }
+
+        return Item(data)
 
     def _assert_armor(self, db_armor: Item, armor: Item):
         self.assertIsNotNone(db_armor)
