@@ -48,11 +48,6 @@ jobs:
           poetry config virtualenvs.in-project true
           poetry install
 
-      - name: Run Tests & Check Coverage
-        run: |
-          poetry run python -m coverage run -m unittest discover
-          poetry run python -m coverage report -m --skip-covered --omit 'tests/*'
-
       - name: Cache Coverage
         if: github.event_name != 'pull_request'
         uses: actions/cache@v3
@@ -60,6 +55,11 @@ jobs:
         with:
           path: ./.coverage
           key: test-coverage
+
+      - name: Run Tests & Check Coverage
+        run: |
+          poetry run python -m coverage run -m unittest discover
+          poetry run python -m coverage report -m --skip-covered --omit 'tests/*'
 
       - name: Build Project
         run: poetry build
