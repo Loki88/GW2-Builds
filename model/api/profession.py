@@ -1,33 +1,27 @@
 #!/usr/bin/env python
 
-from .utils import *
+from typing import Callable
+from .api_decorator import ApiDecorator
 from .weapon import Weapon
 
 
-class Profession:
-    id: str
-    name: str
-    code: int
-    icon: str
-    icon_big: str
-    specializations: list[int]
-    weapons: list[Weapon]
-    flags: list[str]
+class Profession(ApiDecorator):
 
-    def __init__(self, data: dict = None) -> None:
-        if (data is not None):
-            self.id = get_or_none('id', data)
-            self.name = get_or_none('name', data)
-            self.code = get_or_none('code', data)
-            self.icon = get_or_none('icon', data)
-            self.icon_big = get_or_none('icon_big', data)
-
-            self.specializations = [
-                int(x) for x in get_list_or_empty('specializations', data)]
-            self.weapons = [Weapon(x, y) for x, y in get_dict_or_empty(
-                'weapons', data).items()]
-
-            self.flags = data['flags']
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['id', 'name',
+                                       'code', 'icon', 'icon_big'],
+                         list_attributes + ['specializations', 'flags'],
+                         dict_attributes + ['weapons'],
+                         {
+                             'specializations': lambda x: [int(s) for s in x],
+                             'weapons': lambda x: [Weapon(a, b) for a, b in x.items()] if x is not None else []
+                         }
+                         | converters)
 
     def __str__(self) -> str:
         return f'Profession ({self.name}, weapons: {self.weapons})'

@@ -3,7 +3,7 @@
 from abc import ABC
 from typing import Callable
 from .api_decorator import ApiDecorator
-from .utils import get_or_none, get_list_or_empty
+from .utils import get_or_none
 from model.enums import *
 
 
@@ -238,7 +238,7 @@ class Item(ApiDecorator):
                          {
                              'type': lambda x: ItemType[x] if x is not None else None,
                              'rarity': lambda x: ItemRarity[x] if x is not None else None,
-                             'details': lambda x: get_item_details(x) if x is not None else None,
+                             'details': lambda x: get_item_details(x, self.type) if x is not None else None,
                          }
                          | converters)
 
