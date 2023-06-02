@@ -10,14 +10,47 @@ HEAVY_PROFESSIONS = ['Guardian', 'Revenant', 'Warrior']
 MEDIUM_PROFESSIONS = ['Engineer', 'Ranger', 'Thief']
 LIGHT_PROFESSIONS = ['Elementalist', 'Mesmer', 'Necromancer']
 
-HEAVY_SPECIALIZATIONS = ['Guardian', 'Dragonhunter', 'Firebrand', 'Willbender', 'Revenant', 'Herald', 'Renegade', 'Vindicator', 'Warrior', 'Berserker'
-                         'Spellbreaker', 'Bladesworn']
+HEAVY_SPECIALIZATIONS = [
+    'Guardian',
+    'Dragonhunter',
+    'Firebrand',
+    'Willbender',
+    'Revenant',
+    'Herald',
+    'Renegade',
+    'Vindicator',
+    'Warrior',
+    'Berserker'
+    'Spellbreaker',
+    'Bladesworn']
 
-MEDIUM_SPECIALIZATIONS = ['Engineer', 'Scrapper', 'Holosmith', 'Mechanist', 'Ranger', 'Druid', 'Soulbeast', 'Untamed', 'Thief', 'Daredevil',
-                          'Deadeye', 'Specter']
+MEDIUM_SPECIALIZATIONS = [
+    'Engineer',
+    'Scrapper',
+    'Holosmith',
+    'Mechanist',
+    'Ranger',
+    'Druid',
+    'Soulbeast',
+    'Untamed',
+    'Thief',
+    'Daredevil',
+    'Deadeye',
+    'Specter']
 
-LIGHT_SPECIALIZATIONS = ['Elementalist', 'Tempest', 'Weaver', 'Catalyst', 'Mesmer', 'Chronomancer', 'Mirage', 'Virtuoso', 'Necromancer',
-                         'Reaper', 'Scourge', 'Harbinger']
+LIGHT_SPECIALIZATIONS = [
+    'Elementalist',
+    'Tempest',
+    'Weaver',
+    'Catalyst',
+    'Mesmer',
+    'Chronomancer',
+    'Mirage',
+    'Virtuoso',
+    'Necromancer',
+    'Reaper',
+    'Scourge',
+    'Harbinger']
 
 ALL_PROFESSIONS = HEAVY_PROFESSIONS + MEDIUM_PROFESSIONS + LIGHT_PROFESSIONS
 
@@ -48,21 +81,24 @@ class Loader():
     def load_specializations(self, specializations: list[int]) -> list[Specialization]:
         if (specializations is not None):
             api_specializations = [Specialization(
-                x) for x in self.client.specializations.get(ids=specializations)]
+                x) for x in self.client.specializations.get(ids=no_duplicates(specializations))]
             return api_specializations
         else:
             return []
 
-    def load_traits(self, specializations: list[Specialization]):
-        if (specializations is not None):
-            return self._load_traits(flatten([[*x.minor_traits, *x.major_traits] for x in specializations]))
+    def load_traits(self, traits: list[int]) -> list[Trait]:
+        if (traits is not None):
+            chunks = list(partition(no_duplicates(traits), PARTITION_SIZE))
+            jobs = PARALLEL_JOBS if PARALLEL_JOBS < len(chunks) else len(chunks)
+            api_traits = Parallel(n_jobs=jobs)(delayed(self._load_traits_by_ids)(chunk)
+                                               for chunk in list(partition(no_duplicates(traits), PARTITION_SIZE)))
+            return flatten(api_traits)
         else:
             return []
 
-    def _load_traits(self, traits: list[int]) -> list[Trait]:
+    def _load_traits_by_ids(self, traits: list[int]) -> list[Trait]:
         if (traits is not None):
-            api_traits = [Trait(x) for x in self.client.traits.get(ids=traits)]
-            return api_traits
+            return [Trait(x) for x in self.client.traits.get(ids=traits)]
         else:
             return []
 
@@ -79,8 +115,10 @@ class Loader():
         if (items_id is None):
             items_id = [int(x) for x in self.client.items.get()]
 
-        items = Parallel(n_jobs=PARALLEL_JOBS)(delayed(self._load_items_by_ids)(
-            chunk, items_filter) for chunk in list(partition(items_id, PARTITION_SIZE)))
+        chunks = list(partition(no_duplicates(items_id), PARTITION_SIZE))
+        jobs = PARALLEL_JOBS if PARALLEL_JOBS < len(chunks) else len(chunks)
+        items = Parallel(n_jobs=jobs)(delayed(self._load_items_by_ids)
+                                      (chunk, items_filter) for chunk in list(partition(items_id, PARTITION_SIZE)))
         return flatten(items)
 
     def _load_items_by_ids(self, items_ids: list[int], items_filter: dict[ItemType, ItemRarity] = None) -> list[Item]:

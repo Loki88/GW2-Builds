@@ -16,6 +16,11 @@ class Attribute(Enum):
     AgonyResistance = 9
 
 
+# adding None as attribute value
+attributes = [(m.name, m.value) for m in Attribute] + [('None', 10)]
+Attribute = Enum('Attribute', attributes)
+
+
 class Condition(Enum):
     Vulnerability = 0
     Bleeding = 1
@@ -100,6 +105,7 @@ class FactType(Enum):
     Recharge = 13
     Time = 14
     Unblockable = 15
+    StunBreak = 16
 
 
 class SkillType(Enum):

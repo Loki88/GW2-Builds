@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 from typing import Callable
 from abc import ABC, abstractmethod
 from .api_decorator import ApiDecorator
@@ -7,6 +8,7 @@ from model.enums import Attribute, Condition, Boon, ControlEffect, FieldType, Fi
 
 
 class Fact(ApiDecorator, ABC):
+    FIELDS = ['text', 'icon', 'type']
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],
@@ -24,6 +26,7 @@ class Fact(ApiDecorator, ABC):
 
 
 class TargetedFact(Fact, ABC):
+    FIELDS = Fact.FIELDS + ['target']
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],
@@ -41,6 +44,7 @@ class TargetedFact(Fact, ABC):
 
 
 class AttributeAdjust(TargetedFact):
+    FIELDS = TargetedFact.FIELDS + ['value']
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],
@@ -55,6 +59,7 @@ class AttributeAdjust(TargetedFact):
 
 
 class Buff(Fact):
+    FIELDS = Fact.FIELDS + ['duration', 'status', 'description', 'apply_count']
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],
@@ -86,6 +91,7 @@ class Buff(Fact):
 
 
 class BuffConversion(TargetedFact):
+    FIELDS = TargetedFact.FIELDS + ['source', 'percent']
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],
@@ -103,6 +109,7 @@ class BuffConversion(TargetedFact):
 
 
 class ComboField(Fact):
+    FIELDS = Fact.FIELDS + ['field_type']
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],
@@ -120,6 +127,7 @@ class ComboField(Fact):
 
 
 class ComboFinisher(Fact):
+    FIELDS = Fact.FIELDS + ['finisher_type', 'percent']
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],
@@ -137,6 +145,7 @@ class ComboFinisher(Fact):
 
 
 class Damage(Fact):
+    FIELDS = Fact.FIELDS + ['hit_count']
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],
@@ -151,6 +160,7 @@ class Damage(Fact):
 
 
 class Distance(Fact):
+    FIELDS = Fact.FIELDS + ['distance']
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],
@@ -165,10 +175,11 @@ class Distance(Fact):
 
 
 class NoData(Fact):
-    pass
+    FIELDS = Fact.FIELDS
 
 
 class Number(Fact):
+    FIELDS = Fact.FIELDS + ['value']
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],
@@ -183,6 +194,7 @@ class Number(Fact):
 
 
 class Percent(Fact):
+    FIELDS = Fact.FIELDS + ['percent']
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],
@@ -212,6 +224,7 @@ class BuffPrefix(ApiDecorator):
 
 
 class PrefixedBuff(Buff):
+    FIELDS = Buff.FIELDS + ['prefix']
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],
@@ -229,18 +242,34 @@ class PrefixedBuff(Buff):
 
 
 class Radius(Distance):
-    pass
+    FIELDS = Distance.FIELDS
 
 
 class Range(Number):
-    pass
+    FIELDS = Number.FIELDS
 
 
 class Recharge(Number):
-    pass
+    FIELDS = Number.FIELDS
+
+
+class StunBreak(Fact):
+    FIELDS = Fact.FIELDS + ['value']
+
+    def __init__(self, data: dict = None,
+                 attributes: list[str] = [],
+                 list_attributes: list[str] = [],
+                 dict_attributes: list[str] = [],
+                 converters: dict[str, Callable] = {}) -> None:
+        super().__init__(data,
+                         attributes + ['value'],
+                         list_attributes,
+                         dict_attributes,
+                         converters)
 
 
 class Time(Fact):
+    FIELDS = Fact.FIELDS + ['duration']
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],
@@ -255,6 +284,7 @@ class Time(Fact):
 
 
 class Unblockable(Fact):
+    FIELDS = Fact.FIELDS + ['value']
 
     def __init__(self, data: dict = None,
                  attributes: list[str] = [],
@@ -285,14 +315,33 @@ FACTS_DICT: dict = {
     FactType.Radius: Radius,
     FactType.Range: Range,
     FactType.Recharge: Recharge,
+    FactType.StunBreak: StunBreak,
     FactType.Time: Time,
     FactType.Unblockable: Unblockable
 }
 
 
+def get_type_from_keys(keys: set[str]):
+    matches = 0
+    match_size = sys.maxsize
+    curr_type = None
+    for type, c in FACTS_DICT.items():
+        tmp = len(set(c.FIELDS).intersection(keys))
+        c_size = len(c.FIELDS)
+        if tmp > matches or c_size < match_size:
+            match_size = c_size
+            matches = tmp
+            curr_type = type
+    return curr_type
+
+
 def get_fact(data: dict = None) -> Fact | None:
     if (data is not None):
-        fact_type = FactType[data['type']]
+        if ('type' in data):
+            fact_type = FactType[data['type']]
+        else:
+            fact_type = get_type_from_keys(data.keys())
+
         constructor = FACTS_DICT[fact_type]
         return constructor(data)
     else:
