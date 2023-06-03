@@ -284,6 +284,37 @@ class WeaponType(Enum):
     ToyTwoHanded = 22
 
 
+class OneHandedMainHandWeaponType(Enum):
+    Axe = auto()
+    Dagger = auto()
+    Mace = auto()
+    Pistol = auto()
+    Scepter = auto()
+    Sword = auto()
+
+
+class OneHandedOffHandWeaponType(Enum):
+    Focus = auto()
+    Shield = auto()
+    Torch = auto()
+    Warhorn = auto()
+
+
+class TwoHandedWeaponType(Enum):
+    Greatsword = auto()
+    Hammer = auto()
+    LongBow = auto()
+    Rifle = auto()
+    ShortBow = auto()
+    Staff = auto()
+
+
+class AquaticWeaponType(Enum):
+    Harpoon = auto()
+    Speargun = auto()
+    Trident = auto()
+
+
 class DamageType(Enum):
     Fire = 0
     Ice = 1
