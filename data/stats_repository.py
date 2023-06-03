@@ -14,7 +14,7 @@ class StatsRepository(metaclass=Singleton):
             try:
                 if connection.root.stats is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.stats = BTrees.OOBTree.BTree()
 
     def _save_single(self, connection, stat: ItemStats):

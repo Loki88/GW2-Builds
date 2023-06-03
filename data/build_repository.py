@@ -14,7 +14,7 @@ class BuildRepository(metaclass=Singleton):
             try:
                 if connection.root.build is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.build = None
 
     def save_build(self, build: Build):

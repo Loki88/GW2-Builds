@@ -14,7 +14,7 @@ class SpecializationsRepository(metaclass=Singleton):
             try:
                 if connection.root.specializations is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.specializations = BTrees.OOBTree.BTree()
 
     def _save_single_specialization(self, specialization: Specialization, connection):

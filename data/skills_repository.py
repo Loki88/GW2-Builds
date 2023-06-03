@@ -14,7 +14,7 @@ class SkillsRepository(metaclass=Singleton):
             try:
                 if connection.root.skills is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.skills = BTrees.OOBTree.BTree()
 
     def _save_single(self, connection, skill: Skill):

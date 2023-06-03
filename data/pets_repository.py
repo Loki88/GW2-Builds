@@ -13,7 +13,7 @@ class PetsRepository(metaclass=Singleton):
             try:
                 if connection.root.pets is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.pets = BTrees.OOBTree.BTree()
 
     # TODO

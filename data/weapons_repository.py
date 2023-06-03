@@ -15,7 +15,7 @@ class WeaponsRepository(metaclass=Singleton):
             try:
                 if connection.root.weapons is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.weapons = BTrees.OOBTree.BTree()
 
     def _save_single(self, connection, weapon: Item) -> Item:

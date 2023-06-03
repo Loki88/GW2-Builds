@@ -15,7 +15,7 @@ class ArmorRepository(metaclass=Singleton):
             try:
                 if connection.root.armor is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.armor = persistent.mapping.PersistentMapping()
 
     def _save_single(self, connection, armor: Item):

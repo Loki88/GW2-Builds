@@ -16,7 +16,7 @@ class ProfessionsRepository(metaclass=Singleton):
                     pass
                 else:
                     connection.root.professions = BTrees.OOBTree.BTree()
-            except:
+            except BaseException:
                 connection.root.professions = BTrees.OOBTree.BTree()
 
     def _save_single(self, profession: Profession, connection):

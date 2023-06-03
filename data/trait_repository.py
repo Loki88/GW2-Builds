@@ -14,7 +14,7 @@ class TraitsRepository(metaclass=Singleton):
             try:
                 if connection.root.traits is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.traits = BTrees.OOBTree.BTree()
 
     def _save_single(self, connection, trait: Trait):

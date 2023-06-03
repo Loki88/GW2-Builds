@@ -15,7 +15,7 @@ class TrinketsRepository(metaclass=Singleton):
             try:
                 if connection.root.trinkets is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.trinkets = persistent.mapping.PersistentMapping()
 
     def _save_single(self, connection, trinket: Item):
