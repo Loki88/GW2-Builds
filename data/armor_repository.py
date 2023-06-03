@@ -15,43 +15,44 @@ class ArmorRepository(metaclass=Singleton):
             try:
                 if connection.root.armor is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.armor = persistent.mapping.PersistentMapping()
 
-    def save_armor(self, armor: Item) -> Item:
+    def _save_single(self, connection, armor: Item):
         if (armor.type == ItemType.Armor):
             details: ArmorDetail = armor.details
-            with Db().open_transaction() as connection:
-                if (details.weight_class.value not in connection.root.armor):
-                    connection.root.armor[details.weight_class.value] = persistent.mapping.PersistentMapping(
-                    )
-                connection.root.armor[details.weight_class.value][details.type.value] = armor
-                return connection.root.armor[details.weight_class.value][details.type.value]
+            if (details.weight_class.value not in connection.root.armor):
+                connection.root.armor[details.weight_class.value] = persistent.mapping.PersistentMapping(
+                )
+            connection.root.armor[details.weight_class.value][details.type.value] = armor
         else:
             raise ValueError(armor)
+
+    def save_armor(self, armor: Item | list[Item]):
+        with Db().open_transaction() as connection:
+            if (isinstance(armor, list)):
+                for x in armor:
+                    self._save_single(connection, x)
+            else:
+                self._save_single(connection, armor)
 
     def _get_armors(self, conn) -> list[Item]:
         return flatten([x.values() for x in conn.root.armor.values()])
 
     def get_armor(self, weight: ArmorWeight = None, type: ArmorType = None) -> list[Item] | Item:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            if (type is None and weight is None):
-                return self._get_armors(conn)
-            elif (type is None):
-                if (weight.value in conn.root.armor):
-                    return list(conn.root.armor[weight.value].values())
-                else:
-                    return []
-            elif (weight is None):
-                return [x[type.value] for x in conn.root.armor.values() if type.value in x]
+        conn = Db().get_connection()
+        if (type is None and weight is None):
+            return self._get_armors(conn)
+        elif (type is None):
+            if (weight.value in conn.root.armor):
+                return list(conn.root.armor[weight.value].values())
             else:
-                weight_map = conn.root.armor.get(weight.value, None)
-                return weight_map.get(type.value, None) if weight_map is not None else None
-        finally:
-            if conn is not None:
-                conn.close()
+                return []
+        elif (weight is None):
+            return [x[type.value] for x in conn.root.armor.values() if type.value in x]
+        else:
+            weight_map = conn.root.armor.get(weight.value, None)
+            return weight_map.get(type.value, None) if weight_map is not None else None
 
     def delete_armor(self, weight: ArmorWeight = None, type: ArmorType = None) -> None:
         with Db().open_transaction() as connection:

@@ -37,7 +37,13 @@ class ApiDecorator(persistent.Persistent, ABC):
             self.__dict__['_data_'][attr] = self._prepare_single(
                 attr, data, converters, get_dict_or_empty)
 
-    def _prepare_single(self, attr: str, data: dict, converters: dict[str, Callable], get_value: Callable[[str], dict]) -> object:
+    def _prepare_single(self,
+                        attr: str,
+                        data: dict,
+                        converters: dict[str,
+                                         Callable],
+                        get_value: Callable[[str],
+                                            dict]) -> object:
         value = get_value(attr, data)
         if (attr in converters):
             value = converters[attr](value)

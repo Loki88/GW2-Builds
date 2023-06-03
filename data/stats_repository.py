@@ -14,47 +14,35 @@ class StatsRepository(metaclass=Singleton):
             try:
                 if connection.root.stats is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.stats = BTrees.OOBTree.BTree()
 
-    def save_stat(self, stat: ItemStats):
-        with Db().open_transaction() as connection:
-            connection.root.stats[stat.id] = stat
-            return connection.root.stats[stat.id]
+    def _save_single(self, connection, stat: ItemStats):
+        connection.root.stats[stat.id] = stat
 
-    def get_stats(self) -> list[ItemStats]:
-        conn = None
-        try:
-            conn = Db().open_connection()
+    def save_stat(self, stat: ItemStats | list[ItemStats]):
+        with Db().open_transaction() as connection:
+            if (isinstance(stat, list)):
+                for x in stat:
+                    self._save_single(connection, x)
+            else:
+                self._save_single(connection, stat)
+
+    def get_stats(self, id: int = None, name: str = None) -> list[ItemStats]:
+        conn = Db().get_connection()
+        if (id is None and name is None):
             return list(conn.root.stats.itervalues())
-        finally:
-            if conn is not None:
-                conn.close()
+        elif (id is None):
+            return [x for x in conn.root.stats.itervalues() if x.name == name]
+        elif (name is None):
+            return conn.root.stats.get(id, None)
+        else:
+            stat = conn.root.stats.get(id, None)
+            return stat if stat is not None and stat.name == name else None
 
-    def get_stat_by_id(self, id: int) -> ItemStats:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            return conn.root.stats[id]
-        except KeyError:
-            return None
-        finally:
-            if conn is not None:
-                conn.close()
-
-    def get_stat_by_name(self, name: str = None) -> list[ItemStats]:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            return [x for x in conn.root.stats.itervalues() if x.name is name]
-        finally:
-            if conn is not None:
-                conn.close()
-
-    def delete_stats(self):
+    def delete_stats(self, id: int = None):
         with Db().open_transaction() as connection:
-            connection.root.stats.clear()
-
-    def delete_stat_by_id(self, id: int):
-        with Db().open_transaction() as connection:
-            connection.root.stats.pop(id)
+            if (id is None):
+                connection.root.stats.clear()
+            else:
+                connection.root.stats.pop(id)

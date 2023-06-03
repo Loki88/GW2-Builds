@@ -15,29 +15,31 @@ class FoodsRepository(metaclass=Singleton):
             try:
                 if connection.root.foods is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.foods = BTrees.OOBTree.BTree()
 
-    def save_food(self, food: Item) -> Item:
+    def _save_single(self, connection, food: Item):
         if (food.type == ItemType.Consumable):
             details: ConsumableDetail = food.details
             if (details.type == ConsumableType.Food):
-                with Db().open_transaction() as connection:
-                    connection.root.foods[food.id] = food
-                    return connection.root.foods[food.id]
+                connection.root.foods[food.id] = food
+            return
         raise ValueError(food)
 
-    def get_food(self, id: int = None) -> list[Item] | Item:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            if (id is None):
-                return list(conn.root.foods.values())
+    def save_food(self, food: Item | list[Item]):
+        with Db().open_transaction() as connection:
+            if (isinstance(food, list)):
+                for x in food:
+                    self._save_single(connection, x)
             else:
-                return conn.root.foods.get(id, None)
-        finally:
-            if conn is not None:
-                conn.close()
+                self._save_single(connection, food)
+
+    def get_food(self, id: int = None) -> list[Item] | Item:
+        conn = Db().get_connection()
+        if (id is None):
+            return list(conn.root.foods.values())
+        else:
+            return conn.root.foods.get(id, None)
 
     def delete_food(self, id: int = None) -> None:
         with Db().open_transaction() as connection:

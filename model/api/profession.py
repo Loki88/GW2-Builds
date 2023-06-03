@@ -14,15 +14,17 @@ class Profession(ApiDecorator):
                  dict_attributes: list[str] = [],
                  converters: dict[str, Callable] = {}) -> None:
         super().__init__(data,
-                         attributes + ['id', 'name',
-                                       'code', 'icon', 'icon_big'],
-                         list_attributes + ['specializations', 'flags'],
+                         attributes + ['id',
+                                       'name',
+                                       'code',
+                                       'icon',
+                                       'icon_big'],
+                         list_attributes + ['specializations',
+                                            'flags'],
                          dict_attributes + ['weapons'],
-                         {
-                             'specializations': lambda x: no_duplicates([int(s) for s in x]),
-                             'weapons': lambda x: [Weapon({'name': a} | b) for a, b in x.items()] if x is not None else []
-                         }
-                         | converters)
+                         {'specializations': lambda x: no_duplicates([int(s) for s in x]),
+                             'weapons': lambda x: [Weapon({'name': a} | b) for a,
+                                                   b in x.items()] if x is not None else []} | converters)
 
     def __str__(self) -> str:
         return f'Profession ({self.name}, weapons: {self.weapons})'

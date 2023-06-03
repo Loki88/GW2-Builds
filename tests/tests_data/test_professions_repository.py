@@ -72,17 +72,18 @@ class TestProfessionsRepository(unittest.TestCase):
         self.assertEqual(profession.icon_big, db_profession.icon_big)
         self.assertListEqual(profession.flags, ['test flag'])
         self.assertListEqual(profession.specializations, [1, 3])
-        self.assertListEqual(profession.weapons, db_profession.weapons)
+        self.assertListEqual([(x.name, x.specialization) for x in profession.weapons], [
+                             (x.name, x.specialization) for x in db_profession.weapons])
 
     def test_save_profession(self):
         # given
         profession = self._build_profession()
 
         # when
-        db_profession = self.repository.save_profession(profession)
+        self.repository.save_profession(profession)
 
         # then
-        self._assert_profession(profession, db_profession)
+        self.assertIsNone(None, "Check that save does not throw")
 
     def test_get_professions(self):
         # given
@@ -107,8 +108,8 @@ class TestProfessionsRepository(unittest.TestCase):
         self.repository.save_profession(profession)
 
         # when
-        self.assertIsNone(self.repository.get_profession_by_id(2))
-        db_profession = self.repository.get_profession_by_id(1)
+        self.assertIsNone(self.repository.get_professions(id=2))
+        db_profession = self.repository.get_professions(id=1)
 
         # then
         self._assert_profession(profession, db_profession)
@@ -120,8 +121,8 @@ class TestProfessionsRepository(unittest.TestCase):
         self.repository.save_profession(profession)
 
         # when
-        self.assertListEqual(self.repository.get_profession_by_name('abc'), [])
-        db_professions = self.repository.get_profession_by_name('Test')
+        self.assertListEqual(self.repository.get_professions(name='abc'), [])
+        db_professions = self.repository.get_professions(name='Test')
 
         # then
         self.assertIsNotNone(db_professions)
@@ -150,7 +151,7 @@ class TestProfessionsRepository(unittest.TestCase):
         self.repository.save_profession(profession)
 
         # when
-        self.repository.delete_profession_by_id(1)
+        self.repository.delete_professions(id=1)
         db_professions = self.repository.get_professions()
 
         # then

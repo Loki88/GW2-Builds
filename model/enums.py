@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from enum import Enum
+from enum import Enum, auto
 
 
 class Attribute(Enum):
@@ -14,6 +14,11 @@ class Attribute(Enum):
     ConditionDamage = 7
     ConditionDuration = 8
     AgonyResistance = 9
+
+
+# adding None as attribute value
+attributes = [(m.name, m.value) for m in Attribute] + [('None', 10)]
+Attribute = Enum('Attribute', attributes)
 
 
 class Condition(Enum):
@@ -100,6 +105,9 @@ class FactType(Enum):
     Recharge = 13
     Time = 14
     Unblockable = 15
+    StunBreak = 16
+    Duration = 17
+    HealingAdjust = 18
 
 
 class SkillType(Enum):
@@ -133,6 +141,14 @@ class Slot(Enum):
     Weapon_3 = 13
     Weapon_4 = 14
     Weapon_5 = 15
+    Elite = 16
+    Heal = 17
+    Toolbelt = 18
+    Transform_1 = 19
+    Transform_2 = 20
+    Transform_3 = 21
+    Transform_4 = 22
+    Transform_5 = 23
 
 
 class SkillCategory(Enum):
@@ -152,6 +168,19 @@ class SkillFlag(Enum):
 class ConsumableType(Enum):
     Food = 0
     Utility = 1
+    AppearanceChange = 2
+    Booze = 3
+    ContractNpc = 4
+    Currency = 5
+    Generic = 6
+    Halloween = 7
+    Immediate = 8
+    MountRandomUnlock = 9
+    RandomUnlock = 10
+    Transmutation = 11
+    Unlock = 12
+    UpgradeRemoval = 13
+    TeleportToFriend = 14
 
 
 class ArmorType(Enum):
@@ -173,6 +202,12 @@ class ArmorWeight(Enum):
 class ItemRarity(Enum):
     Legendary = 0
     Ascended = 1
+    Junk = 2
+    Basic = 3
+    Fine = 4
+    Masterwork = 5
+    Rare = 6
+    Exotic = 7
 
 
 class TrinketType(Enum):
@@ -189,9 +224,29 @@ class UpgradeComponentType(Enum):
 
 
 class UpgradeComponentFlags(Enum):
-    Weapons = 0
-    Armor = 1
-    Trinkets = 2
+    Axe = auto()
+    Dagger = auto()
+    Focus = auto()
+    Greatsword = auto()
+    Hammer = auto()
+    Harpoon = auto()
+    LongBow = auto()
+    Mace = auto()
+    Pistol = auto()
+    Rifle = auto()
+    Scepter = auto()
+    Shield = auto()
+    ShortBow = auto()
+    Speargun = auto()
+    Staff = auto()
+    Sword = auto()
+    Torch = auto()
+    Trident = auto()
+    Warhorn = auto()
+    HeavyArmor = auto()
+    MediumArmor = auto()
+    LightArmor = auto()
+    Trinket = auto()
 
 
 class ItemType(Enum):

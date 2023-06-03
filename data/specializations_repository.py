@@ -14,47 +14,37 @@ class SpecializationsRepository(metaclass=Singleton):
             try:
                 if connection.root.specializations is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.specializations = BTrees.OOBTree.BTree()
 
-    def save_specialization(self, specialization: Specialization):
-        with Db().open_transaction() as connection:
-            connection.root.specializations[specialization.id] = specialization
-            return connection.root.specializations[specialization.id]
+    def _save_single_specialization(self, specialization: Specialization, connection):
+        connection.root.specializations[specialization.id] = specialization
 
-    def get_specializations(self) -> list[Specialization]:
-        conn = None
-        try:
-            conn = Db().open_connection()
+    def save_specialization(self, specialization: Specialization | list[Specialization]):
+        with Db().open_transaction() as connection:
+            if (isinstance(specialization, list)):
+                for s in specialization:
+                    self._save_single_specialization(
+                        specialization=s, connection=connection)
+            else:
+                self._save_single_specialization(
+                    specialization=specialization, connection=connection)
+
+    def get_specializations(self, id: int = None, name: str = None) -> list[Specialization]:
+        conn = Db().get_connection()
+        if (id is None and name is None):
             return list(conn.root.specializations.itervalues())
-        finally:
-            if conn is not None:
-                conn.close()
+        elif (id is None):
+            return [x for x in conn.root.specializations.itervalues() if x.name == name]
+        elif (name is None):
+            return conn.root.specializations.get(id, None)
+        else:
+            spec = conn.root.specializations.get(id, None)
+            return spec if spec is not None and spec.name == name else None
 
-    def get_specialization_by_id(self, id: int) -> Specialization:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            return conn.root.specializations[id]
-        except KeyError:
-            return None
-        finally:
-            if conn is not None:
-                conn.close()
-
-    def get_specialization_by_name(self, name: str = None) -> list[Specialization]:
-        conn = None
-        try:
-            conn = Db().open_connection()
-            return [x for x in conn.root.specializations.itervalues() if x.name is name]
-        finally:
-            if conn is not None:
-                conn.close()
-
-    def delete_specializations(self):
+    def delete_specializations(self, id: int = None):
         with Db().open_transaction() as connection:
-            connection.root.specializations.clear()
-
-    def delete_specialization_by_id(self, id: int):
-        with Db().open_transaction() as connection:
-            connection.root.specializations.pop(id)
+            if (id is None):
+                connection.root.specializations.clear()
+            else:
+                connection.root.specializations.pop(id)

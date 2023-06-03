@@ -16,9 +16,9 @@ class Skill(ApiDecorator):
         super().__init__(data,
                          attributes + ['id', 'name', 'description', 'icon', 'chat_link', 'type',
                                        'weapon_type', 'slot', 'attunement', 'cost', 'dual_wield',
-                                       'flip_skill', 'initiative', 'next_chain', 'prev_chain'],
+                                       'flip_skill', 'initiative', 'next_chain', 'prev_chain', 'toolbelt_skill'],
                          list_attributes + ['facts', 'traited_facts', 'professions', 'categories',
-                                            'transform_skills', 'bundle_skills', 'toolbelt_skill', 'flags'],
+                                            'transform_skills', 'bundle_skills', 'flags'],
                          dict_attributes,
                          {
                              'type': lambda x: SkillType[x] if x is not None else None,
@@ -28,7 +28,6 @@ class Skill(ApiDecorator):
                              'categories': lambda x: [self._get_category(c) for c in x],
                              'transform_skills': lambda x: [int(s) for s in x],
                              'bundle_skills': lambda x: [int(s) for s in x],
-                             'toolbelt_skill': lambda x: [int(s) for s in x],
                              'flags': lambda x: [SkillFlag[f] for f in x],
                          }
                          | converters)
