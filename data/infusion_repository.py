@@ -15,7 +15,7 @@ class InfusionRepository(metaclass=Singleton):
             try:
                 if connection.root.infusions is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.infusions = BTrees.OOBTree.BTree()
 
     def _save_single(self, connection, infusion: Item):
@@ -23,7 +23,7 @@ class InfusionRepository(metaclass=Singleton):
             details: UpgradeComponentDetail = infusion.details
             if (details.type == UpgradeComponentType.Default and InfusionFlag.Infusion in details.infusion_upgrade_flags):
                 connection.root.infusions[infusion.id] = infusion
-                return
+            return
         raise ValueError(infusion)
 
     def save_infusion(self, infusion: Item | list[Item]):

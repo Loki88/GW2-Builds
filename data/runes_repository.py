@@ -15,7 +15,7 @@ class RunesRepository(metaclass=Singleton):
             try:
                 if connection.root.runes is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.runes = BTrees.OOBTree.BTree()
 
     def _save_single(self, connection, rune: Item):
@@ -23,7 +23,7 @@ class RunesRepository(metaclass=Singleton):
             details: UpgradeComponentDetail = rune.details
             if (details.type == UpgradeComponentType.Rune):
                 connection.root.runes[rune.id] = rune
-                return
+            return
         raise ValueError(rune)
 
     def save_rune(self, rune: Item | list[Item]):

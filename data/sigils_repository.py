@@ -15,7 +15,7 @@ class SigilsRepository(metaclass=Singleton):
             try:
                 if connection.root.sigils is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.sigils = BTrees.OOBTree.BTree()
 
     def _save_single(self, connection, sigil: Item):
@@ -23,7 +23,7 @@ class SigilsRepository(metaclass=Singleton):
             details: UpgradeComponentDetail = sigil.details
             if (details.type == UpgradeComponentType.Sigil):
                 connection.root.sigils[sigil.id] = sigil
-                return
+            return
         raise ValueError(sigil)
 
     def save_sigil(self, sigil: Item | list[Item]):

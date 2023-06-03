@@ -91,7 +91,7 @@ class Loader():
             chunks = list(partition(no_duplicates(traits), PARTITION_SIZE))
             jobs = PARALLEL_JOBS if PARALLEL_JOBS < len(chunks) else len(chunks)
             api_traits = Parallel(n_jobs=jobs)(delayed(self._load_traits_by_ids)(chunk)
-                                               for chunk in list(partition(no_duplicates(traits), PARTITION_SIZE)))
+                                               for chunk in chunks)
             return flatten(api_traits)
         else:
             return []
@@ -102,11 +102,19 @@ class Loader():
         else:
             return []
 
-    def load_skills(self, skills: list[int]) -> list[Skill]:
+    def load_skills(self, skills: list[int] = None) -> list[Skill]:
+        if (skills is None):
+            skills = self.client.skills.get()
+
+        chunks = list(partition(no_duplicates(skills), PARTITION_SIZE))
+        jobs = PARALLEL_JOBS if PARALLEL_JOBS < len(chunks) else len(chunks)
+        api_skills = Parallel(n_jobs=jobs)(delayed(self._load_skills_by_ids)(chunk)
+                                           for chunk in chunks)
+        return flatten(api_skills)
+
+    def _load_skills_by_ids(self, skills: list[int]) -> list[Skill]:
         if (skills is not None):
-            api_skills = [Skill(x) for x in self.client.skills.get(
-                ids=no_duplicates(skills))]
-            return api_skills
+            return [Skill(x) for x in self.client.skills.get(ids=skills)]
         else:
             return []
 

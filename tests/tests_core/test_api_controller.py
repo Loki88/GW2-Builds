@@ -41,5 +41,59 @@ class TestApiController(unittest.TestCase):
 
         # then
         self.assertIsNotNone(BuildRepository().get_build())
-        self.assertIsNotNone(SpecializationsRepository().get_specializations())
-        self.assertIsNotNone(ProfessionsRepository.get_professions())
+
+        specializations = SpecializationsRepository().get_specializations()
+        self.assertIsNotNone(specializations)
+        self.assertTrue(len(specializations) > 0)
+
+        professions = ProfessionsRepository().get_professions()
+        self.assertIsNotNone(professions)
+        self.assertTrue(len(professions) > 0)
+
+        traits = TraitsRepository().get_trait()
+        self.assertIsNotNone(traits)
+        self.assertTrue(len(traits) > 0)
+
+        skills = SkillsRepository().get_skills()
+        self.assertIsNotNone(skills)
+        self.assertTrue(len(skills) > 0)
+
+        stats = StatsRepository().get_stats()
+        self.assertIsNotNone(stats)
+        self.assertTrue(len(stats) > 0)
+
+        armors = ArmorRepository().get_armor()
+        self.assertIsNotNone(armors)
+        self.assertTrue(len(armors) > 0)
+
+        weapons = WeaponsRepository().get_weapon()
+        self.assertIsNotNone(weapons)
+        self.assertTrue(len(weapons) > 0)
+
+        trinkets = TrinketsRepository().get_trinket()
+        self.assertIsNotNone(trinkets)
+        self.assertTrue(len(trinkets) > 0)
+
+        backs = BackRepository().get_back()
+        self.assertIsNotNone(backs)
+        self.assertTrue(len(backs) > 0)
+
+        infusions = InfusionRepository().get_infusion()
+        self.assertIsNotNone(infusions)
+        self.assertTrue(len(infusions) > 0)
+
+        runes = RunesRepository().get_rune()
+        self.assertIsNotNone(runes)
+        self.assertTrue(len(runes) > 0)
+
+        sigils = SigilsRepository().get_sigil()
+        self.assertIsNotNone(sigils)
+        self.assertTrue(len(sigils) > 0)
+
+        foods = FoodsRepository().get_food()
+        self.assertIsNotNone(foods)
+        self.assertTrue(len(foods) > 0)
+
+        utilities = UtilitiesRepository().get_utility()
+        self.assertIsNotNone(utilities)
+        self.assertTrue(len(utilities) > 0)

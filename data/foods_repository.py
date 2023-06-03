@@ -15,7 +15,7 @@ class FoodsRepository(metaclass=Singleton):
             try:
                 if connection.root.foods is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.foods = BTrees.OOBTree.BTree()
 
     def _save_single(self, connection, food: Item):
@@ -23,7 +23,7 @@ class FoodsRepository(metaclass=Singleton):
             details: ConsumableDetail = food.details
             if (details.type == ConsumableType.Food):
                 connection.root.foods[food.id] = food
-                return
+            return
         raise ValueError(food)
 
     def save_food(self, food: Item | list[Item]):

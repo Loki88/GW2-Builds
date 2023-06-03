@@ -159,6 +159,10 @@ class Damage(Fact):
                          converters)
 
 
+class HealingAdjust(Damage):
+    FIELDS = Damage.FIELDS
+
+
 class Distance(Fact):
     FIELDS = Fact.FIELDS + ['distance']
 
@@ -283,6 +287,10 @@ class Time(Fact):
                          converters)
 
 
+class Duration(Time):
+    FIELDS = Time.FIELDS
+
+
 class Unblockable(Fact):
     FIELDS = Fact.FIELDS + ['value']
 
@@ -308,6 +316,8 @@ FACTS_DICT: dict = {
     FactType.ComboFinisher: ComboFinisher,
     FactType.Damage: Damage,
     FactType.Distance: Distance,
+    FactType.Duration: Duration,
+    FactType.HealingAdjust: HealingAdjust,
     FactType.NoData: NoData,
     FactType.Number: Number,
     FactType.Percent: Percent,

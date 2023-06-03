@@ -70,7 +70,7 @@ class TestInfusionsRepository(unittest.TestCase):
                 'name': 'Test',
                 'icon': 'test',
                 'bonuses': ['expertise'],
-                'flags': [UpgradeComponentFlags.Weapons.name],
+                'flags': [UpgradeComponentFlags.Axe.name],
                 'infusion_upgrade_flags': [InfusionFlag.Infusion.name]
             }
         }

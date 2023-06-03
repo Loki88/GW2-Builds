@@ -252,6 +252,8 @@ def filter_item_data(data: dict, filter: dict[ItemType, ItemRarity] = None) -> b
             item_type = ItemType[type]
             if (item_type in filter):
                 rarity_filter = filter[item_type]
+                if rarity_filter is None:
+                    return True
                 rarity = get_or_none('rarity', data)
                 if (rarity in ItemRarity._member_names_):
                     return ItemRarity[rarity] is rarity_filter

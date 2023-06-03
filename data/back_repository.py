@@ -14,11 +14,11 @@ class BackRepository(metaclass=Singleton):
             try:
                 if connection.root.backs is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.backs = BTrees.OOBTree.BTree()
 
     def _save_single(self, connection, back: Item):
-        if (back.type == ItemType.back):
+        if (back.type == ItemType.Back):
             connection.root.backs[back.id] = back
             return connection.root.backs[back.id]
         else:

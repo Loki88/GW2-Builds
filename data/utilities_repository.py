@@ -15,7 +15,7 @@ class UtilitiesRepository(metaclass=Singleton):
             try:
                 if connection.root.utilities is not None:
                     pass
-            except:
+            except BaseException:
                 connection.root.utilities = BTrees.OOBTree.BTree()
 
     def _save_single(self, connection, utility: Item):
@@ -23,7 +23,7 @@ class UtilitiesRepository(metaclass=Singleton):
             details: ConsumableDetail = utility.details
             if (details.type == ConsumableType.Utility):
                 connection.root.utilities[utility.id] = utility
-                return
+            return
         raise ValueError(utility)
 
     def save_utility(self, utility: Item | list[Item]):
