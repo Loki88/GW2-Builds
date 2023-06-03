@@ -144,6 +144,11 @@ class Slot(Enum):
     Elite = 16
     Heal = 17
     Toolbelt = 18
+    Transform_1 = 19
+    Transform_2 = 20
+    Transform_3 = 21
+    Transform_4 = 22
+    Transform_5 = 23
 
 
 class SkillCategory(Enum):
