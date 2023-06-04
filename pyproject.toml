@@ -26,7 +26,7 @@ zc-zlibstorage = "^1.2.0"
 
 
 [tool.poetry.group.dev.dependencies]
-coverage = "7.2.6"
+coverage = "7.2.7"
 
 [build-system]
 requires = ["poetry-core"]
