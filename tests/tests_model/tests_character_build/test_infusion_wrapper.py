@@ -91,7 +91,7 @@ class TestInfusionWrapper(unittest.TestCase):
                          wrapped_weapon.details.attribute_adjustment)
         self.assertEqual(weapon.details.infix_upgrade,
                          wrapped_weapon.details.infix_upgrade)
-        
+
     def _assert_infusion(self, wrapped_infusion: Item, infusion: Item):
         self.assertIsNotNone(wrapped_infusion)
         self.assertEqual(infusion.type, wrapped_infusion.type)
@@ -111,7 +111,7 @@ class TestInfusionWrapper(unittest.TestCase):
     def test_access_fields(self):
         # given
         item: Item = self._build_weapon()
-        
+
         # when
         wrapper: InfusionWrapper = InfusionWrapper(item)
 
@@ -124,7 +124,7 @@ class TestInfusionWrapper(unittest.TestCase):
         item: Item = self._build_weapon()
         wrapper: InfusionWrapper = InfusionWrapper(item)
         infusion: Item = self._build_infusion()
-        
+
         # when
         wrapper.set_infusion(infusion, 0)
 
@@ -138,7 +138,7 @@ class TestInfusionWrapper(unittest.TestCase):
         wrapper: InfusionWrapper = InfusionWrapper(item)
         infusion1: Item = self._build_infusion(id=1)
         infusion2: Item = self._build_infusion(id=2)
-        
+
         # when
         wrapper.set_infusion(infusion1, 0)
         wrapper.set_infusion(infusion2, 1)

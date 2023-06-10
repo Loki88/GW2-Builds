@@ -3,5 +3,6 @@
 class SpecializationTraitsSetup():
     pass
 
+
 class SpecializationsSetup():
     pass

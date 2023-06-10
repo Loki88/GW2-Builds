@@ -3,6 +3,7 @@
 from model.api import Item
 from model.enums import ItemType, ConsumableType
 
+
 class ConsumablesSetup():
 
     def __init__(self):

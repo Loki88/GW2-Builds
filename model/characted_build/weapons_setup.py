@@ -6,6 +6,7 @@ from model.enums import WeaponType, ArmorWeight, ItemType,\
     OneHandedMainHandWeaponType, OneHandedOffHandWeaponType, TwoHandedWeaponType
 from .wrapper import InfusionWrapper, SigilWrapper
 
+
 class WeaponsSet():
     ALLOWED_TYPES = OneHandedMainHandWeaponType._member_names_ +\
         OneHandedOffHandWeaponType._member_names_ +\
@@ -77,14 +78,14 @@ class WeaponsSet():
                 raise ValueError("off_hand not compatible with main_hand")
         else:
             raise ValueError(off_hand)
-    
+
     def _is_two_handed(self, item: Item):
         return item is not None and item.details.type.name in TwoHandedWeaponType._member_names_
-    
+
     def get_weapons(self) -> Item | tuple[Item, Item]:
         two_handed = self._is_two_handed(self.main_hand) or self._is_two_handed(self.off_hand)
-        
-        if(two_handed):
+
+        if (two_handed):
             return self.main_hand if self.main_hand is not None else self.off_hand
         else:
             return (self.main_hand, self.off_hand)
@@ -106,4 +107,3 @@ class WeaponsSetup():
 
     def get_weapons(self, set: WeaponsSetId) -> Item | tuple[Item, Item]:
         return self.weapons_sets[set].get_weapons()
-    

@@ -332,15 +332,18 @@ class TraitSlot(Enum):
     Major = 0
     Minor = 1
 
+
 class LightProfessions(Enum):
     Elementalist = auto()
     Mesmer = auto()
     Necromancer = auto()
 
+
 class MediumProfessions(Enum):
     Engineer = auto()
     Ranger = auto()
     Thief = auto()
+
 
 class HeavyProfessions(Enum):
     Warrior = auto()

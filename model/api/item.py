@@ -241,7 +241,7 @@ class Item(ApiDecorator):
                              'details': lambda x: get_item_details(x, self.type) if x is not None else None,
                          }
                          | converters)
-    
+
 
 def filter_item_data(data: dict, filter: dict[ItemType, ItemRarity] = None) -> bool:
     if (filter is None):

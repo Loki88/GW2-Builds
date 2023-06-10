@@ -11,7 +11,6 @@ class TrinketSetup():
     class Slot(Enum):
         SLOT_1 = 0
         SLOT_2 = 1
-    
 
     def __init__(self):
         super().__init__()
@@ -27,7 +26,7 @@ class TrinketSetup():
                 raise ValueError(item.details.type)
         else:
             raise ValueError(item.type)
-        
+
     def get_amulet(self) -> Item | None:
         return self.amulet
 
@@ -39,7 +38,7 @@ class TrinketSetup():
                 raise ValueError(item.details.type)
         else:
             raise ValueError(item.type)
-        
+
     def get_ring(self, slot: Slot) -> Item | None:
         return self.rings[slot]
 
@@ -51,6 +50,6 @@ class TrinketSetup():
                 raise ValueError(item.details.type)
         else:
             raise ValueError(item.type)
-        
+
     def get_accessory(self, slot: Slot) -> Item | None:
         return self.accessories[slot]

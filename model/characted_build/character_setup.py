@@ -9,8 +9,9 @@ from .consumables_setup import ConsumablesSetup
 from model.api import Profession, Item
 from model.enums import ArmorWeight, LightProfessions, MediumProfessions, HeavyProfessions, ArmorType
 
+
 class CharacterSetup:
-    
+
     def __init__(self, profession: Profession):
         self.profession = profession
         self.armor_setup = ArmorSetup(self._get_weight(profession.name))
@@ -20,11 +21,11 @@ class CharacterSetup:
         self.consumables_setup = ConsumablesSetup()
 
     def _get_weight(self, profession_name: str) -> ArmorWeight:
-        if(profession_name in LightProfessions._member_names_):
+        if (profession_name in LightProfessions._member_names_):
             return ArmorWeight.Light
-        elif(profession_name in MediumProfessions._member_names_):
+        elif (profession_name in MediumProfessions._member_names_):
             return ArmorWeight.Medium
-        elif(profession_name in HeavyProfessions._member_names_):
+        elif (profession_name in HeavyProfessions._member_names_):
             return ArmorWeight.Heavy
         else:
             raise ValueError(profession_name)
@@ -61,16 +62,16 @@ class CharacterSetup:
 
     def add_back(self, item: Item):
         self.back_setup.set_back(item)
-    
+
     def get_back(self) -> Item | None:
         return self.back_setup.get_back()
-    
+
     def set_food(self, item: Item):
         self.consumables_setup.set_food(item)
 
     def get_food(self) -> Item | None:
         return self.consumables_setup.get_food()
-    
+
     def set_utility(self, item: Item):
         self.consumables_setup.set_utility(item)
 

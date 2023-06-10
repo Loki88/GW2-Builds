@@ -99,12 +99,11 @@ class TestRuneWrapper(unittest.TestCase):
                          db_armor.details.attribute_adjustment)
         self.assertEqual(armor.details.infix_upgrade,
                          db_armor.details.infix_upgrade)
-        
 
     def test_access_fields(self):
         # given
         item: Item = self._build_armor()
-        
+
         # when
         wrapper: RuneWrapper = RuneWrapper(item)
 
@@ -116,12 +115,10 @@ class TestRuneWrapper(unittest.TestCase):
         item: Item = self._build_armor()
         wrapper: RuneWrapper = RuneWrapper(item)
         rune: Item = self._build_rune()
-        
+
         # when
         wrapper.set_rune(rune)
 
         # then
         self._assert_armor(wrapper, item)
         self._assert_rune(wrapper.get_rune(), rune)
-
-    

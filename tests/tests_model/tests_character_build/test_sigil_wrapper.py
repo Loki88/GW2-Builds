@@ -101,12 +101,11 @@ class TestInfusionWrapper(unittest.TestCase):
                          wrapped_weapon.details.attribute_adjustment)
         self.assertEqual(weapon.details.infix_upgrade,
                          wrapped_weapon.details.infix_upgrade)
-        
-    
+
     def test_access_fields(self):
         # given
         item: Item = self._build_weapon()
-        
+
         # when
         wrapper: SigilWrapper = SigilWrapper(item)
 
@@ -119,7 +118,7 @@ class TestInfusionWrapper(unittest.TestCase):
         item: Item = self._build_weapon()
         wrapper: SigilWrapper = SigilWrapper(item)
         sigil: Item = self._build_sigil()
-        
+
         # when
         wrapper.set_sigil(sigil, 0)
 
@@ -133,7 +132,7 @@ class TestInfusionWrapper(unittest.TestCase):
         wrapper: SigilWrapper = SigilWrapper(item)
         sigil1: Item = self._build_sigil(id=1)
         sigil2: Item = self._build_sigil(id=2)
-        
+
         # when
         wrapper.set_sigil(sigil1, 0)
         wrapper.set_sigil(sigil2, 1)

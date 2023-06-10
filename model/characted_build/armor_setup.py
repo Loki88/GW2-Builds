@@ -4,6 +4,7 @@ from model.api import Item
 from model.enums import ArmorType, ArmorWeight, ItemType
 from .wrapper import InfusionWrapper, RuneWrapper
 
+
 class ArmorSetup():
 
     def __init__(self, weight: ArmorWeight):
@@ -19,16 +20,16 @@ class ArmorSetup():
                 raise ValueError(item, self.weight)
         else:
             raise ValueError(item)
-        
+
     def get_armor_piece(self, type: ArmorType) -> Item | None:
         return self.armor[type]
 
     def upgrade_piece(self, type: ArmorType, upgrade: Item):
         item = self.armor[type]
         try:
-            if(item.can_hold(upgrade)):
-                pass # TODO: find a way to do generic upgrades
+            if (item.can_hold(upgrade)):
+                pass  # TODO: find a way to do generic upgrades
             else:
                 raise ValueError(upgrade)
-        except:
+        except BaseException:
             raise ValueError(upgrade)

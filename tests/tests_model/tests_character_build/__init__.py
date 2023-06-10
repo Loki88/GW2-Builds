@@ -3,4 +3,3 @@
 import unittest
 
 from .test_infusion_wrapper import TestInfusionWrapper
-

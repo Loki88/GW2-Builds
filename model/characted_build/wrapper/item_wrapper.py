@@ -4,9 +4,10 @@ from abc import ABC, abstractmethod
 from model.api import Item
 from model.enums import UpgradeComponentType
 
+
 class ItemWrapper(Item, ABC):
 
-    def __init__(self, item: Item, 
+    def __init__(self, item: Item,
                  attributes: list[str] = [],
                  list_attributes: list[str] = [],
                  dict_attributes: list[str] = []) -> None:
@@ -27,12 +28,12 @@ class ItemWrapper(Item, ABC):
         pass
 
     def can_hold(self, upgrade: UpgradeComponentType) -> bool:
-        if(upgrade == self._held_component()):
+        if (upgrade == self._held_component()):
             return True
         else:
             try:
                 return self.item.can_hold(upgrade)
-            except:
+            except BaseException:
                 return False
 
     @abstractmethod
