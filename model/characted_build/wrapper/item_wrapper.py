@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from model.api import Item
-from model.api.api_decorator import ApiDecorator
+from model.enums import UpgradeComponentType
 
 class ItemWrapper(Item, ABC):
 
@@ -21,4 +21,20 @@ class ItemWrapper(Item, ABC):
             return super().__getattribute__(name)
         except AttributeError:
             return self.item.__getattribute__(name)
-        
+
+    @abstractmethod
+    def _held_component(self) -> UpgradeComponentType:
+        pass
+
+    def can_hold(self, upgrade: UpgradeComponentType) -> bool:
+        if(upgrade == self._held_component()):
+            return True
+        else:
+            try:
+                return self.item.can_hold(upgrade)
+            except:
+                return False
+
+    @abstractmethod
+    def upgrade(self, upgrade: Item | list[Item], slot: int = None):
+        pass

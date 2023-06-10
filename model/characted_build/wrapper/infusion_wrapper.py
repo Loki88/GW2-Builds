@@ -22,6 +22,9 @@ class InfusionWrapper(ItemWrapper):
         except AttributeError:
             return False
         
+    def _held_component(self) -> UpgradeComponentType:
+        return UpgradeComponentType.Default
+    
     def _test_list(self, items: list[Item]):
         for item in items:
             self._test_single(item)    
@@ -65,5 +68,12 @@ class InfusionWrapper(ItemWrapper):
                 self.infusions[slot] = None
             else:
                 raise ValueError(slot)
-
     
+    def upgrade(self, upgrade: Item | list[Item], slot: int = None):
+        if(upgrade == self._held_component()):
+            self.set_infusion(upgrade, slot)
+        else:
+            try:
+                self.item.upgrade(upgrade, slot)
+            except:
+                raise ValueError(upgrade)

@@ -17,6 +17,9 @@ class SigilWrapper(ItemWrapper):
     @staticmethod
     def supports(item: Item) -> bool:
         return item.type == ItemType.Weapon
+    
+    def _held_component(self) -> UpgradeComponentType:
+        return UpgradeComponentType.Sigil
 
     def set_sigil(self, sigil: Item | list[Item], slot: int = None):
         if(slot is None):
@@ -47,3 +50,12 @@ class SigilWrapper(ItemWrapper):
                 self.sigils[slot] = None
             else:
                 raise ValueError(slot)
+            
+    def upgrade(self, upgrade: Item | list[Item], slot: int = None):
+        if(upgrade == self._held_component()):
+            self.set_sigil(upgrade, slot)
+        else:
+            try:
+                self.item.upgrade(upgrade, slot)
+            except:
+                raise ValueError(upgrade)

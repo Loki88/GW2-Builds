@@ -22,36 +22,35 @@ class TrinketSetup():
     def set_amulet(self, item: Item):
         if (item.type == ItemType.Trinket):
             if (item.details.type == TrinketType.Amulet):
-                if(InfusionWrapper.supports(item)):
-                    self.amulet = InfusionWrapper(item)
-                else:
-                    self.amulet = item
-            else:
-                raise ValueError(item.details.type)
-        else:
-            raise ValueError(item.type)
-
-    def set_ring(self, slot: Slot, item: Item):
-        if (item.type == ItemType.Trinket):
-            if (item.details.type == TrinketType.Ring):
-                if(InfusionWrapper.supports(item)):
-                    self.rings[slot] = InfusionWrapper(item)
-                else:
-                    self.rings[slot] = item
-            else:
-                raise ValueError(item.details.type)
-        else:
-            raise ValueError(item.type)
-
-    def set_accessory(self, slot: Slot, item: Item):
-        if (item.type == ItemType.Trinket):
-            if (item.details.type == TrinketType.Accessory):
-                if(InfusionWrapper.supports(item)):
-                    self.accessories[slot] = InfusionWrapper(item)
-                else:
-                    self.accessories[slot] = item
+                self.amulet = item
             else:
                 raise ValueError(item.details.type)
         else:
             raise ValueError(item.type)
         
+    def get_amulet(self) -> Item | None:
+        return self.amulet
+
+    def set_ring(self, slot: Slot, item: Item):
+        if (item.type == ItemType.Trinket):
+            if (item.details.type == TrinketType.Ring):
+                self.rings[slot] = item
+            else:
+                raise ValueError(item.details.type)
+        else:
+            raise ValueError(item.type)
+        
+    def get_ring(self, slot: Slot) -> Item | None:
+        return self.rings[slot]
+
+    def set_accessory(self, slot: Slot, item: Item):
+        if (item.type == ItemType.Trinket):
+            if (item.details.type == TrinketType.Accessory):
+                self.accessories[slot] = item
+            else:
+                raise ValueError(item.details.type)
+        else:
+            raise ValueError(item.type)
+        
+    def get_accessory(self, slot: Slot) -> Item | None:
+        return self.accessories[slot]

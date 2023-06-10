@@ -65,26 +65,30 @@ class WeaponsSet():
         if (self.is_allowed_main_hand(main_hand)):
             if (not self.is_compatible_with_off_hand(main_hand)):
                 self.off_hand = None
-            self.main_hand = self._wrap_item(main_hand)
+            self.main_hand = main_hand
         else:
             raise ValueError(main_hand)
 
     def set_off_hand(self, off_hand: Item):
         if (self.is_allowed_off_hand(off_hand)):
             if (self.is_compatible_with_main_hand(off_hand)):
-                self.off_hand = self._wrap_item(off_hand)
+                self.off_hand = off_hand
             else:
                 raise ValueError("off_hand not compatible with main_hand")
         else:
             raise ValueError(off_hand)
+    
+    def _is_two_handed(self, item: Item):
+        return item is not None and item.details.type.name in TwoHandedWeaponType._member_names_
+    
+    def get_weapons(self) -> Item | tuple[Item, Item]:
+        two_handed = self._is_two_handed(self.main_hand) or self._is_two_handed(self.off_hand)
+        
+        if(two_handed):
+            return self.main_hand if self.main_hand is not None else self.off_hand
+        else:
+            return (self.main_hand, self.off_hand)
 
-    def _wrap_item(self, item: Item) -> Item:
-        wrapped_item = item
-        if(InfusionWrapper.supports(wrapped_item)):
-            wrapped_item = InfusionWrapper(wrapped_item)
-        if(SigilWrapper.supports(wrapped_item)):
-            wrapped_item = SigilWrapper(wrapped_item)
-        return wrapped_item
 
 class WeaponsSetup():
 
@@ -99,3 +103,7 @@ class WeaponsSetup():
     def set_weapons(self, set: WeaponsSetId, main_hand: Item = None, off_hand: Item = None):
         self.weapons_sets[set].set_main_hand(main_hand)
         self.weapons_sets[set].set_off_hand(off_hand)
+
+    def get_weapons(self, set: WeaponsSetId) -> Item | tuple[Item, Item]:
+        return self.weapons_sets[set].get_weapons()
+    

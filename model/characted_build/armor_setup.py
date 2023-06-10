@@ -11,16 +11,24 @@ class ArmorSetup():
         self.weight = weight
         self.armor = dict.fromkeys(ArmorType._member_names_, None)
 
-    def set_armor_piece(self, type: ArmorType, item: Item):
+    def set_armor_piece(self, item: Item):
         if (item.type == ItemType.Armor):
             if (item.details.weight_class == self.weight):
-                wrapped_item = item
-                if(InfusionWrapper.supports(item)):
-                    wrapped_item = InfusionWrapper(item)
-                if(RuneWrapper.supports(item)):
-                    wrapped_item = RuneWrapper(wrapped_item)
-                self.armor[item.details.type] = wrapped_item
+                self.armor[item.details.type] = item
             else:
                 raise ValueError(item, self.weight)
         else:
             raise ValueError(item)
+        
+    def get_armor_piece(self, type: ArmorType) -> Item | None:
+        return self.armor[type]
+
+    def upgrade_piece(self, type: ArmorType, upgrade: Item):
+        item = self.armor[type]
+        try:
+            if(item.can_hold(upgrade)):
+                pass # TODO: find a way to do generic upgrades
+            else:
+                raise ValueError(upgrade)
+        except:
+            raise ValueError(upgrade)

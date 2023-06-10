@@ -16,6 +16,9 @@ class RuneWrapper(ItemWrapper):
     @staticmethod
     def supports(item: Item) -> bool:
         return item.type == ItemType.Armor
+    
+    def _held_component(self) -> UpgradeComponentType:
+        return UpgradeComponentType.Rune
 
     def set_rune(self, rune: Item):
         if(rune.type == ItemType.UpgradeComponent and rune.details.type == UpgradeComponentType.Rune):
@@ -26,3 +29,12 @@ class RuneWrapper(ItemWrapper):
     
     def remove_rune(self):
         self.rune = None
+
+    def upgrade(self, upgrade: Item | list[Item], slot: int = None):
+        if(upgrade == self._held_component()):
+            self.set_rune(upgrade)
+        else:
+            try:
+                self.item.upgrade(upgrade, slot)
+            except:
+                raise ValueError(upgrade)
