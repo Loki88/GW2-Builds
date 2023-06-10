@@ -9,11 +9,18 @@ class InfusionWrapper(ItemWrapper):
 
     def __init__(self, item: Item) -> None:
         super().__init__(item, attributes=['infusion_slots'], list_attributes=['infusions'])
-        try:
+        if(InfusionWrapper.supports(item)):
             self.infusion_slots = len([x for x in item.details.infusion_slots if InfusionFlag.Infusion in x.flags])
             self.infusions = [None for _ in range(self.infusion_slots)]
-        except AttributeError:
+        else:
             raise ValueError(item)
+        
+    @staticmethod
+    def supports(item: Item) -> bool:
+        try:
+            return len([x for x in item.details.infusion_slots if InfusionFlag.Infusion in x.flags]) > 0
+        except AttributeError:
+            return False
         
     def _test_list(self, items: list[Item]):
         for item in items:

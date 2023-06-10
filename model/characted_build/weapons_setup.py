@@ -4,7 +4,7 @@ from enum import Enum
 from model.api import Item
 from model.enums import WeaponType, ArmorWeight, ItemType,\
     OneHandedMainHandWeaponType, OneHandedOffHandWeaponType, TwoHandedWeaponType
-
+from .wrapper import InfusionWrapper, SigilWrapper
 
 class WeaponsSet():
     ALLOWED_TYPES = OneHandedMainHandWeaponType._member_names_ +\
@@ -65,19 +65,26 @@ class WeaponsSet():
         if (self.is_allowed_main_hand(main_hand)):
             if (not self.is_compatible_with_off_hand(main_hand)):
                 self.off_hand = None
-            self.main_hand = main_hand
+            self.main_hand = self._wrap_item(main_hand)
         else:
             raise ValueError(main_hand)
 
     def set_off_hand(self, off_hand: Item):
         if (self.is_allowed_off_hand(off_hand)):
             if (self.is_compatible_with_main_hand(off_hand)):
-                self.off_hand = off_hand
+                self.off_hand = self._wrap_item(off_hand)
             else:
                 raise ValueError("off_hand not compatible with main_hand")
         else:
             raise ValueError(off_hand)
 
+    def _wrap_item(self, item: Item) -> Item:
+        wrapped_item = item
+        if(InfusionWrapper.supports(wrapped_item)):
+            wrapped_item = InfusionWrapper(wrapped_item)
+        if(SigilWrapper.supports(wrapped_item)):
+            wrapped_item = SigilWrapper(wrapped_item)
+        return wrapped_item
 
 class WeaponsSetup():
 

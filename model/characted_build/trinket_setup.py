@@ -3,6 +3,7 @@
 from enum import Enum
 from model.api import Item
 from model.enums import TrinketType, ItemType
+from .wrapper import InfusionWrapper
 
 
 class TrinketSetup():
@@ -21,7 +22,10 @@ class TrinketSetup():
     def set_amulet(self, item: Item):
         if (item.type == ItemType.Trinket):
             if (item.details.type == TrinketType.Amulet):
-                self.amulet = item
+                if(InfusionWrapper.supports(item)):
+                    self.amulet = InfusionWrapper(item)
+                else:
+                    self.amulet = item
             else:
                 raise ValueError(item.details.type)
         else:
@@ -30,7 +34,10 @@ class TrinketSetup():
     def set_ring(self, slot: Slot, item: Item):
         if (item.type == ItemType.Trinket):
             if (item.details.type == TrinketType.Ring):
-                self.rings[slot] = item
+                if(InfusionWrapper.supports(item)):
+                    self.rings[slot] = InfusionWrapper(item)
+                else:
+                    self.rings[slot] = item
             else:
                 raise ValueError(item.details.type)
         else:
@@ -39,7 +46,10 @@ class TrinketSetup():
     def set_accessory(self, slot: Slot, item: Item):
         if (item.type == ItemType.Trinket):
             if (item.details.type == TrinketType.Accessory):
-                self.accessories[slot] = item
+                if(InfusionWrapper.supports(item)):
+                    self.accessories[slot] = InfusionWrapper(item)
+                else:
+                    self.accessories[slot] = item
             else:
                 raise ValueError(item.details.type)
         else:

@@ -2,7 +2,7 @@
 
 from model.api import Item
 from model.enums import ArmorType, ArmorWeight, ItemType
-
+from .wrapper import InfusionWrapper, RuneWrapper
 
 class ArmorSetup():
 
@@ -14,7 +14,12 @@ class ArmorSetup():
     def set_armor_piece(self, type: ArmorType, item: Item):
         if (item.type == ItemType.Armor):
             if (item.details.weight_class == self.weight):
-                self.armor[item.details.type] = item
+                wrapped_item = item
+                if(InfusionWrapper.supports(item)):
+                    wrapped_item = InfusionWrapper(item)
+                if(RuneWrapper.supports(item)):
+                    wrapped_item = RuneWrapper(wrapped_item)
+                self.armor[item.details.type] = wrapped_item
             else:
                 raise ValueError(item, self.weight)
         else:

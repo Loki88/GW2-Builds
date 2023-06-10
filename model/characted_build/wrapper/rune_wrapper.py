@@ -8,10 +8,14 @@ class RuneWrapper(ItemWrapper):
 
     def __init__(self, item: Item) -> None:
         super().__init__(item, attributes=['rune'])
-        if(item.type == ItemType.Armor):
+        if(RuneWrapper.supports(item)):
             self.rune = None
         else:
             raise ValueError(item)
+        
+    @staticmethod
+    def supports(item: Item) -> bool:
+        return item.type == ItemType.Armor
 
     def set_rune(self, rune: Item):
         if(rune.type == ItemType.UpgradeComponent and rune.details.type == UpgradeComponentType.Rune):

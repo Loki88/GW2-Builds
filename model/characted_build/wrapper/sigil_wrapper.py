@@ -8,11 +8,15 @@ class SigilWrapper(ItemWrapper):
 
     def __init__(self, item: Item) -> None:
         super().__init__(item, attributes=['sigil_slots'], list_attributes=['sigils'])
-        if(item.type == ItemType.Weapon):
+        if(SigilWrapper.supports(item)):
             self.sigil_slots = 2 if item.details.type.name in TwoHandedWeaponType._member_names_ else 1
             self.sigils = [None for _ in range(self.sigil_slots)]
         else:
             raise ValueError(item)
+        
+    @staticmethod
+    def supports(item: Item) -> bool:
+        return item.type == ItemType.Weapon
 
     def set_sigil(self, sigil: Item | list[Item], slot: int = None):
         if(slot is None):
