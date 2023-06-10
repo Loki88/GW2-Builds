@@ -46,9 +46,8 @@ jobs:
           poetry lock
           poetry install
 
-      - name: Cache Coverage
-        if: github.event_name != 'pull_request'
-        uses: actions/cache@v3
+      - name: Restore Coverage Data
+        uses: actions/cache/restore@v3
         continue-on-error: true
         with:
           path: ./.coverage
@@ -58,6 +57,14 @@ jobs:
         run: |
           poetry run python -m coverage run -m unittest discover
           poetry run python -m coverage report -m --skip-covered --omit 'tests/*'
+
+      - name: Save Coverage Data
+        if: github.event_name != 'pull_request'
+        uses: actions/cache/save@v3
+        continue-on-error: true
+        with:
+          path: ./.coverage
+          key: test-coverage
 
       - name: Cache Build
         if: github.event_name != 'pull_request'
