@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod
 from model.api import Item
 from model.enums import UpgradeComponentType
+from .upgrade_error import UpgradeItemError
 
 
 class ItemWrapper(Item, ABC):

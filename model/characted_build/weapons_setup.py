@@ -54,13 +54,13 @@ class WeaponsSet():
         if (self.main_hand is None):
             return True
         else:
-            return self.main_hand.details.type.name not in TwoHandedWeaponType._member_names_
+            return not self._is_two_handed(self.main_hand)
 
     def is_compatible_with_off_hand(self, main_hand: str) -> bool:
         if (self.off_hand is None):
             return True
         else:
-            return main_hand.details.type.name not in TwoHandedWeaponType._member_names_
+            return not self._is_two_handed(main_hand)
 
     def set_main_hand(self, main_hand: Item):
         if (self.is_allowed_main_hand(main_hand)):

@@ -31,11 +31,10 @@ class InfusionWrapper(ItemWrapper):
             self._test_single(item)
 
     def _test_single(self, item: Item):
-        if (item.type == ItemType.UpgradeComponent and
-           item.details.type == UpgradeComponentType.Default and
-           InfusionFlag.Infusion in item.details.infusion_upgrade_flags):
-            pass
-        else:
+        if (item.type != ItemType.UpgradeComponent or
+            item.details.type != UpgradeComponentType.Default or
+                InfusionFlag.Infusion not in item.details.infusion_upgrade_flags):
+
             raise ValueError(item)
 
     def set_infusion(self, infusion: Item | list[Item], slot: int = None):
