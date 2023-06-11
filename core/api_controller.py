@@ -2,9 +2,12 @@
 
 from .loader import Loader
 from .errors import AlreadyUpdatedError
-from data import *
+from data import BuildRepository, ProfessionsRepository, SpecializationsRepository,\
+    TraitsRepository, SkillsRepository, StatsRepository, ArmorRepository, WeaponsRepository,\
+    BackRepository, TrinketsRepository, InfusionRepository, FoodsRepository, UtilitiesRepository,\
+    SigilsRepository, RunesRepository
 from model import ItemType, ItemRarity, Build, Profession, Specialization, Trait, Skill,\
-    ItemStats, Item, UpgradeComponentType, ConsumableType, InfusionFlag
+    ItemStats, Item
 from utils import flatten, no_duplicates
 
 

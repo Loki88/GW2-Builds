@@ -19,8 +19,8 @@ class ApiDecorator(persistent.Persistent, ABC):
         self.__dict__['_expected_attributes_'] = attributes
         self.__dict__['_expected_list_attributes_'] = list_attributes
         self.__dict__['_expected_dict_attributes_'] = dict_attributes
-        self._prepare_data(data,
-                           converters)
+        if (data is not None):
+            self._prepare_data(data, converters)
 
     def _prepare_data(self, data: dict,
                       converters: dict[str, Callable] = {}

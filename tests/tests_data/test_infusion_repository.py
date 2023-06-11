@@ -25,9 +25,9 @@ class TestInfusionsRepository(unittest.TestCase):
     def setUpClass(cls):
         unittest.TestCase.setUpClass()
 
-        mockObject = ConfigProvider
-        mockObject.get_data_dir = Mock(return_value=test_db_dir)
-        mockObject.get_data_file = Mock(return_value=test_db_file)
+        mock_object = ConfigProvider
+        mock_object.get_data_dir = Mock(return_value=test_db_dir)
+        mock_object.get_data_file = Mock(return_value=test_db_file)
 
     def setUp(self) -> None:
         super().setUp()
@@ -99,9 +99,6 @@ class TestInfusionsRepository(unittest.TestCase):
 
         # when
         self.repository.save_infusion(infusion)
-
-        # then
-        self.assertIsNone(None, "Check that save does not throw")
 
     def test_get_infusion(self):
         # given
