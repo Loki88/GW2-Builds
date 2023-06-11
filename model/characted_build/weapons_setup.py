@@ -25,7 +25,7 @@ class WeaponsSet():
             self.main_hand = main_hand
 
         if (off_hand is not None and self.is_allowed_off_hand(off_hand)):
-            if (self.is_compatible_with_main_hand(off_hand)):
+            if (self.is_compatible_with_main_hand()):
                 self.main_hand = main_hand
             else:
                 raise ValueError("off_hand not compatible with main_hand")
