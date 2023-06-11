@@ -37,3 +37,55 @@ def assert_weapon(test: unittest.TestCase, weapon1: Item, weapon2: Item):
                      weapon1.details.attribute_adjustment)
     test.assertEqual(weapon2.details.infix_upgrade,
                      weapon1.details.infix_upgrade)
+
+
+def assert_rune(test: unittest.TestCase, rune1: Item, rune2: Item):
+    test.assertIsNotNone(rune1)
+    test.assertEqual(rune2.type, rune1.type)
+    test.assertEqual(rune2.chat_link, rune1.chat_link)
+    test.assertEqual(rune2.name, rune1.name)
+    test.assertEqual(rune2.icon, rune1.icon)
+    test.assertEqual(rune2.description, rune1.description)
+    test.assertEqual(rune2.rarity, rune1.rarity)
+    test.assertEqual(rune2.details.type, rune1.details.type)
+    test.assertEqual(rune2.details.infix_upgrade.id,
+                     rune1.details.infix_upgrade.id)
+    test.assertListEqual(rune2.details.flags,
+                         rune1.details.flags)
+    test.assertListEqual(rune2.details.infusion_upgrade_flags,
+                         rune1.details.infusion_upgrade_flags)
+
+
+def assert_armor(test: unittest.TestCase, armor1: Item, armor2: Item):
+    test.assertIsNotNone(armor1)
+    test.assertEqual(armor2.type, armor1.type)
+    test.assertEqual(armor2.chat_link, armor1.chat_link)
+    test.assertEqual(armor2.name, armor1.name)
+    test.assertEqual(armor2.icon, armor1.icon)
+    test.assertEqual(armor2.description, armor1.description)
+    test.assertEqual(armor2.rarity, armor1.rarity)
+    test.assertEqual(armor2.details.type, armor1.details.type)
+    test.assertEqual(armor2.details.weight_class,
+                     armor1.details.weight_class)
+    test.assertEqual(armor2.details.defense, armor1.details.defense)
+    test.assertEqual(armor2.details.attribute_adjustment,
+                     armor1.details.attribute_adjustment)
+    test.assertEqual(armor2.details.infix_upgrade,
+                     armor1.details.infix_upgrade)
+
+
+def assert_infusion(test: unittest.TestCase, infusion1: Item, infusion2: Item):
+    test.assertIsNotNone(infusion1)
+    test.assertEqual(infusion2.type, infusion1.type)
+    test.assertEqual(infusion2.chat_link, infusion1.chat_link)
+    test.assertEqual(infusion2.name, infusion1.name)
+    test.assertEqual(infusion2.icon, infusion1.icon)
+    test.assertEqual(infusion2.description, infusion1.description)
+    test.assertEqual(infusion2.rarity, infusion1.rarity)
+    test.assertEqual(infusion2.details.type, infusion1.details.type)
+    test.assertEqual(infusion2.details.infix_upgrade.id,
+                     infusion1.details.infix_upgrade.id)
+    test.assertListEqual(infusion2.details.flags,
+                         infusion1.details.flags)
+    test.assertListEqual(infusion2.details.infusion_upgrade_flags,
+                         infusion1.details.infusion_upgrade_flags)
