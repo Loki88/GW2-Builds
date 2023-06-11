@@ -4,68 +4,10 @@ import unittest
 
 from model.api import Item
 from model.characted_build import RuneWrapper
-from model.enums import Attribute, ItemType, ItemRarity, UpgradeComponentType, UpgradeComponentFlags, InfusionFlag,\
-    ArmorType, ArmorWeight
+from tests.test_utils import build_rune, build_armor
 
 
 class TestRuneWrapper(unittest.TestCase):
-
-    def _build_armor(self) -> Item:
-        data = {
-            'id': 1,
-            'chat_link': '[abcde1]',
-            'name': 'Tet',
-            'icon': 'test',
-            'description': 'test',
-            'type': ItemType.Armor.name,
-            'rarity': ItemRarity.Legendary.name,
-            'details': {
-                'type': ArmorType.Boots.name,
-                'weight_class': ArmorWeight.Medium.name,
-                'defense': 160,
-                'attribute_adjustment': 12.4,
-                'infix_upgrade': None
-            }
-        }
-
-        return Item(data)
-
-    def _build_rune(self) -> Item:
-        data = {
-            'id': 1,
-            'chat_link': '[abcde1]',
-            'name': 'Tet',
-            'icon': 'test',
-            'description': 'test',
-            'type': ItemType.UpgradeComponent.name,
-            'rarity': ItemRarity.Legendary.name,
-            'details': {
-                'type': UpgradeComponentType.Rune.name,
-                'infix_upgrade': {
-                    'id': 1,
-                    'attributes': [
-                        {
-                            'attribute': Attribute.ConditionDamage.name,
-                            'modifier': 5
-                        }
-                    ],
-                    'buff': {
-                        'skill_id': 5,
-                        'description': 'Test'
-                    }
-                },
-                'duration_ms': 30000,
-                'recipe_id': 1,
-                'apply_count': 1,
-                'name': 'Test',
-                'icon': 'test',
-                'bonuses': ['expertise'],
-                'flags': [UpgradeComponentFlags.Axe.name],
-                'infusion_upgrade_flags': [InfusionFlag.Infusion.name]
-            }
-        }
-
-        return Item(data)
 
     def _assert_rune(self, db_rune: Item, rune: Item):
         self.assertIsNotNone(db_rune)
@@ -102,7 +44,7 @@ class TestRuneWrapper(unittest.TestCase):
 
     def test_access_fields(self):
         # given
-        item: Item = self._build_armor()
+        item: Item = build_armor()
 
         # when
         wrapper: RuneWrapper = RuneWrapper(item)
@@ -112,9 +54,9 @@ class TestRuneWrapper(unittest.TestCase):
 
     def test_set_rune(self):
         # given
-        item: Item = self._build_armor()
+        item: Item = build_armor()
         wrapper: RuneWrapper = RuneWrapper(item)
-        rune: Item = self._build_rune()
+        rune: Item = build_rune()
 
         # when
         wrapper.set_rune(rune)

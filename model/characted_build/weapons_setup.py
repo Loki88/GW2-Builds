@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from enum import Enum
-from typing import Tuple
 from model.api import Item
 from model.enums import WeaponType, ArmorWeight, ItemType,\
     OneHandedMainHandWeaponType, OneHandedOffHandWeaponType, TwoHandedWeaponType
@@ -106,5 +105,5 @@ class WeaponsSetup():
         self.weapons_sets[set].set_main_hand(main_hand)
         self.weapons_sets[set].set_off_hand(off_hand)
 
-    def get_weapons(self, set: WeaponsSetId) -> Item | Tuple[Item, Item]:
+    def get_weapons(self, set: WeaponsSetId) -> Item | tuple[Item, Item]:
         return self.weapons_sets[set].get_weapons()

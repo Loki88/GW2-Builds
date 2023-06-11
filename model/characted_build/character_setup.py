@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from typing import Tuple
 from .armor_setup import ArmorSetup
 from .trinket_setup import TrinketSetup
 from .weapons_setup import WeaponsSetup
@@ -40,7 +39,7 @@ class CharacterSetup:
     def add_weapon(self, set: WeaponsSetup.WeaponsSetId, main: Item = None, off: Item = None):
         self.weapon_setup.set_weapons(set, main, off)
 
-    def get_weapon_set(self, set: WeaponsSetup.WeaponsSetId) -> Item | Tuple(Item, Item):
+    def get_weapon_set(self, set: WeaponsSetup.WeaponsSetId) -> Item | tuple[Item, Item]:
         return self.weapon_setup.get_weapons(set)
 
     def add_accessory(self, slot: TrinketSetup.Slot, item: Item):
