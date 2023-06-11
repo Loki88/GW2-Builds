@@ -66,7 +66,7 @@ def build_weapon(
                         'flags': [
                             flag.name
                         ]
-                    } for x in range(slots)
+                    } for _ in range(slots)
                 ],
                 'sigil_slots': []
             }

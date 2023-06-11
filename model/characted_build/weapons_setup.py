@@ -50,7 +50,7 @@ class WeaponsSet():
         else:
             raise ValueError(off_hand)
 
-    def is_compatible_with_main_hand(self, off_hand: str) -> bool:
+    def is_compatible_with_main_hand(self) -> bool:
         if (self.main_hand is None):
             return True
         else:
@@ -72,7 +72,7 @@ class WeaponsSet():
 
     def set_off_hand(self, off_hand: Item):
         if (self.is_allowed_off_hand(off_hand)):
-            if (self.is_compatible_with_main_hand(off_hand)):
+            if (self.is_compatible_with_main_hand()):
                 self.off_hand = off_hand
             else:
                 raise ValueError("off_hand not compatible with main_hand")
