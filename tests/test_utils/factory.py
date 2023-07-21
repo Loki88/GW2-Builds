@@ -2,7 +2,7 @@
 
 from model.enums import InfusionFlag, ItemType, ItemRarity, WeaponType, DamageType, UpgradeComponentType,\
     UpgradeComponentFlags, Attribute, ArmorType, ArmorWeight
-from model.api import Item
+from model.api import Item, ItemStats
 
 
 def _build_item(type: ItemType, id: int = 1) -> dict:
@@ -90,7 +90,8 @@ def build_armor(id: int = 1) -> Item:
                 'weight_class': ArmorWeight.Medium.name,
                 'defense': 160,
                 'attribute_adjustment': 12.4,
-                'infix_upgrade': None
+                'infix_upgrade': None,
+                'stat_choices': [10, 20, 30]
             }
     }
 
@@ -109,3 +110,19 @@ def build_sigil(id: int = 1) -> Item:
         _build_upgrade_component(UpgradeComponentType.Sigil)
 
     return Item(data)
+
+
+def build_stats() -> Item:
+    data = {
+        'id': 1,
+        'name': 'Test',
+        'attributes': [
+            {
+                'attribute': Attribute.AgonyResistance.name,
+                'multiplier': 5,
+                'value': 3
+            }
+        ]
+    }
+
+    return ItemStats(data)

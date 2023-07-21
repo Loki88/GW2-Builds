@@ -2,7 +2,7 @@
 
 import unittest
 
-from model.api import Item
+from model.api import Item, ItemStats
 
 
 def assert_sigil(test: unittest.TestCase, sigil1: Item, sigil2: Item):
@@ -89,3 +89,11 @@ def assert_infusion(test: unittest.TestCase, infusion1: Item, infusion2: Item):
                          infusion1.details.flags)
     test.assertListEqual(infusion2.details.infusion_upgrade_flags,
                          infusion1.details.infusion_upgrade_flags)
+
+
+def assert_stats(self, db_stats: ItemStats, stats: ItemStats):
+    self.assertIsNotNone(db_stats)
+    self.assertEqual(stats.id, db_stats.id)
+    self.assertEqual(stats.name, db_stats.name)
+    self.assertListEqual([(x.attribute, x.multiplier, x.value) for x in stats.attributes],
+                         [(x.attribute, x.multiplier, x.value) for x in db_stats.attributes])
