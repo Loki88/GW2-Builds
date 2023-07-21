@@ -33,6 +33,12 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
+cli = "main:main"
+
+[tool.poetry.plugins] # Optional super table
+
+[tool.poetry.plugins."cli"]
+gw2_builds_cli = "ui.cli.main:main"
 
 [tool.autopep8]
 max_line_length = 120

@@ -20,7 +20,7 @@ HEAVY_SPECIALIZATIONS = [
     'Renegade',
     'Vindicator',
     'Warrior',
-    'Berserker'
+    'Berserker',
     'Spellbreaker',
     'Bladesworn']
 

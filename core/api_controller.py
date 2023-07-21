@@ -2,9 +2,12 @@
 
 from .loader import Loader
 from .errors import AlreadyUpdatedError
-from data import *
+from data import BuildRepository, ProfessionsRepository, SpecializationsRepository,\
+    TraitsRepository, SkillsRepository, StatsRepository, ArmorRepository, WeaponsRepository,\
+    BackRepository, TrinketsRepository, InfusionRepository, FoodsRepository, UtilitiesRepository,\
+    SigilsRepository, RunesRepository
 from model import ItemType, ItemRarity, Build, Profession, Specialization, Trait, Skill,\
-    ItemStats, Item, UpgradeComponentType, ConsumableType, InfusionFlag
+    ItemStats, Item
 from utils import flatten, no_duplicates
 
 
@@ -13,8 +16,8 @@ class ApiController():
     def __init__(self, professions_ids: list[str] = None, wipe_existing: bool = False) -> None:
         loader = Loader()
         try:
-            build = self._load_build(loader, wipe_existing)
-            print(f'Downloading data for build: {build.build_number}. This will take some time...')
+            self.build = self._load_build(loader, wipe_existing)
+            print(f'Downloading data for build: {self.build.build_number}. This will take some time...')
             professions = self._load_professions(loader, professions_ids)
             specializations = self._load_specializations(loader, professions)
             self._load_traits(loader, specializations)

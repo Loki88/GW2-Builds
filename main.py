@@ -2,12 +2,16 @@
 
 import click
 
+import ui.cli
 
-@click.command()
-@click.option("--profession", default=None, help="Profession for generating a rotation")
-def main():
-    pass
+
+@click.group(invoke_without_command=True)
+@click.option("--gui", default=False, help="Use GUI")
+@click.option("--clear", default=False, help="Clear all cached data")
+def main(ctx: click.Context, gui: bool, clear: bool):
+    if not gui:
+        ui.cli.sync(ctx, clear)
 
 
 if __name__ == '__main__':
-    main()
+    main(obj={})

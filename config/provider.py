@@ -22,7 +22,7 @@ class ConfigProvider(metaclass=Singleton):
         self.config.read(os.path.join(DIR_PATH, 'config.ini'))
 
     def get_path(self) -> str:
-        return self.config[DEFAULT_SECTION][PATH]
+        return os.path.expanduser(self.config[DEFAULT_SECTION][PATH])
 
     def get_folder(self) -> str:
         return self.config[DEFAULT_SECTION][FOLDER]
