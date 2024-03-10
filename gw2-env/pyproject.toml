@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "gw2-env"
+version = "0.1.0"
+description = ""
+authors = ["Lorenzo Di Giuseppe <laplacetransformed@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+gymnasium = "^0.29.1"
+gym = "^0.26.2"
+pygame = "^2.5.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

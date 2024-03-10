@@ -1,0 +1,237 @@
+[
+    {
+        "label": "GuildWars2Client",
+        "importPath": "gw2api",
+        "description": "gw2api",
+        "isExtraImport": true,
+        "detail": "gw2api",
+        "documentation": {}
+    },
+    {
+        "label": "Profession",
+        "importPath": "model.api",
+        "description": "model.api",
+        "isExtraImport": true,
+        "detail": "model.api",
+        "documentation": {}
+    },
+    {
+        "label": "Specialization",
+        "importPath": "model.api",
+        "description": "model.api",
+        "isExtraImport": true,
+        "detail": "model.api",
+        "documentation": {}
+    },
+    {
+        "label": "Specialization",
+        "importPath": "model.api.specialization",
+        "description": "model.api.specialization",
+        "isExtraImport": true,
+        "detail": "model.api.specialization",
+        "documentation": {}
+    },
+    {
+        "label": "unittest",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "unittest",
+        "description": "unittest",
+        "detail": "unittest",
+        "documentation": {}
+    },
+    {
+        "label": "Loader",
+        "importPath": "core",
+        "description": "core",
+        "isExtraImport": true,
+        "detail": "core",
+        "documentation": {}
+    },
+    {
+        "label": "HEAVY_PROFESSIONS",
+        "importPath": "core.loader",
+        "description": "core.loader",
+        "isExtraImport": true,
+        "detail": "core.loader",
+        "documentation": {}
+    },
+    {
+        "label": "LIGHT_PROFESSIONS",
+        "importPath": "core.loader",
+        "description": "core.loader",
+        "isExtraImport": true,
+        "detail": "core.loader",
+        "documentation": {}
+    },
+    {
+        "label": "MEDIUM_PROFESSIONS",
+        "importPath": "core.loader",
+        "description": "core.loader",
+        "isExtraImport": true,
+        "detail": "core.loader",
+        "documentation": {}
+    },
+    {
+        "label": "click",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "click",
+        "description": "click",
+        "detail": "click",
+        "documentation": {}
+    },
+    {
+        "label": "Loader",
+        "kind": 6,
+        "importPath": "core.loader",
+        "description": "core.loader",
+        "peekOfCode": "class Loader():\n    def __init__(self) -> None:\n        self.client = GuildWars2Client()\n    def __del__(self):\n        self.client.session.close()\n    def load_professions(self, professions: list[str] = ALL_PROFESSIONS) -> list[Profession]:\n        response = self.client.professions.get(ids=professions)\n        api_professions = [self._load_profession(x) for x in response]\n        return api_professions\n    def _load_profession(self, data: dict) -> Profession:",
+        "detail": "core.loader",
+        "documentation": {}
+    },
+    {
+        "label": "HEAVY_PROFESSIONS",
+        "kind": 5,
+        "importPath": "core.loader",
+        "description": "core.loader",
+        "peekOfCode": "HEAVY_PROFESSIONS = ['Guardian', 'Revenant', 'Warrior']\nMEDIUM_PROFESSIONS = ['Engineer', 'Ranger', 'Thief']\nLIGHT_PROFESSIONS = ['Elementalist', 'Mesmer', 'Necromancer']\nHEAVY_SPECIALIZATIONS = ['Guardian', 'Dragonhunter', 'Firebrand', 'Willbender', 'Revenant', 'Herald', 'Renegade', 'Vindicator', 'Warrior', 'Berserker' \\\n                   'Spellbreaker', 'Bladesworn']\nMEDIUM_SPECIALIZATIONS = ['Engineer', 'Scrapper', 'Holosmith', 'Mechanist', 'Ranger', 'Druid', 'Soulbeast', 'Untamed', 'Thief', 'Daredevil', \\\n                      'Deadeye', 'Specter']\nLIGHT_SPECIALIZATIONS = ['Elementalist', 'Tempest', 'Weaver', 'Catalyst', 'Mesmer', 'Chronomancer', 'Mirage', 'Virtuoso', 'Necromancer', \\\n                     'Reaper', 'Scourge', 'Harbinger']\nALL_PROFESSIONS = HEAVY_PROFESSIONS + MEDIUM_PROFESSIONS + LIGHT_PROFESSIONS",
+        "detail": "core.loader",
+        "documentation": {}
+    },
+    {
+        "label": "MEDIUM_PROFESSIONS",
+        "kind": 5,
+        "importPath": "core.loader",
+        "description": "core.loader",
+        "peekOfCode": "MEDIUM_PROFESSIONS = ['Engineer', 'Ranger', 'Thief']\nLIGHT_PROFESSIONS = ['Elementalist', 'Mesmer', 'Necromancer']\nHEAVY_SPECIALIZATIONS = ['Guardian', 'Dragonhunter', 'Firebrand', 'Willbender', 'Revenant', 'Herald', 'Renegade', 'Vindicator', 'Warrior', 'Berserker' \\\n                   'Spellbreaker', 'Bladesworn']\nMEDIUM_SPECIALIZATIONS = ['Engineer', 'Scrapper', 'Holosmith', 'Mechanist', 'Ranger', 'Druid', 'Soulbeast', 'Untamed', 'Thief', 'Daredevil', \\\n                      'Deadeye', 'Specter']\nLIGHT_SPECIALIZATIONS = ['Elementalist', 'Tempest', 'Weaver', 'Catalyst', 'Mesmer', 'Chronomancer', 'Mirage', 'Virtuoso', 'Necromancer', \\\n                     'Reaper', 'Scourge', 'Harbinger']\nALL_PROFESSIONS = HEAVY_PROFESSIONS + MEDIUM_PROFESSIONS + LIGHT_PROFESSIONS\nclass Loader():",
+        "detail": "core.loader",
+        "documentation": {}
+    },
+    {
+        "label": "LIGHT_PROFESSIONS",
+        "kind": 5,
+        "importPath": "core.loader",
+        "description": "core.loader",
+        "peekOfCode": "LIGHT_PROFESSIONS = ['Elementalist', 'Mesmer', 'Necromancer']\nHEAVY_SPECIALIZATIONS = ['Guardian', 'Dragonhunter', 'Firebrand', 'Willbender', 'Revenant', 'Herald', 'Renegade', 'Vindicator', 'Warrior', 'Berserker' \\\n                   'Spellbreaker', 'Bladesworn']\nMEDIUM_SPECIALIZATIONS = ['Engineer', 'Scrapper', 'Holosmith', 'Mechanist', 'Ranger', 'Druid', 'Soulbeast', 'Untamed', 'Thief', 'Daredevil', \\\n                      'Deadeye', 'Specter']\nLIGHT_SPECIALIZATIONS = ['Elementalist', 'Tempest', 'Weaver', 'Catalyst', 'Mesmer', 'Chronomancer', 'Mirage', 'Virtuoso', 'Necromancer', \\\n                     'Reaper', 'Scourge', 'Harbinger']\nALL_PROFESSIONS = HEAVY_PROFESSIONS + MEDIUM_PROFESSIONS + LIGHT_PROFESSIONS\nclass Loader():\n    def __init__(self) -> None:",
+        "detail": "core.loader",
+        "documentation": {}
+    },
+    {
+        "label": "HEAVY_SPECIALIZATIONS",
+        "kind": 5,
+        "importPath": "core.loader",
+        "description": "core.loader",
+        "peekOfCode": "HEAVY_SPECIALIZATIONS = ['Guardian', 'Dragonhunter', 'Firebrand', 'Willbender', 'Revenant', 'Herald', 'Renegade', 'Vindicator', 'Warrior', 'Berserker' \\\n                   'Spellbreaker', 'Bladesworn']\nMEDIUM_SPECIALIZATIONS = ['Engineer', 'Scrapper', 'Holosmith', 'Mechanist', 'Ranger', 'Druid', 'Soulbeast', 'Untamed', 'Thief', 'Daredevil', \\\n                      'Deadeye', 'Specter']\nLIGHT_SPECIALIZATIONS = ['Elementalist', 'Tempest', 'Weaver', 'Catalyst', 'Mesmer', 'Chronomancer', 'Mirage', 'Virtuoso', 'Necromancer', \\\n                     'Reaper', 'Scourge', 'Harbinger']\nALL_PROFESSIONS = HEAVY_PROFESSIONS + MEDIUM_PROFESSIONS + LIGHT_PROFESSIONS\nclass Loader():\n    def __init__(self) -> None:\n        self.client = GuildWars2Client()",
+        "detail": "core.loader",
+        "documentation": {}
+    },
+    {
+        "label": "MEDIUM_SPECIALIZATIONS",
+        "kind": 5,
+        "importPath": "core.loader",
+        "description": "core.loader",
+        "peekOfCode": "MEDIUM_SPECIALIZATIONS = ['Engineer', 'Scrapper', 'Holosmith', 'Mechanist', 'Ranger', 'Druid', 'Soulbeast', 'Untamed', 'Thief', 'Daredevil', \\\n                      'Deadeye', 'Specter']\nLIGHT_SPECIALIZATIONS = ['Elementalist', 'Tempest', 'Weaver', 'Catalyst', 'Mesmer', 'Chronomancer', 'Mirage', 'Virtuoso', 'Necromancer', \\\n                     'Reaper', 'Scourge', 'Harbinger']\nALL_PROFESSIONS = HEAVY_PROFESSIONS + MEDIUM_PROFESSIONS + LIGHT_PROFESSIONS\nclass Loader():\n    def __init__(self) -> None:\n        self.client = GuildWars2Client()\n    def __del__(self):\n        self.client.session.close()",
+        "detail": "core.loader",
+        "documentation": {}
+    },
+    {
+        "label": "LIGHT_SPECIALIZATIONS",
+        "kind": 5,
+        "importPath": "core.loader",
+        "description": "core.loader",
+        "peekOfCode": "LIGHT_SPECIALIZATIONS = ['Elementalist', 'Tempest', 'Weaver', 'Catalyst', 'Mesmer', 'Chronomancer', 'Mirage', 'Virtuoso', 'Necromancer', \\\n                     'Reaper', 'Scourge', 'Harbinger']\nALL_PROFESSIONS = HEAVY_PROFESSIONS + MEDIUM_PROFESSIONS + LIGHT_PROFESSIONS\nclass Loader():\n    def __init__(self) -> None:\n        self.client = GuildWars2Client()\n    def __del__(self):\n        self.client.session.close()\n    def load_professions(self, professions: list[str] = ALL_PROFESSIONS) -> list[Profession]:\n        response = self.client.professions.get(ids=professions)",
+        "detail": "core.loader",
+        "documentation": {}
+    },
+    {
+        "label": "ALL_PROFESSIONS",
+        "kind": 5,
+        "importPath": "core.loader",
+        "description": "core.loader",
+        "peekOfCode": "ALL_PROFESSIONS = HEAVY_PROFESSIONS + MEDIUM_PROFESSIONS + LIGHT_PROFESSIONS\nclass Loader():\n    def __init__(self) -> None:\n        self.client = GuildWars2Client()\n    def __del__(self):\n        self.client.session.close()\n    def load_professions(self, professions: list[str] = ALL_PROFESSIONS) -> list[Profession]:\n        response = self.client.professions.get(ids=professions)\n        api_professions = [self._load_profession(x) for x in response]\n        return api_professions",
+        "detail": "core.loader",
+        "documentation": {}
+    },
+    {
+        "label": "Fact",
+        "kind": 6,
+        "importPath": "model.api.fact",
+        "description": "model.api.fact",
+        "peekOfCode": "class Fact:\n    id: int\n    name: str\n    description: str\n    icon: str\n    facts: list[Fact]\n    traited_facts: list[Fact]\n    # fact requires a strategy and a hierarchy of facts to represent the different facts",
+        "detail": "model.api.fact",
+        "documentation": {}
+    },
+    {
+        "label": "Profession",
+        "kind": 6,
+        "importPath": "model.api.profession",
+        "description": "model.api.profession",
+        "peekOfCode": "class Profession:\n    id: str\n    name: str\n    code: int\n    icon: str\n    icon_big: str\n    specializations: list[int]\n    weapons: list[Weapon]\n    flags: list[str]\n    def __init__(self, data : dict = None) -> None:",
+        "detail": "model.api.profession",
+        "documentation": {}
+    },
+    {
+        "label": "Skill",
+        "kind": 6,
+        "importPath": "model.api.skill",
+        "description": "model.api.skill",
+        "peekOfCode": "class Skill:\n    id: int\n    name: str\n    description: str\n    icon: str\n    facts: list[Fact]\n    traited_facts: list[Fact]",
+        "detail": "model.api.skill",
+        "documentation": {}
+    },
+    {
+        "label": "Specialization",
+        "kind": 6,
+        "importPath": "model.api.specialization",
+        "description": "model.api.specialization",
+        "peekOfCode": "class Specialization():\n    id: int\n    name: str\n    profession: str\n    elite: bool\n    icon: str\n    background: str\n    minor_traits: list[int] = []\n    major_traits: list[int] = []\n    def __init__(self, data: dict = None) -> None:",
+        "detail": "model.api.specialization",
+        "documentation": {}
+    },
+    {
+        "label": "Trait",
+        "kind": 6,
+        "importPath": "model.api.trait",
+        "description": "model.api.trait",
+        "peekOfCode": "class Trait:\n    id: int\n    name: str\n    icon: str\n    description: str\n    specialization: int\n    tier: int\n    slot: str\n    facts: list[Fact]\n    traited_facts: list[Fact]",
+        "detail": "model.api.trait",
+        "documentation": {}
+    },
+    {
+        "label": "WeaponSkill",
+        "kind": 6,
+        "importPath": "model.api.weapon",
+        "description": "model.api.weapon",
+        "peekOfCode": "class WeaponSkill:\n    id: int\n    slot: str\n    def __init__(self, data: dict[str] = None) -> None:\n        self.id = int(data['id'])\n        self.slot = data['slot']\nclass Weapon:\n    name: str\n    specialization: int # Weapons supported by all specializatiions will have None\n    skills: list[WeaponSkill]",
+        "detail": "model.api.weapon",
+        "documentation": {}
+    },
+    {
+        "label": "Weapon",
+        "kind": 6,
+        "importPath": "model.api.weapon",
+        "description": "model.api.weapon",
+        "peekOfCode": "class Weapon:\n    name: str\n    specialization: int # Weapons supported by all specializatiions will have None\n    skills: list[WeaponSkill]\n    def __init__(self, name: str, data: dict[str] = None) -> None:\n        self.name = name\n        self.specialization = data['specialization'] if 'specialization' in data else None\n        if(data['skills'] is not None):\n            self.skills = [WeaponSkill(x) for x in data['skills']]\n    def __str__(self) -> str:",
+        "detail": "model.api.weapon",
+        "documentation": {}
+    },
+    {
+        "label": "TestLoader",
+        "kind": 6,
+        "importPath": "tests.tests_core.test_loader",
+        "description": "tests.tests_core.test_loader",
+        "peekOfCode": "class TestLoader(unittest.TestCase):\n    professions_dict: dict[str, list[str]] = {'Heavy': HEAVY_PROFESSIONS, 'Medium': MEDIUM_PROFESSIONS, 'Light': LIGHT_PROFESSIONS}\n    num_specializations: int = 8\n    def test_load_professions(self):\n        loader = Loader()\n        professions = loader.load_professions()\n        self.assertIsNotNone(professions)\n        self.assertEqual(len(professions), 9)\n    def test_load_specializations(self):\n        loader = Loader()",
+        "detail": "tests.tests_core.test_loader",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def main():\n    pass\nif __name__ == '__main__':\n    main()",
+        "detail": "main",
+        "documentation": {}
+    }
+]
